@@ -5,7 +5,6 @@ import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ITextSelection;
-import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.handlers.HandlerUtil;
 import org.eclipse.ui.texteditor.ITextEditor;
@@ -31,19 +30,21 @@ public final class Editor {
 		return this.getTextSelection().getStartLine();
 	}
 
-	public String getLine(int lineNo) throws BadLocationException {
+	public String getTitle() {
+		return textEditor.getTitle();
+	}
+
+	public String getLine(int lineNo) {
 		IDocument doc = this.getDocument();
-		int line = this.getTextSelection().getStartLine();
-		return doc.get(doc.getLineOffset(line), doc.getLineLength(line));
+		try {
+			return doc.get(doc.getLineOffset(lineNo), doc.getLineLength(lineNo));
+		} catch (BadLocationException e) {
+			return null;
+		}
 	}
 
 	public String getCurrentLine() {
-		try {
-			return getLine(getCurrentLineNo());
-		} catch (BadLocationException e) {
-			e.printStackTrace();
-			return e.toString();
-		}
+		return getLine(getCurrentLineNo());
 	}
 
 	private ITextSelection getTextSelection() {
