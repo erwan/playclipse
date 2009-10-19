@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+
+   <extension
+         point="org.eclipse.ui.commands">
+      <category
+            name="Sample Category"
+            id="org.playframework.playclipse.commands.category">
+      </category>
+      <command
+            name="Go to the View"
+            categoryId="org.playframework.playclipse.commands.category"
+            id="org.playframework.playclipse.commands.goToViewCommand">
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.ui.handlers">
+      <handler
+            commandId="org.playframework.playclipse.commands.goToViewCommand"
+            class="org.playframework.playclipse.handlers.GoToViewHandler">
+      </handler>
+   </extension>
+   <extension
+         point="org.eclipse.ui.bindings">
+      <key
+            commandId="org.playframework.playclipse.commands.goToViewCommand"
+            contextId="org.eclipse.ui.contexts.window"
+            sequence="M1+6"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration">
+      </key>
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            locationURI="menu:org.eclipse.ui.main.menu?after=additions">
+         <menu
+               label="Play!"
+               mnemonic="l"
+               id="org.playframework.playclipse.menus.play">
+            <command
+                  commandId="org.playframework.playclipse.commands.goToViewCommand"
+                  mnemonic="S"
+                  id="org.playframework.playclipse.menus.goToViewCommand">
+            </command>
+         </menu>
+      </menuContribution>
+      <menuContribution
+            locationURI="toolbar:org.eclipse.ui.main.toolbar?after=additions">
+         <toolbar
+               id="org.playframework.playclipse.toolbars.sampleToolbar">
+            <command
+                  commandId="org.playframework.playclipse.commands.goToViewCommand"
+                  icon="icons/sample.gif"
+                  tooltip="Go to the View"
+                  id="org.playframework.playclipse.toolbars.goToViewCommand">
+            </command>
+         </toolbar>
+      </menuContribution>
+   </extension>
+
+</plugin>
