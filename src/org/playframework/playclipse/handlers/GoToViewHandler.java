@@ -12,9 +12,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import java.util.regex.*;
 
 /**
- * Our sample handler extends AbstractHandler, an IHandler base class.
- * @see org.eclipse.core.commands.IHandler
- * @see org.eclipse.core.commands.AbstractHandler
+ * Go to the view (template) corresponding to the current action
  */
 public class GoToViewHandler extends AbstractHandler {
 
@@ -24,10 +22,6 @@ public class GoToViewHandler extends AbstractHandler {
 	public GoToViewHandler() {
 	}
 
-	/**
-	 * the command has been executed, so extract extract the needed information
-	 * from the application context.
-	 */
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		IWorkbenchWindow window = HandlerUtil.getActiveWorkbenchWindowChecked(event);
 
