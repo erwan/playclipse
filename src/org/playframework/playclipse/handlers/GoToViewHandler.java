@@ -1,13 +1,13 @@
 package org.playframework.playclipse.handlers;
 
 import org.playframework.playclipse.Editor;
+import org.playframework.playclipse.FilesAccess;
 
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.handlers.HandlerUtil;
-import org.eclipse.jface.dialogs.MessageDialog;
 
 import java.util.regex.*;
 
@@ -37,7 +37,6 @@ public class GoToViewHandler extends AbstractHandler {
 				// There is a custom view
 				viewName = m.group().replace("\"", ""); // m.group();
 			} else {
-//				Pattern pt2 = Pattern.compile("[a-zA-Z0-9_]+(");
 				// No custom view, let's go up until we get the action name
 				while (lineNo > 0 && viewName == null) {
 					line = editor.getLine(lineNo--);
@@ -53,11 +52,7 @@ public class GoToViewHandler extends AbstractHandler {
 				}
 			}
 		}
-
-		MessageDialog.openInformation(
-				window.getShell(),
-				"Playclipse",
-				viewName);
+		FilesAccess.openFile("app/views/" + viewName, window);
 		return null;
 	}
 }
