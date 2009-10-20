@@ -5,13 +5,22 @@
    <extension
          point="org.eclipse.ui.commands">
       <category
-            name="Sample Category"
-            id="org.playframework.playclipse.commands.category">
+            name="Play! Commands"
+            id="org.playframework.playclipse.commands.main">
       </category>
       <command
-            name="Go to the View"
             categoryId="org.playframework.playclipse.commands.category"
-            id="org.playframework.playclipse.commands.goToViewCommand">
+            description="Go to View"
+            helpContextId="Use it on a &quot;render()&quot; call to open the corresponding view."
+            id="org.playframework.playclipse.commands.goToViewCommand"
+            name="Go to View">
+      </command>
+      <command
+            categoryId="org.playframework.playclipse.commands.category"
+            description="Go to Action"
+            helpContextId="Use it in a view to open the corresponding action."
+            id="org.playframework.playclipse.commands.goToActionCommand"
+            name="Go to Action">
       </command>
    </extension>
    <extension
@@ -20,14 +29,24 @@
             commandId="org.playframework.playclipse.commands.goToViewCommand"
             class="org.playframework.playclipse.handlers.GoToViewHandler">
       </handler>
+      <handler
+            commandId="org.playframework.playclipse.commands.goToActionCommand"
+            class="org.playframework.playclipse.handlers.GoToActionHandler">
+      </handler>
    </extension>
    <extension
          point="org.eclipse.ui.bindings">
       <key
             commandId="org.playframework.playclipse.commands.goToViewCommand"
             contextId="org.eclipse.ui.contexts.window"
-            sequence="M1+6"
+            sequence="M1+ALT+V"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration">
+      </key>
+      <key
+            commandId="org.playframework.playclipse.commands.goToActionCommand"
+            contextId="org.eclipse.ui.contexts.window"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="M1+ALT+A">
       </key>
    </extension>
    <extension
@@ -40,8 +59,13 @@
                id="org.playframework.playclipse.menus.play">
             <command
                   commandId="org.playframework.playclipse.commands.goToViewCommand"
-                  mnemonic="S"
+                  mnemonic="V"
                   id="org.playframework.playclipse.menus.goToViewCommand">
+            </command>
+            <command
+                  commandId="org.playframework.playclipse.commands.goToActionCommand"
+                  id="org.playframework.playclipse.menus.goToActionCommand"
+                  mnemonic="A">
             </command>
          </menu>
       </menuContribution>
@@ -52,8 +76,14 @@
             <command
                   commandId="org.playframework.playclipse.commands.goToViewCommand"
                   icon="icons/sample.gif"
-                  tooltip="Go to the View"
+                  tooltip="Go to View"
                   id="org.playframework.playclipse.toolbars.goToViewCommand">
+            </command>
+            <command
+                  commandId="org.playframework.playclipse.commands.goToActionCommand"
+                  icon="icons/sample.gif"
+                  id="org.playframework.playclipse.toolbars.goToActionCommand"
+                  tooltip="Go to Action">
             </command>
          </toolbar>
       </menuContribution>
