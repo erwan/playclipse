@@ -27,19 +27,10 @@ public class GoToActionHandler extends AbstractHandler {
 	public GoToActionHandler() {
 	}
 
-	/**
-	 * the command has been executed, so extract extract the needed information
-	 * from the application context.
-	 */
-	public Object execute(ExecutionEvent event) throws ExecutionException {
-		IWorkbenchWindow window = HandlerUtil.getActiveWorkbenchWindowChecked(event);
-		String action = null;
-		String controller = null;
-		String path = null;
-
-		Editor editor = Editor.getCurrent(event);
+	private String fromView(Editor editor) {
 		String line = editor.getLine(editor.getCurrentLineNo());
-		controller = editor.enclosingDirectory();
+		String controller = editor.enclosingDirectory();
+		String action;
 		Pattern pt = Pattern.compile("@\\{[^\\(]+\\(\\)\\}");
 		Matcher m = pt.matcher(line);
 		if (m.find()) {
@@ -51,13 +42,37 @@ public class GoToActionHandler extends AbstractHandler {
 		} else {
 			action = editor.getTitle().replace(".html", "");
 		}
+		return controller + "." + action;
+	}
 
-		path = "/app/controllers/" + controller + ".java";
-		IEditorPart newEditorPart = FilesAccess.openFile(path, window);
+	private String fromRoutes(Editor editor) {
+		String line = editor.getLine(editor.getCurrentLineNo());
+		String[] lineArr = line.trim().split("\\s+");
+		return lineArr[lineArr.length - 1];
+	}
+
+	/**
+	 * the command has been executed, so let's extract the needed information
+	 * from the application context.
+	 */
+	public Object execute(ExecutionEvent event) throws ExecutionException {
+		IWorkbenchWindow window = HandlerUtil.getActiveWorkbenchWindowChecked(event);
+		String action = null;
+		Editor editor = Editor.getCurrent(event);
+		if (editor.isView()) {
+			action = fromView(editor);
+		} else if (editor.isRoutes()) {
+			action = fromRoutes(editor);
+		}
+		String controller = action.split("\\.")[0];
+		String method = action.split("\\.")[1];
+
+		IEditorPart newEditorPart = FilesAccess.openFile("/app/controllers/" + controller + ".java", window);
 		Editor newEditor = new Editor((ITextEditor)newEditorPart);
 		int lineNo = -1;
 		int i = 0;
 		int length = newEditor.lineCount();
+		String line;
 		IDocument doc = newEditor.getDocument();
 		try {
 			while (i < length && lineNo < 0) {
@@ -65,7 +80,7 @@ public class GoToActionHandler extends AbstractHandler {
 				if (line.contains("public") &&
 					line.contains("static") &&
 					line.contains("void") &&
-					line.contains(action))
+					line.contains(method))
 				{
 					lineNo = i;
 				}

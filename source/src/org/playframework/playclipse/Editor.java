@@ -45,6 +45,24 @@ public final class Editor {
 		return path.segment(path.segmentCount() - 2);
 	}
 
+	/**
+	 *
+	 * @return true if the file owned by the editor corresponds to a view
+	 */
+	public boolean isView() {
+		IPath path = getFilePath();
+		return path.segment(path.segmentCount() - 3).equals("views");
+	}
+
+	/**
+	 *
+	 * @return true if the file owned by the editor is the conf/routes files
+	 */
+	public boolean isRoutes() {
+		IPath path = getFilePath();
+		return path.segment(path.segmentCount() - 1).equals("routes");
+	}
+
 	private IPath getFilePath() {
 		IFileEditorInput input = (IFileEditorInput) textEditor.getEditorInput();
 		return input.getFile().getFullPath();
