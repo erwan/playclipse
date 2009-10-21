@@ -2,10 +2,12 @@ package org.playframework.playclipse;
 
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.handlers.HandlerUtil;
 import org.eclipse.ui.texteditor.ITextEditor;
 
@@ -32,6 +34,16 @@ public final class Editor {
 
 	public String getTitle() {
 		return textEditor.getTitle();
+	}
+
+	public String enclosingDirectory() {
+		IPath path = getFilePath();
+		return path.segment(path.segmentCount() - 2);
+	}
+
+	private IPath getFilePath() {
+		IFileEditorInput input = (IFileEditorInput) textEditor.getEditorInput();
+		return input.getFile().getFullPath();
 	}
 
 	public String getLine(int lineNo) {

@@ -35,7 +35,7 @@ public class GoToViewHandler extends AbstractHandler {
 			Matcher m = pt.matcher(line);
 			if (m.find()) {
 				// There is a custom view
-				viewName = m.group().replace("\"", ""); // m.group();
+				viewName = m.group().replace("\"", "");
 			} else {
 				// No custom view, let's go up until we get the action name
 				while (lineNo > 0 && viewName == null) {

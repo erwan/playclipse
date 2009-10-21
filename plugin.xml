@@ -9,14 +9,14 @@
             id="org.playframework.playclipse.commands.main">
       </category>
       <command
-            categoryId="org.playframework.playclipse.commands.category"
+            categoryId="org.playframework.playclipse.commands.main"
             description="Go to View"
             helpContextId="Use it on a &quot;render()&quot; call to open the corresponding view."
             id="org.playframework.playclipse.commands.goToViewCommand"
             name="Go to View">
       </command>
       <command
-            categoryId="org.playframework.playclipse.commands.category"
+            categoryId="org.playframework.playclipse.commands.main"
             description="Go to Action"
             helpContextId="Use it in a view to open the corresponding action."
             id="org.playframework.playclipse.commands.goToActionCommand"

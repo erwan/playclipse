@@ -35,6 +35,7 @@ public class FilesAccess {
 	public static void openFile(String filename, IWorkbenchWindow window) {
 		IFile file = getFile(filename);
 		IWorkbenchPage page = getCurrentPage();
+		// TODO: jump to the right line (5 is just random)
 		HashMap<String, Object> map = new HashMap<String, Object>();
 		map.put(IMarker.LINE_NUMBER, new Integer(5));
 		map.put(IDE.EDITOR_ID_ATTR, "org.eclipse.ui.DefaultTextEditor");
