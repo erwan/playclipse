@@ -14,13 +14,6 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 
 public class FilesAccess {
-	private static IWorkbenchPage getCurrentPage() {
-		IWorkbench wb = PlatformUI.getWorkbench();
-		IWorkbenchWindow win = wb.getActiveWorkbenchWindow();
-		IWorkbenchPage page = win.getActivePage();
-		return page;
-	}
-
 	public static IEditorPart openFile(String filename, IWorkbenchWindow window) {
 		IEditorPart result = null;
 
@@ -63,6 +56,13 @@ public class FilesAccess {
 				return file;
 		}
 		return null;
+	}
+
+	private static IWorkbenchPage getCurrentPage() {
+		IWorkbench wb = PlatformUI.getWorkbench();
+		IWorkbenchWindow win = wb.getActiveWorkbenchWindow();
+		IWorkbenchPage page = win.getActivePage();
+		return page;
 	}
 
 }
