@@ -1,6 +1,7 @@
 package org.playframework.playclipse;
 
 import org.eclipse.ui.ide.IDE;
+import org.eclipse.ui.texteditor.ITextEditor;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.IWorkbench;
@@ -12,6 +13,8 @@ import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jface.text.BadLocationException;
+import org.eclipse.jface.text.IDocument;
 
 public class FilesAccess {
 	public static IEditorPart openFile(String filename, IWorkbenchWindow window) {
@@ -41,6 +44,28 @@ public class FilesAccess {
 			// Never happens! We got the file from the editor.
 		}
 		IDE.gotoMarker(editor, marker);
+	}
+
+	public static void goToLineContaining(IEditorPart editorPart, String text) {
+		Editor editor = new Editor((ITextEditor)editorPart);
+		String line;
+		int lineNo = -1;
+		int i = 0;
+		int length = editor.lineCount();
+		IDocument doc = editor.getDocument();
+		try {
+			while (i < length && lineNo < 0) {
+				line = doc.get(doc.getLineOffset(i), doc.getLineLength(i));
+				if (line.contains(text)) {
+					lineNo = i;
+				}
+				i++;
+			}
+		} catch (BadLocationException e) {
+			// Should never happen
+			e.printStackTrace();
+		}
+		FilesAccess.goToLine(editorPart, i);
 	}
 
 	private static IFile getFile(IEditorPart editorPart) {

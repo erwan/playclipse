@@ -7,6 +7,7 @@ import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.handlers.HandlerUtil;
 import org.playframework.playclipse.Editor;
@@ -52,10 +53,8 @@ public class GoToRouteHandler extends AbstractHandler {
 			"Playclipse",
 			"Use this command in a controller, in an action method");
 		} else {
-			MessageDialog.openInformation(
-					window.getShell(),
-					"Playclipse",
-					action);
+			IEditorPart editorPart = FilesAccess.openFile("conf/routes", window);
+			FilesAccess.goToLineContaining(editorPart, action);
 		}
 		return null;
 	}
