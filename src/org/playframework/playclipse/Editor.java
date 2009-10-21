@@ -32,6 +32,10 @@ public final class Editor {
 		return this.getTextSelection().getStartLine();
 	}
 
+	public int lineCount() {
+		return getDocument().getNumberOfLines();
+	}
+
 	public String getTitle() {
 		return textEditor.getTitle();
 	}
@@ -63,7 +67,7 @@ public final class Editor {
 		return ((ITextSelection) textEditor.getSelectionProvider().getSelection());
 	}
 
-	private IDocument getDocument() {
+	public IDocument getDocument() {
 		return textEditor.getDocumentProvider().getDocument(textEditor.getEditorInput());
 	}
 

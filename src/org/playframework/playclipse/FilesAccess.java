@@ -1,7 +1,8 @@
 package org.playframework.playclipse;
 
-import java.util.HashMap;
-
+import org.eclipse.ui.ide.IDE;
+import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
@@ -11,7 +12,6 @@ import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.ui.ide.IDE;
 
 public class FilesAccess {
 	private static IWorkbenchPage getCurrentPage() {
@@ -19,6 +19,39 @@ public class FilesAccess {
 		IWorkbenchWindow win = wb.getActiveWorkbenchWindow();
 		IWorkbenchPage page = win.getActivePage();
 		return page;
+	}
+
+	public static IEditorPart openFile(String filename, IWorkbenchWindow window) {
+		IEditorPart result = null;
+
+		IFile file = getFile(filename);
+		IWorkbenchPage page = getCurrentPage();
+		IMarker marker;
+		try {
+			marker = file.createMarker(IMarker.TEXT);
+			marker.setAttribute(IDE.EDITOR_ID_ATTR, "org.eclipse.ui.DefaultTextEditor");
+			result = IDE.openEditor(page, marker);
+			marker.delete();
+		} catch (CoreException e) {
+			// TODO: if the file doesn't exist, create it (or at least prompt the user to create it)
+			e.printStackTrace();
+		}
+		return result;
+	}
+
+	public static void goToLine(IEditorPart editor, int line) {
+		IMarker marker = null;
+		try {
+			marker = getFile(editor).createMarker(IMarker.TEXT);
+			marker.setAttribute(IMarker.LINE_NUMBER, line);
+		} catch (CoreException e) {
+			// Never happens! We got the file from the editor.
+		}
+		IDE.gotoMarker(editor, marker);
+	}
+
+	private static IFile getFile(IEditorPart editorPart) {
+		return ((IFileEditorInput)editorPart.getEditorInput()).getFile();
 	}
 
 	private static IFile getFile(String filename) {
@@ -32,22 +65,4 @@ public class FilesAccess {
 		return null;
 	}
 
-	public static void openFile(String filename, IWorkbenchWindow window) {
-		IFile file = getFile(filename);
-		IWorkbenchPage page = getCurrentPage();
-		// TODO: jump to the right line (5 is just random)
-		HashMap<String, Object> map = new HashMap<String, Object>();
-		map.put(IMarker.LINE_NUMBER, new Integer(5));
-		map.put(IDE.EDITOR_ID_ATTR, "org.eclipse.ui.DefaultTextEditor");
-		IMarker marker;
-		try {
-			marker = file.createMarker(IMarker.TEXT);
-			marker.setAttributes(map);
-			IDE.openEditor(page, marker);
-			marker.delete();
-		} catch (CoreException e) {
-			// TODO: if the file doesn't exist, create it (or at least prompt the user to create it)
-			e.printStackTrace();
-		}
-	}
 }

@@ -6,6 +6,7 @@ import org.playframework.playclipse.FilesAccess;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.handlers.HandlerUtil;
 
@@ -52,7 +53,14 @@ public class GoToViewHandler extends AbstractHandler {
 				}
 			}
 		}
-		FilesAccess.openFile("app/views/" + viewName, window);
+		if (viewName == null) {
+			MessageDialog.openInformation(
+			window.getShell(),
+			"Playclipse",
+			"Use this command in a controller, on a render() line");
+		} else {
+			FilesAccess.openFile("app/views/" + viewName, window);
+		}
 		return null;
 	}
 }

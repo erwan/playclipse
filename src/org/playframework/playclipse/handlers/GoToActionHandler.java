@@ -6,8 +6,12 @@ import java.util.regex.Pattern;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.jface.text.BadLocationException;
+import org.eclipse.jface.text.IDocument;
+import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.handlers.HandlerUtil;
+import org.eclipse.ui.texteditor.ITextEditor;
 import org.playframework.playclipse.Editor;
 import org.playframework.playclipse.FilesAccess;
 
@@ -49,7 +53,29 @@ public class GoToActionHandler extends AbstractHandler {
 		}
 
 		path = "/app/controllers/" + controller + ".java";
-		FilesAccess.openFile(path, window);
+		IEditorPart newEditorPart = FilesAccess.openFile(path, window);
+		Editor newEditor = new Editor((ITextEditor)newEditorPart);
+		int lineNo = -1;
+		int i = 0;
+		int length = newEditor.lineCount();
+		IDocument doc = newEditor.getDocument();
+		try {
+			while (i < length && lineNo < 0) {
+				line = doc.get(doc.getLineOffset(i), doc.getLineLength(i));
+				if (line.contains("public") &&
+					line.contains("static") &&
+					line.contains("void") &&
+					line.contains(action))
+				{
+					lineNo = i;
+				}
+				i++;
+			}
+		} catch (BadLocationException e) {
+			// Should never happen
+			e.printStackTrace();
+		}
+		FilesAccess.goToLine(newEditorPart, i);
 		return null;
 	}
 }
