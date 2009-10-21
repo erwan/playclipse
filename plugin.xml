@@ -75,13 +75,13 @@
                id="org.playframework.playclipse.toolbars.sampleToolbar">
             <command
                   commandId="org.playframework.playclipse.commands.goToViewCommand"
-                  icon="icons/sample.gif"
+                  icon="icons/view.png"
                   tooltip="Go to View"
                   id="org.playframework.playclipse.toolbars.goToViewCommand">
             </command>
             <command
                   commandId="org.playframework.playclipse.commands.goToActionCommand"
-                  icon="icons/sample.gif"
+                  icon="icons/controller.png"
                   id="org.playframework.playclipse.toolbars.goToActionCommand"
                   tooltip="Go to Action">
             </command>
