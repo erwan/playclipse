@@ -1,0 +1,7 @@
+* org.playframework.playclipse is the Play! plugin for Eclipse, providing
+commands to navigate through Play! projects. It is released under the
+Apache Licence version 2. The source code is available at http://github.com/erwan/playclipse/
+
+* tk.eclipse.htmleditor is an HTML, Javascript and CSS editor from
+Project Amateras. It is released under the Apache Licence v2. More information
+and source code can be obtained at http://amateras.sourceforge.jp
