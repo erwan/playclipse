@@ -20,7 +20,6 @@ package org.playframework.playclipse;
 
 import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.texteditor.ITextEditor;
-import org.eclipse.ui.IEditorDescriptor;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.IWorkbench;
@@ -36,20 +35,15 @@ import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 
 public class FilesAccess {
-	public static IEditorPart openFile(String filename, IWorkbenchWindow window) {
+	public static IEditorPart openFile(String filename, IWorkbenchWindow window) throws CoreException {
 		IEditorPart result = null;
 
 		IFile file = getFile(filename);
 		IWorkbenchPage page = getCurrentPage();
 		IMarker marker;
-		try {
-			marker = file.createMarker(IMarker.TEXT);
-			result = IDE.openEditor(page, marker);
-			marker.delete();
-		} catch (CoreException e) {
-			// TODO: if the file doesn't exist, create it (or at least prompt the user to create it)
-			e.printStackTrace();
-		}
+		marker = file.createMarker(IMarker.TEXT);
+		result = IDE.openEditor(page, marker);
+		marker.delete();
 		return result;
 	}
 

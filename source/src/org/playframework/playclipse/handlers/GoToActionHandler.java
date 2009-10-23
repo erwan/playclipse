@@ -24,6 +24,8 @@ import java.util.regex.Pattern;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.ui.IEditorPart;
@@ -84,15 +86,16 @@ public class GoToActionHandler extends AbstractHandler {
 		}
 		String controller = action.split("\\.")[0];
 		String method = action.split("\\.")[1];
+		String path = "app/controllers/" + controller + ".java";
 
-		IEditorPart newEditorPart = FilesAccess.openFile("/app/controllers/" + controller + ".java", window);
-		Editor newEditor = new Editor((ITextEditor)newEditorPart);
-		int lineNo = -1;
-		int i = 0;
-		int length = newEditor.lineCount();
-		String line;
-		IDocument doc = newEditor.getDocument();
 		try {
+			IEditorPart newEditorPart = FilesAccess.openFile(path, window);
+			Editor newEditor = new Editor((ITextEditor)newEditorPart);
+			int lineNo = -1;
+			int i = 0;
+			int length = newEditor.lineCount();
+			String line;
+			IDocument doc = newEditor.getDocument();
 			while (i < length && lineNo < 0) {
 				line = doc.get(doc.getLineOffset(i), doc.getLineLength(i));
 				if (line.contains("public") &&
@@ -104,11 +107,16 @@ public class GoToActionHandler extends AbstractHandler {
 				}
 				i++;
 			}
+			FilesAccess.goToLine(newEditorPart, i);
+		} catch (CoreException e) {
+			MessageDialog.openInformation(
+					window.getShell(),
+					"Playclipse",
+					"The file " + path + " can't be found, create it first");
 		} catch (BadLocationException e) {
 			// Should never happen
 			e.printStackTrace();
 		}
-		FilesAccess.goToLine(newEditorPart, i);
 		return null;
 	}
 }

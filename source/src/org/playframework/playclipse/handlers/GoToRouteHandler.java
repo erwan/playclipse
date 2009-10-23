@@ -24,6 +24,7 @@ import java.util.regex.Pattern;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchWindow;
@@ -71,8 +72,16 @@ public class GoToRouteHandler extends AbstractHandler {
 			"Playclipse",
 			"Use this command in a controller, in an action method");
 		} else {
-			IEditorPart editorPart = FilesAccess.openFile("conf/routes", window);
-			FilesAccess.goToLineContaining(editorPart, action);
+			IEditorPart editorPart;
+			try {
+				editorPart = FilesAccess.openFile("conf/routes", window);
+				FilesAccess.goToLineContaining(editorPart, action);
+			} catch (CoreException e) {
+				MessageDialog.openInformation(
+						window.getShell(),
+						"Playclipse",
+						"The file conf/routes can't be found, create it first");
+			}
 		}
 		return null;
 	}

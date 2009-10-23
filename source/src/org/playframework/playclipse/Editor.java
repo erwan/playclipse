@@ -25,8 +25,8 @@ import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.handlers.HandlerUtil;
-import org.eclipse.ui.ide.ResourceUtil;
 import org.eclipse.ui.texteditor.ITextEditor;
 
 import tk.eclipse.plugin.htmleditor.editors.HTMLSourceEditor;
@@ -48,16 +48,19 @@ public final class Editor {
 	/**
 	 * Static Factory Method: Creates an Editor corresponding to the ITextEditor
 	 * the user is currently interacting with.
+	 *
 	 * @param event
 	 * @throws ExecutionException
 	 */
-	public static Editor getCurrent(ExecutionEvent event) throws ExecutionException {
+	public static Editor getCurrent(ExecutionEvent event)
+			throws ExecutionException {
 		IEditorPart editor = HandlerUtil.getActiveEditor(event);
 		if (editor instanceof ITextEditor) {
-			return new Editor((ITextEditor)editor);
+			return new Editor((ITextEditor) editor);
 		} else if (editor instanceof IPaletteTarget) {
-			HTMLSourceEditor sourceEditor = ((IPaletteTarget)editor).getPaletteTarget();
-			return new Editor((ITextEditor)sourceEditor);
+			HTMLSourceEditor sourceEditor = ((IPaletteTarget) editor)
+					.getPaletteTarget();
+			return new Editor((ITextEditor) sourceEditor);
 		} else {
 			// Unknown editor... TODO: handle error
 			return null;
@@ -100,13 +103,15 @@ public final class Editor {
 	}
 
 	private IPath getFilePath() {
-		return ResourceUtil.getFile(textEditor).getFullPath();
+		IFileEditorInput input = (IFileEditorInput) textEditor.getEditorInput();
+		return input.getFile().getFullPath();
 	}
 
 	public String getLine(int lineNo) {
 		IDocument doc = this.getDocument();
 		try {
-			return doc.get(doc.getLineOffset(lineNo), doc.getLineLength(lineNo));
+			return doc
+					.get(doc.getLineOffset(lineNo), doc.getLineLength(lineNo));
 		} catch (BadLocationException e) {
 			return null;
 		}
@@ -117,11 +122,13 @@ public final class Editor {
 	}
 
 	private ITextSelection getTextSelection() {
-		return ((ITextSelection) textEditor.getSelectionProvider().getSelection());
+		return ((ITextSelection) textEditor.getSelectionProvider()
+				.getSelection());
 	}
 
 	public IDocument getDocument() {
-		return textEditor.getDocumentProvider().getDocument(textEditor.getEditorInput());
+		return textEditor.getDocumentProvider().getDocument(
+				textEditor.getEditorInput());
 	}
 
 }

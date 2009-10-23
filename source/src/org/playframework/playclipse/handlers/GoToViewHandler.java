@@ -24,6 +24,7 @@ import org.playframework.playclipse.FilesAccess;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.handlers.HandlerUtil;
@@ -77,7 +78,15 @@ public class GoToViewHandler extends AbstractHandler {
 			"Playclipse",
 			"Use this command in a controller, on a render() line");
 		} else {
-			FilesAccess.openFile("app/views/" + viewName, window);
+			String path = "app/views/" + viewName;
+			try {
+				FilesAccess.openFile(path, window);
+			} catch (CoreException e) {
+				MessageDialog.openInformation(
+						window.getShell(),
+						"Playclipse",
+						"The file " + path + " can't be found, create it first");
+			}
 		}
 		return null;
 	}
