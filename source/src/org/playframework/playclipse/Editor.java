@@ -25,8 +25,8 @@ import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.ui.IEditorPart;
-import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.handlers.HandlerUtil;
+import org.eclipse.ui.ide.ResourceUtil;
 import org.eclipse.ui.texteditor.ITextEditor;
 
 import tk.eclipse.plugin.htmleditor.editors.HTMLSourceEditor;
@@ -58,12 +58,6 @@ public final class Editor {
 		} else if (editor instanceof IPaletteTarget) {
 			HTMLSourceEditor sourceEditor = ((IPaletteTarget)editor).getPaletteTarget();
 			return new Editor((ITextEditor)sourceEditor);
-/*			IWorkbenchWindow window = HandlerUtil.getActiveWorkbenchWindowChecked(event);
-			MessageDialog.openInformation(
-					window.getShell(),
-					"Playclipse",
-					editor.getClass().getCanonicalName());
-			return null;*/
 		} else {
 			// Unknown editor... TODO: handle error
 			return null;
@@ -106,8 +100,7 @@ public final class Editor {
 	}
 
 	private IPath getFilePath() {
-		IFileEditorInput input = (IFileEditorInput) textEditor.getEditorInput();
-		return input.getFile().getFullPath();
+		return ResourceUtil.getFile(textEditor).getFullPath();
 	}
 
 	public String getLine(int lineNo) {

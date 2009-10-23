@@ -20,6 +20,7 @@ package org.playframework.playclipse;
 
 import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.texteditor.ITextEditor;
+import org.eclipse.ui.IEditorDescriptor;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.IWorkbench;
@@ -43,7 +44,6 @@ public class FilesAccess {
 		IMarker marker;
 		try {
 			marker = file.createMarker(IMarker.TEXT);
-			marker.setAttribute(IDE.EDITOR_ID_ATTR, "org.eclipse.ui.DefaultTextEditor");
 			result = IDE.openEditor(page, marker);
 			marker.delete();
 		} catch (CoreException e) {
@@ -98,6 +98,7 @@ public class FilesAccess {
 			if (file != null)
 				return file;
 		}
+		// TODO: the file doesn't exist, maybe we should create it
 		return null;
 	}
 
