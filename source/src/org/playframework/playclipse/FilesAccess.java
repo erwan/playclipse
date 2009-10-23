@@ -89,10 +89,9 @@ public class FilesAccess {
 		IFile file = null;
 		for (IProject project: projects) {
 			file = project.getFile(filename);
-			if (file != null)
+			if (file.exists())
 				return file;
 		}
-		// TODO: the file doesn't exist, maybe we should create it
 		return null;
 	}
 

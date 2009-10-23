@@ -85,7 +85,8 @@ public class GoToViewHandler extends AbstractHandler {
 				MessageDialog.openInformation(
 						window.getShell(),
 						"Playclipse",
-						"The file " + path + " can't be found, create it first");
+						e.toString());
+//						"The file " + path + " can't be found, create it first");
 			}
 		}
 		return null;
