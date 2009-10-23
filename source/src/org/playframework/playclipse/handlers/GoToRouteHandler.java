@@ -66,22 +66,17 @@ public class GoToRouteHandler extends AbstractHandler {
 				}
 			}
 		}
-		if (action == null) {
-			MessageDialog.openInformation(
-			window.getShell(),
-			"Playclipse",
-			"Use this command in a controller, in an action method");
-		} else {
-			IEditorPart editorPart;
-			try {
-				editorPart = FilesAccess.openFile("conf/routes", window);
+		IEditorPart editorPart;
+		try {
+			editorPart = FilesAccess.openFile("conf/routes", window);
+			if (action != null) {
 				FilesAccess.goToLineContaining(editorPart, action);
-			} catch (CoreException e) {
-				MessageDialog.openInformation(
-						window.getShell(),
-						"Playclipse",
-						"The file conf/routes can't be found, create it first");
 			}
+		} catch (CoreException e) {
+			MessageDialog.openInformation(
+					window.getShell(),
+					"Playclipse",
+					"The file conf/routes can't be found, create it first");
 		}
 		return null;
 	}
