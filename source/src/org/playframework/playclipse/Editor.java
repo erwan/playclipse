@@ -20,6 +20,9 @@ package org.playframework.playclipse;
 
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
@@ -65,6 +68,19 @@ public final class Editor {
 			// Unknown editor... TODO: handle error
 			return null;
 		}
+	}
+
+	public IProject getProject() {
+		IFile curfile = ((IFileEditorInput)textEditor.getEditorInput()).getFile();
+		IContainer container = curfile.getParent();
+		while (container != null) {
+			if (container instanceof IProject) {
+				return (IProject)container;
+			}
+			container = container.getParent();
+		}
+		// Should not happen
+		return null;
 	}
 
 	public int getCurrentLineNo() {

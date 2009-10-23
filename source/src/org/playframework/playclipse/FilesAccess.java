@@ -18,6 +18,10 @@
 
 package org.playframework.playclipse;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.io.StringReader;
+
 import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.eclipse.ui.IEditorPart;
@@ -28,17 +32,13 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 
 public class FilesAccess {
-	public static IEditorPart openFile(String filename, IWorkbenchWindow window) throws CoreException {
+	public static IEditorPart openFile(IFile file, IWorkbenchWindow window) throws CoreException {
 		IEditorPart result = null;
-
-		IFile file = getFile(filename);
 		IWorkbenchPage page = getCurrentPage();
 		IMarker marker;
 		marker = file.createMarker(IMarker.TEXT);
@@ -80,19 +80,19 @@ public class FilesAccess {
 		FilesAccess.goToLine(editorPart, i);
 	}
 
-	private static IFile getFile(IEditorPart editorPart) {
-		return ((IFileEditorInput)editorPart.getEditorInput()).getFile();
+	public static void createNewFile(IFile file) {
+		String str = new String("yo");
+		InputStream source = new ByteArrayInputStream(str.getBytes());
+		try {
+			file.create(source, true, null);
+		} catch (CoreException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
-	private static IFile getFile(String filename) {
-		IProject[] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
-		IFile file = null;
-		for (IProject project: projects) {
-			file = project.getFile(filename);
-			if (file.exists())
-				return file;
-		}
-		return null;
+	private static IFile getFile(IEditorPart editorPart) {
+		return ((IFileEditorInput)editorPart.getEditorInput()).getFile();
 	}
 
 	private static IWorkbenchPage getCurrentPage() {

@@ -24,6 +24,8 @@ import java.util.regex.Pattern;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.ui.IEditorPart;
@@ -51,6 +53,7 @@ public class GoToRouteHandler extends AbstractHandler {
 		String line;
 		String action = null;
 		Editor editor = Editor.getCurrent(event);
+		IProject project = editor.getProject();
 		int lineNo = editor.getCurrentLineNo();
 		line = editor.getLine(lineNo);
 		// Let's go up until we get the action name
@@ -67,12 +70,18 @@ public class GoToRouteHandler extends AbstractHandler {
 			}
 		}
 		IEditorPart editorPart;
-		try {
-			editorPart = FilesAccess.openFile("conf/routes", window);
-			if (action != null) {
-				FilesAccess.goToLineContaining(editorPart, action);
+		IFile file = project.getFile("conf/routes");
+		if (file.exists()) {
+			try {
+				editorPart = FilesAccess.openFile(file, window);
+				if (action != null) {
+					FilesAccess.goToLineContaining(editorPart, action);
+				}
+			} catch (CoreException e) {
+				// Never happens
+				e.printStackTrace();
 			}
-		} catch (CoreException e) {
+		} else {
 			MessageDialog.openInformation(
 					window.getShell(),
 					"Playclipse",

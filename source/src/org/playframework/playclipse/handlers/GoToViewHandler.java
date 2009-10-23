@@ -24,6 +24,8 @@ import org.playframework.playclipse.FilesAccess;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.ui.IWorkbenchWindow;
@@ -48,6 +50,7 @@ public class GoToViewHandler extends AbstractHandler {
 		String line;
 		String viewName = null;
 		Editor editor = Editor.getCurrent(event);
+		IProject project = editor.getProject();
 		int lineNo = editor.getCurrentLineNo();
 		line = editor.getLine(lineNo);
 		if (line.contains("render")) {
@@ -79,14 +82,21 @@ public class GoToViewHandler extends AbstractHandler {
 			"Use this command in a controller, on a render() line");
 		} else {
 			String path = "app/views/" + viewName;
-			try {
-				FilesAccess.openFile(path, window);
-			} catch (CoreException e) {
-				MessageDialog.openInformation(
+			IFile file = project.getFile(path);
+			if (file.exists()) {
+				try {
+					FilesAccess.openFile(file, window);
+				} catch (CoreException e) {
+					// Should never happen (we checked for file.exist())
+					e.printStackTrace();
+				}
+			} else {
+				if (MessageDialog.openConfirm(
 						window.getShell(),
 						"Playclipse",
-						e.toString());
-//						"The file " + path + " can't be found, create it first");
+						"The file " + path + " can't be found, do you want to create it?")) {
+					FilesAccess.createNewFile(file);
+				}
 			}
 		}
 		return null;
