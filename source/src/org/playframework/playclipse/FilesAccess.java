@@ -80,10 +80,9 @@ public class FilesAccess {
 		FilesAccess.goToLine(editorPart, i);
 	}
 
-	public static void createAndOpen(IFile file, String editorID) {
+	public static void createAndOpen(IFile file, String content, String editorID) {
 		IWorkbenchPage page = getCurrentPage();
-		String str = new String("yo");
-		InputStream source = new ByteArrayInputStream(str.getBytes());
+		InputStream source = new ByteArrayInputStream(content.getBytes());
 		try {
 			file.create(source, false, null);
 			page.openEditor(new FileEditorInput(file), editorID, true, IWorkbenchPage.MATCH_ID);

@@ -95,7 +95,15 @@ public class GoToViewHandler extends AbstractHandler {
 						window.getShell(),
 						"Playclipse",
 						"The file " + path + " can't be found, do you want to create it?")) {
-					FilesAccess.createAndOpen(file, "tk.eclipse.plugin.htmleditor.editors.HTMLEditor");
+					String[] titleArr = viewName.split("/");
+					String title = titleArr[titleArr.length - 1].replace(".html", "");
+					StringBuilder content = new StringBuilder();
+					content.append("#{extends 'main.html' /}\n");
+					content.append("#{set title:'");
+					content.append(title);
+					content.append("' /}\n\n");
+					content.append("Here goes your content.");
+					FilesAccess.createAndOpen(file, content.toString(), "tk.eclipse.plugin.htmleditor.editors.HTMLEditor");
 				}
 			}
 		}

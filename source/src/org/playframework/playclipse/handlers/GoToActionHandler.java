@@ -124,7 +124,7 @@ public class GoToActionHandler extends AbstractHandler {
 					window.getShell(),
 					"Playclipse",
 					"The file " + path + " can't be found, do you want to create it?")) {
-				FilesAccess.createAndOpen(file, "org.eclipse.ui.DefaultTextEditor");
+				FilesAccess.createAndOpen(file, "yo", "org.eclipse.ui.DefaultTextEditor");
 			}
 		}
 		return null;
