@@ -95,7 +95,7 @@ public class GoToViewHandler extends AbstractHandler {
 						window.getShell(),
 						"Playclipse",
 						"The file " + path + " can't be found, do you want to create it?")) {
-					FilesAccess.createNewFile(file);
+					FilesAccess.createAndOpen(file, "tk.eclipse.plugin.htmleditor.editors.HTMLEditor");
 				}
 			}
 		}

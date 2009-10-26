@@ -47,9 +47,9 @@ public class Activator extends AbstractUIPlugin {
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 		plugin = this;
-		PlatformUI.getWorkbench().getEditorRegistry().setDefaultEditor("*.html", "tk.eclipse.plugin.htmleditor.HTMLEditor");
-		PlatformUI.getWorkbench().getEditorRegistry().setDefaultEditor("*.js", "tk.eclipse.plugin.htmleditor.HTMLEditor");
-		PlatformUI.getWorkbench().getEditorRegistry().setDefaultEditor("*.css", "tk.eclipse.plugin.htmleditor.HTMLEditor");
+		PlatformUI.getWorkbench().getEditorRegistry().setDefaultEditor("*.html", "tk.eclipse.plugin.htmleditor.editors.HTMLEditor");
+		PlatformUI.getWorkbench().getEditorRegistry().setDefaultEditor("*.js", "tk.eclipse.plugin.htmleditor.editors.HTMLEditor");
+		PlatformUI.getWorkbench().getEditorRegistry().setDefaultEditor("*.css", "tk.eclipse.plugin.htmleditor.editors.HTMLEditor");
 	}
 
 	/*

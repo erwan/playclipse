@@ -6,7 +6,8 @@ Bundle-Version: 0.1.0
 Bundle-Activator: org.playframework.playclipse.handlers.Activator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
- tk.eclipse.plugin.htmleditor
+ tk.eclipse.plugin.htmleditor,
+ org.eclipse.ui.ide
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: org.eclipse.core.filebuffers,
  org.eclipse.core.resources,

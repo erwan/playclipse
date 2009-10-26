@@ -20,7 +20,6 @@ package org.playframework.playclipse;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import java.io.StringReader;
 
 import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.texteditor.ITextEditor;
@@ -35,6 +34,7 @@ import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
+import org.eclipse.ui.part.FileEditorInput;
 
 public class FilesAccess {
 	public static IEditorPart openFile(IFile file, IWorkbenchWindow window) throws CoreException {
@@ -80,11 +80,13 @@ public class FilesAccess {
 		FilesAccess.goToLine(editorPart, i);
 	}
 
-	public static void createNewFile(IFile file) {
+	public static void createAndOpen(IFile file, String editorID) {
+		IWorkbenchPage page = getCurrentPage();
 		String str = new String("yo");
 		InputStream source = new ByteArrayInputStream(str.getBytes());
 		try {
-			file.create(source, true, null);
+			file.create(source, false, null);
+			page.openEditor(new FileEditorInput(file), editorID, true, IWorkbenchPage.MATCH_ID);
 		} catch (CoreException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
