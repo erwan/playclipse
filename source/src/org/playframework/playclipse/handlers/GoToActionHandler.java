@@ -56,10 +56,9 @@ public class GoToActionHandler extends AbstractHandler {
 		Pattern pt = Pattern.compile("@\\{[^\\(]+\\(\\)\\}");
 		Matcher m = pt.matcher(line);
 		if (m.find()) {
-			// There is a custom view
 			action = m.group().replace("@{", "").replace("()}", "");
 			if (action.contains(".")) {
-				controller = action.split(".")[0];
+				controller = action.split("\\.")[0];
 			}
 		} else {
 			action = editor.getTitle().replace(".html", "");
@@ -121,10 +120,12 @@ public class GoToActionHandler extends AbstractHandler {
 				e.printStackTrace();
 			}
 		} else {
-			MessageDialog.openInformation(
+			if (MessageDialog.openConfirm(
 					window.getShell(),
 					"Playclipse",
-					"The file " + path + " can't be found, create it first");
+					"The file " + path + " can't be found, do you want to create it?")) {
+				FilesAccess.createAndOpen(file, "org.eclipse.ui.DefaultTextEditor");
+			}
 		}
 		return null;
 	}
