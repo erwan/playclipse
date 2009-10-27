@@ -72,6 +72,20 @@ public class GoToActionHandler extends AbstractHandler {
 		return lineArr[lineArr.length - 1];
 	}
 
+	private String createTemplate(String controllerName) {
+		StringBuilder builder = new StringBuilder();
+		builder.append("package controllers;\n\n");
+		builder.append("import play.mvc.*;\n\n");
+		builder.append("public class ");
+		builder.append(controllerName);
+		builder.append(" extends Controller {\n\n");
+		builder.append("    public static void index() {\n");
+		builder.append("        render();\n");
+		builder.append("    }\n\n");
+		builder.append("}\n");
+		return builder.toString();
+	}
+
 	/**
 	 * the command has been executed, so let's extract the needed information
 	 * from the application context.
@@ -124,7 +138,8 @@ public class GoToActionHandler extends AbstractHandler {
 					window.getShell(),
 					"Playclipse",
 					"The file " + path + " can't be found, do you want to create it?")) {
-				FilesAccess.createAndOpen(file, "yo", FilesAccess.FileType.JAVA);
+				String content = createTemplate(controller);
+				FilesAccess.createAndOpen(file, content, FilesAccess.FileType.JAVA);
 			}
 		}
 		return null;
