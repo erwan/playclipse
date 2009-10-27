@@ -38,7 +38,14 @@ import org.eclipse.ui.texteditor.ITextEditor;
 
 public class FilesAccess {
 	public enum FileType {
-		JAVA, HTML, CSS, JS
+		JAVA("org.eclipse.jdt.ui.CompilationUnitEditor"),
+		HTML("tk.eclipse.plugin.htmleditor.editors.HTMLEditor"),
+		CSS("tk.eclipse.plugin.htmleditor.editors.HTMLEditor"),
+		JS("tk.eclipse.plugin.htmleditor.editors.HTMLEditor");
+		private String editorID;
+		FileType(String editorID) {
+			this.editorID = editorID;
+		}
 	}
 
 	public static IEditorPart openFile(IFile file, IWorkbenchWindow window) throws CoreException {
@@ -86,23 +93,14 @@ public class FilesAccess {
 
 	public static void createAndOpen(IFile file, String content, FileType type) {
 		IWorkbenchPage page = getCurrentPage();
-		String editorID;
-		switch (type) {
-			case JAVA:
-				editorID = "org.eclipse.jdt.ui.CompilationUnitEditor";
-				break;
-			case HTML:
-			case CSS:
-			case JS:
-				editorID = "tk.eclipse.plugin.htmleditor.editors.HTMLEditor";
-				break;
-			default:
-				editorID = "org.eclipse.ui.DefaultTextEditor";
-		}
 		InputStream source = new ByteArrayInputStream(content.getBytes());
 		try {
 			file.create(source, false, null);
-			page.openEditor(new FileEditorInput(file), editorID, true, IWorkbenchPage.MATCH_ID);
+			page.openEditor(
+					new FileEditorInput(file),
+					type.editorID,
+					true,
+					IWorkbenchPage.MATCH_INPUT);
 		} catch (CoreException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
