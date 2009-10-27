@@ -37,6 +37,10 @@ import org.eclipse.jface.text.IDocument;
 import org.eclipse.ui.part.FileEditorInput;
 
 public class FilesAccess {
+	public enum FileType {
+		JAVA, HTML, CSS, JS
+	}
+
 	public static IEditorPart openFile(IFile file, IWorkbenchWindow window) throws CoreException {
 		IEditorPart result = null;
 		IWorkbenchPage page = getCurrentPage();
@@ -80,8 +84,18 @@ public class FilesAccess {
 		FilesAccess.goToLine(editorPart, i);
 	}
 
-	public static void createAndOpen(IFile file, String content, String editorID) {
+	public static void createAndOpen(IFile file, String content, FileType type) {
 		IWorkbenchPage page = getCurrentPage();
+		String editorID;
+		switch (type) {
+			case HTML:
+			case CSS:
+			case JS:
+				editorID = "tk.eclipse.plugin.htmleditor.editors.HTMLEditor";
+				break;
+			default:
+				editorID = "org.eclipse.ui.DefaultTextEditor";
+		}
 		InputStream source = new ByteArrayInputStream(content.getBytes());
 		try {
 			file.create(source, false, null);

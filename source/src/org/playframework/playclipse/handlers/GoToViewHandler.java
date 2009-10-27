@@ -103,7 +103,7 @@ public class GoToViewHandler extends AbstractHandler {
 					content.append(title);
 					content.append("' /}\n\n");
 					content.append("Here goes your content.");
-					FilesAccess.createAndOpen(file, content.toString(), "tk.eclipse.plugin.htmleditor.editors.HTMLEditor");
+					FilesAccess.createAndOpen(file, content.toString(), FilesAccess.FileType.HTML);
 				}
 			}
 		}
