@@ -21,20 +21,20 @@ package org.playframework.playclipse;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
-import org.eclipse.ui.ide.IDE;
-import org.eclipse.ui.texteditor.ITextEditor;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IMarker;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jface.text.BadLocationException;
+import org.eclipse.jface.text.IDocument;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IMarker;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jface.text.BadLocationException;
-import org.eclipse.jface.text.IDocument;
+import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.part.FileEditorInput;
+import org.eclipse.ui.texteditor.ITextEditor;
 
 public class FilesAccess {
 	public enum FileType {
@@ -88,6 +88,9 @@ public class FilesAccess {
 		IWorkbenchPage page = getCurrentPage();
 		String editorID;
 		switch (type) {
+			case JAVA:
+				editorID = "org.eclipse.jdt.ui.CompilationUnitEditor";
+				break;
 			case HTML:
 			case CSS:
 			case JS:
