@@ -125,7 +125,7 @@
       <wizard
             category="org.playframework.playclipse"
             class="org.playframework.playclipse.wizards.ControllerWizard"
-            icon="icons/sample.gif"
+            icon="icons/controller.png"
             id="org.playframework.playclipse.wizards.ControllerWizard"
             name="Controller">
       </wizard>

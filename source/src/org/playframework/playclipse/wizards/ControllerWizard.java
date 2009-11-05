@@ -14,6 +14,7 @@ import org.eclipse.core.runtime.CoreException;
 import java.io.*;
 import org.eclipse.ui.*;
 import org.eclipse.ui.ide.IDE;
+import org.playframework.playclipse.CodeTemplates;
 
 /**
  * This is a sample new wizard. Its role is to create a new file 
@@ -130,15 +131,7 @@ public class ControllerWizard extends Wizard implements INewWizard {
 	 */
 
 	private InputStream openContentStream(String controllerName) {
-		StringBuilder contents = new StringBuilder();
-		contents.append("package controllers;\n\n");
-		contents.append("import play.mvc.*;\n\n");
-		contents.append("public class " + controllerName + " extends Controller {\n\n");
-		contents.append("    public static void index() {\n");
-		contents.append("        render();\n");
-		contents.append("    }\n\n");
-		contents.append("}\n");
-		return new ByteArrayInputStream(contents.toString().getBytes());
+		return new ByteArrayInputStream(CodeTemplates.controller(controllerName).getBytes());
 	}
 
 	private void throwCoreException(String message) throws CoreException {

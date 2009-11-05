@@ -34,6 +34,7 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.handlers.HandlerUtil;
 import org.eclipse.ui.texteditor.ITextEditor;
+import org.playframework.playclipse.CodeTemplates;
 import org.playframework.playclipse.Editor;
 import org.playframework.playclipse.FilesAccess;
 
@@ -70,20 +71,6 @@ public class GoToActionHandler extends AbstractHandler {
 		String line = editor.getLine(editor.getCurrentLineNo());
 		String[] lineArr = line.trim().split("\\s+");
 		return lineArr[lineArr.length - 1];
-	}
-
-	private String createTemplate(String controllerName) {
-		StringBuilder builder = new StringBuilder();
-		builder.append("package controllers;\n\n");
-		builder.append("import play.mvc.*;\n\n");
-		builder.append("public class ");
-		builder.append(controllerName);
-		builder.append(" extends Controller {\n\n");
-		builder.append("    public static void index() {\n");
-		builder.append("        render();\n");
-		builder.append("    }\n\n");
-		builder.append("}\n");
-		return builder.toString();
 	}
 
 	/**
@@ -138,7 +125,7 @@ public class GoToActionHandler extends AbstractHandler {
 					window.getShell(),
 					"Playclipse",
 					"The file " + path + " can't be found, do you want to create it?")) {
-				String content = createTemplate(controller);
+				String content = CodeTemplates.controller(controller);
 				FilesAccess.createAndOpen(file, content, FilesAccess.FileType.JAVA);
 			}
 		}
