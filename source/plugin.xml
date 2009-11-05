@@ -116,5 +116,19 @@
          </toolbar>
       </menuContribution>
    </extension>
+   <extension
+         point="org.eclipse.ui.newWizards">
+      <category
+            id="org.playframework.playclipse"
+            name="Play! Framework">
+      </category>
+      <wizard
+            category="org.playframework.playclipse"
+            class="org.playframework.playclipse.wizards.ControllerWizard"
+            icon="icons/sample.gif"
+            id="org.playframework.playclipse.wizards.ControllerWizard"
+            name="Controller">
+      </wizard>
+   </extension>
 
 </plugin>

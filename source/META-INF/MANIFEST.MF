@@ -2,12 +2,13 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Playclipse
 Bundle-SymbolicName: org.playframework.playclipse; singleton:=true
-Bundle-Version: 0.1.0
+Bundle-Version: 0.1.1
 Bundle-Activator: org.playframework.playclipse.handlers.Activator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  tk.eclipse.plugin.htmleditor,
- org.eclipse.ui.ide
+ org.eclipse.ui.ide,
+ org.eclipse.core.resources
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: org.eclipse.core.filebuffers,
  org.eclipse.core.resources,
