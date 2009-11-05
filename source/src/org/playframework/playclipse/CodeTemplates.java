@@ -16,4 +16,14 @@ public final class CodeTemplates {
 		return builder.toString();
 	}
 
+	public static String view(String title) {
+		StringBuilder builder = new StringBuilder();
+		builder.append("#{extends 'main.html' /}\n");
+		builder.append("#{set title:'");
+		builder.append(title);
+		builder.append("' /}\n\n");
+		builder.append("Here goes your content.");
+		return builder.toString();
+	}
+
 }

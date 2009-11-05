@@ -18,6 +18,7 @@
 
 package org.playframework.playclipse.handlers;
 
+import org.playframework.playclipse.CodeTemplates;
 import org.playframework.playclipse.Editor;
 import org.playframework.playclipse.FilesAccess;
 
@@ -97,13 +98,8 @@ public class GoToViewHandler extends AbstractHandler {
 						"The file " + path + " can't be found, do you want to create it?")) {
 					String[] titleArr = viewName.split("/");
 					String title = titleArr[titleArr.length - 1].replace(".html", "");
-					StringBuilder content = new StringBuilder();
-					content.append("#{extends 'main.html' /}\n");
-					content.append("#{set title:'");
-					content.append(title);
-					content.append("' /}\n\n");
-					content.append("Here goes your content.");
-					FilesAccess.createAndOpen(file, content.toString(), FilesAccess.FileType.HTML);
+					String content = CodeTemplates.view(title);
+					FilesAccess.createAndOpen(file, content, FilesAccess.FileType.HTML);
 				}
 			}
 		}
