@@ -107,7 +107,7 @@ public final class Editor {
 	 */
 	public boolean isView() {
 		IPath path = getFilePath();
-		return path.segment(path.segmentCount() - 3).equals("views");
+		return path.segment(path.segmentCount() - 2).equals("views");
 	}
 
 	/**

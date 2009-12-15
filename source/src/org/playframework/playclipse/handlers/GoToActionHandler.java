@@ -71,9 +71,12 @@ public class GoToActionHandler extends AbstractHandler {
 		Editor editor = Editor.getCurrent(event);
 		if (editor.isView()) {
 			action = fromView(editor);
+			System.out.println("View!!");
 		} else if (editor.isRoutes()) {
 			action = fromRoutes(editor);
+			System.out.println("Routes!!");
 		}
+		System.out.println("action = " + action);
 		String controller = action.split("\\.")[0];
 		String method = action.split("\\.")[1];
 		

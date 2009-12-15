@@ -141,7 +141,6 @@ public class HTMLEditor extends Editor {
 	@Override
 	public void openLink(IHyperlink link) {
 	    getNav().openLink(link);
-		// System.out.println("TODO; OPEN "+link);
 	}
 	
 	// Scanner

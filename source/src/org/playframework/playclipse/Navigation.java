@@ -25,6 +25,9 @@ public final class Navigation {
                        target.split("\\.")[1].replace("()", ""));
             return;
         }
+        if (link.getTypeLabel().equals("view")) {
+            System.out.println("Go to view: " + link.getHyperlinkText());
+        }
     }
 
     public void goToAction(String controller, String method) {
@@ -69,4 +72,28 @@ public final class Navigation {
 			}
 		}
     }
+
+    public void goToView(String viewName) {
+		String path = "app/views/" + viewName;
+		IFile file = this.editor.getProject().getFile(path);
+		if (file.exists()) {
+			try {
+				FilesAccess.openFile(file, window);
+			} catch (CoreException e) {
+				// Should never happen (we checked for file.exist())
+				e.printStackTrace();
+			}
+		} else {
+			if (MessageDialog.openConfirm(
+					window.getShell(),
+					"Playclipse",
+					"The file " + path + " can't be found, do you want to create it?")) {
+				String[] titleArr = viewName.split("/");
+				String title = titleArr[titleArr.length - 1].replace(".html", "");
+				String content = CodeTemplates.view(title);
+				FilesAccess.createAndOpen(file, content, FilesAccess.FileType.HTML);
+			}
+		}
+    }
+
 }

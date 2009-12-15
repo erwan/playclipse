@@ -18,16 +18,12 @@
 
 package org.playframework.playclipse.handlers;
 
-import org.playframework.playclipse.CodeTemplates;
 import org.playframework.playclipse.Editor;
-import org.playframework.playclipse.FilesAccess;
+import org.playframework.playclipse.Navigation;
 
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.handlers.HandlerUtil;
@@ -51,7 +47,6 @@ public class GoToViewHandler extends AbstractHandler {
 		String line;
 		String viewName = null;
 		Editor editor = Editor.getCurrent(event);
-		IProject project = editor.getProject();
 		int lineNo = editor.getCurrentLineNo();
 		line = editor.getLine(lineNo);
 		if (line.contains("render")) {
@@ -82,26 +77,7 @@ public class GoToViewHandler extends AbstractHandler {
 			"Playclipse",
 			"Use this command in a controller, on a render() line");
 		} else {
-			String path = "app/views/" + viewName;
-			IFile file = project.getFile(path);
-			if (file.exists()) {
-				try {
-					FilesAccess.openFile(file, window);
-				} catch (CoreException e) {
-					// Should never happen (we checked for file.exist())
-					e.printStackTrace();
-				}
-			} else {
-				if (MessageDialog.openConfirm(
-						window.getShell(),
-						"Playclipse",
-						"The file " + path + " can't be found, do you want to create it?")) {
-					String[] titleArr = viewName.split("/");
-					String title = titleArr[titleArr.length - 1].replace(".html", "");
-					String content = CodeTemplates.view(title);
-					FilesAccess.createAndOpen(file, content, FilesAccess.FileType.HTML);
-				}
-			}
+		    (new Navigation(editor)).goToView(viewName);
 		}
 		return null;
 	}
