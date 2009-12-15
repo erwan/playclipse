@@ -19,13 +19,15 @@ import org.eclipse.jface.text.templates.Template;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.editors.text.TextEditor;
+import org.playframework.playclipse.Navigation;
 
 
 public abstract class Editor extends TextEditor {
 	
 	ColorManager colorManager = new ColorManager();
 	DocumentProvider documentProvider;
-
+	Navigation nav;
+	
 	public Editor() {
 		super();
 		setSourceViewerConfiguration(new Configuration(this));
@@ -40,6 +42,14 @@ public abstract class Editor extends TextEditor {
 		colorManager.dispose();
 		super.dispose();
 	}
+
+	protected Navigation getNav() {
+	    if (nav == null) {
+	        nav = new Navigation(new org.playframework.playclipse.Editor(this));
+	    }
+        return nav;
+	}
+
 	
 	// Templates
 	

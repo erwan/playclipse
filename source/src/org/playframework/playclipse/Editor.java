@@ -29,6 +29,7 @@ import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IFileEditorInput;
+import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.handlers.HandlerUtil;
 import org.eclipse.ui.texteditor.ITextEditor;
 
@@ -74,6 +75,13 @@ public final class Editor {
 		}
 		// Should not happen
 		return null;
+	}
+
+	public IWorkbenchWindow getWindow() {
+	    System.out.println("Ed: " + this.textEditor);
+	    System.out.println("Si: " + this.textEditor.getSite());
+	    System.out.println("Wi: " + this.textEditor.getSite().getWorkbenchWindow());
+	    return this.textEditor.getSite().getWorkbenchWindow();
 	}
 
 	public int getCurrentLineNo() {

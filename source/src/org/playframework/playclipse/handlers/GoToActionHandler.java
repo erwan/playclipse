@@ -24,19 +24,8 @@ import java.util.regex.Pattern;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.text.BadLocationException;
-import org.eclipse.jface.text.IDocument;
-import org.eclipse.ui.IEditorPart;
-import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.handlers.HandlerUtil;
-import org.eclipse.ui.texteditor.ITextEditor;
-import org.playframework.playclipse.CodeTemplates;
 import org.playframework.playclipse.Editor;
-import org.playframework.playclipse.FilesAccess;
+import org.playframework.playclipse.Navigation;
 
 /**
  * Our sample handler extends AbstractHandler, an IHandler base class.
@@ -78,10 +67,8 @@ public class GoToActionHandler extends AbstractHandler {
 	 * from the application context.
 	 */
 	public Object execute(ExecutionEvent event) throws ExecutionException {
-		IWorkbenchWindow window = HandlerUtil.getActiveWorkbenchWindowChecked(event);
 		String action = null;
 		Editor editor = Editor.getCurrent(event);
-		IProject project = editor.getProject();
 		if (editor.isView()) {
 			action = fromView(editor);
 		} else if (editor.isRoutes()) {
@@ -89,46 +76,8 @@ public class GoToActionHandler extends AbstractHandler {
 		}
 		String controller = action.split("\\.")[0];
 		String method = action.split("\\.")[1];
-		String path = "app/controllers/" + controller + ".java";
-		IFile file = project.getFile(path);
-		if (file.exists()) {
-			IEditorPart newEditorPart;
-			try {
-				newEditorPart = FilesAccess.openFile(file, window);
-				Editor newEditor = new Editor((ITextEditor)newEditorPart);
-				int lineNo = -1;
-				int i = 0;
-				int length = newEditor.lineCount();
-				String line;
-				IDocument doc = newEditor.getDocument();
-				while (i < length && lineNo < 0) {
-					line = doc.get(doc.getLineOffset(i), doc.getLineLength(i));
-					if (line.contains("public") &&
-						line.contains("static") &&
-						line.contains("void") &&
-						line.contains(method))
-					{
-						lineNo = i;
-					}
-					i++;
-				}
-				FilesAccess.goToLine(newEditorPart, i);
-			} catch (CoreException e) {
-				// Should never happen
-				e.printStackTrace();
-			} catch (BadLocationException e) {
-				// Should never happen
-				e.printStackTrace();
-			}
-		} else {
-			if (MessageDialog.openConfirm(
-					window.getShell(),
-					"Playclipse",
-					"The file " + path + " can't be found, do you want to create it?")) {
-				String content = CodeTemplates.controller(controller);
-				FilesAccess.createAndOpen(file, content, FilesAccess.FileType.JAVA);
-			}
-		}
+		
+		(new Navigation(editor)).goToAction(controller, method);
 		return null;
 	}
 }
