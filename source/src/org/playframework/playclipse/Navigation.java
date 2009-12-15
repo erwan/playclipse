@@ -21,12 +21,30 @@ public final class Navigation {
     public void openLink(IHyperlink link) {
         if (link.getTypeLabel().equals("action")) {
             String target = link.getHyperlinkText();
-            goToAction(target.split("\\.")[0],
-                       target.split("\\.")[1].replace("()", ""));
+            if (target.startsWith("'") && target.endsWith("'")) {
+                String path = target.substring(1, target.length() - 1);
+                openOrCreate(path);
+            } else {
+                goToAction(target.split("\\.")[0],
+                           target.split("\\.")[1].replace("()", ""));
+            }
             return;
         }
-        if (link.getTypeLabel().equals("view")) {
-            System.out.println("Go to view: " + link.getHyperlinkText());
+        if (link.getTypeLabel().equals("tag")) {
+            // TODO
+            return;
+        }
+        if (link.getTypeLabel().equals("extends")) {
+            // TODO
+            return;
+        }
+        if (link.getTypeLabel().equals("include")) {
+            this.goToView(link.getHyperlinkText());
+            return;
+        }
+        if (link.getTypeLabel().equals("action_in_tag")) {
+            // TODO
+            return;
         }
     }
 
@@ -74,8 +92,11 @@ public final class Navigation {
     }
 
     public void goToView(String viewName) {
-		String path = "app/views/" + viewName;
-		IFile file = this.editor.getProject().getFile(path);
+		openOrCreate("app/views/" + viewName);
+   }
+
+    public void openOrCreate(String path) {
+ 		IFile file = this.editor.getProject().getFile(path);
 		if (file.exists()) {
 			try {
 				FilesAccess.openFile(file, window);
@@ -88,12 +109,11 @@ public final class Navigation {
 					window.getShell(),
 					"Playclipse",
 					"The file " + path + " can't be found, do you want to create it?")) {
-				String[] titleArr = viewName.split("/");
+				String[] titleArr = path.split("/");
 				String title = titleArr[titleArr.length - 1].replace(".html", "");
 				String content = CodeTemplates.view(title);
 				FilesAccess.createAndOpen(file, content, FilesAccess.FileType.HTML);
 			}
 		}
     }
-
 }
