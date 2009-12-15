@@ -130,5 +130,20 @@
             name="Controller">
       </wizard>
    </extension>
+   <extension
+         point="org.eclipse.ui.editors">
+      <editor
+            class="org.playframework.playclipse.editors.Editor"
+            default="false"
+            extensions="html"
+            icon="icons/page_white_code_red.png"
+            id="HTMLEditor"
+            name="HTML (Play)">
+      </editor>
+   </extension>
+
+	<extension point="org.eclipse.ui.editors.templates">
+       <include file="templates/templates.xml"/>
+	</extension>
 
 </plugin>
