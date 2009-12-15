@@ -32,9 +32,6 @@ import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.handlers.HandlerUtil;
 import org.eclipse.ui.texteditor.ITextEditor;
 
-import tk.eclipse.plugin.htmleditor.editors.HTMLSourceEditor;
-import tk.eclipse.plugin.htmleditor.views.IPaletteTarget;
-
 /**
  * A helper class to handle the Eclipse-specific heavy lifting to access and
  * manipulate editors and their associated documents.
@@ -60,10 +57,6 @@ public final class Editor {
 		IEditorPart editor = HandlerUtil.getActiveEditor(event);
 		if (editor instanceof ITextEditor) {
 			return new Editor((ITextEditor) editor);
-		} else if (editor instanceof IPaletteTarget) {
-			HTMLSourceEditor sourceEditor = ((IPaletteTarget) editor)
-					.getPaletteTarget();
-			return new Editor((ITextEditor) sourceEditor);
 		} else {
 			// Unknown editor... TODO: handle error
 			return null;
