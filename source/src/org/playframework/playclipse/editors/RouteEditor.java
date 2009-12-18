@@ -28,7 +28,7 @@ public class RouteEditor extends Editor {
         return null;
     }
 
-	Pattern action = Pattern.compile("(\\w+\\.\\w+)\\s*$");
+	Pattern action = Pattern.compile("\\s(\\w+\\.\\w+)");
 
 	@Override
     public IHyperlink detectHyperlink(ITextViewer textViewer, IRegion region) {
