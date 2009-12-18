@@ -94,8 +94,32 @@ public abstract class Editor extends TextEditor {
 	public abstract IHyperlink detectHyperlink(ITextViewer textViewer, IRegion region);
 
 	public void openLink(IHyperlink link) {
-	    System.out.println(link);
-	    getNav().openLink(link);
+	    if (link.getTypeLabel().equals("action")) {
+            String target = link.getHyperlinkText();
+            if (target.startsWith("'") && target.endsWith("'")) {
+                String path = target.substring(1, target.length() - 1);
+                getNav().openOrCreate(path);
+            } else {
+                getNav().goToAction(target.split("\\.")[0], target.split("\\.")[1].replace("()", ""));
+            }
+            return;
+        }
+        if (link.getTypeLabel().equals("tag")) {
+            // TODO
+            return;
+        }
+        if (link.getTypeLabel().equals("extends")) {
+            // TODO
+            return;
+        }
+        if (link.getTypeLabel().equals("include")) {
+            getNav().goToView(link.getHyperlinkText());
+            return;
+        }
+        if (link.getTypeLabel().equals("action_in_tag")) {
+            // TODO
+            return;
+        }
 	}
 	
 	protected BestMatch findBestMatch(final int position, Pattern... patterns) {

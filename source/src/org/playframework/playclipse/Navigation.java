@@ -18,36 +18,6 @@ public final class Navigation {
 		this.window = this.editor.getWindow();
     }
 
-    public void openLink(IHyperlink link) {
-        if (link.getTypeLabel().equals("action")) {
-            String target = link.getHyperlinkText();
-            if (target.startsWith("'") && target.endsWith("'")) {
-                String path = target.substring(1, target.length() - 1);
-                openOrCreate(path);
-            } else {
-                goToAction(target.split("\\.")[0],
-                           target.split("\\.")[1].replace("()", ""));
-            }
-            return;
-        }
-        if (link.getTypeLabel().equals("tag")) {
-            // TODO
-            return;
-        }
-        if (link.getTypeLabel().equals("extends")) {
-            // TODO
-            return;
-        }
-        if (link.getTypeLabel().equals("include")) {
-            this.goToView(link.getHyperlinkText());
-            return;
-        }
-        if (link.getTypeLabel().equals("action_in_tag")) {
-            // TODO
-            return;
-        }
-    }
-
     public void goToAction(String controller, String method) {
  		String path = "app/controllers/" + controller + ".java";
 		IFile file = this.editor.getProject().getFile(path);

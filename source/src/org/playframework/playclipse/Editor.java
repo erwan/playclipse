@@ -36,6 +36,10 @@ import org.eclipse.ui.texteditor.ITextEditor;
 /**
  * A helper class to handle the Eclipse-specific heavy lifting to access and
  * manipulate editors and their associated documents.
+ * 
+ * While it looks like some of these methods could go to
+ * org.playframework.playclipse.editors.Editor, we need them outside for the handlers
+ * (toolbar icons and shortcuts)
  *
  */
 public final class Editor {

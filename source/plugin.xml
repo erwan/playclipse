@@ -143,7 +143,7 @@
       <editor
             class="org.playframework.playclipse.editors.RouteEditor"
             default="false"
-            extensions="routes"
+            filenames="routes"
             icon="icons/page_white_code_red.png"
             id="RouteEditor"
             name="Play routes">
