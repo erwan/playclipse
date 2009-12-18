@@ -117,7 +117,7 @@ public class HTMLEditor extends Editor {
 	Pattern tag = Pattern.compile("#\\{([-a-zA-Z0-9.]+) ");
 	
 	public IHyperlink detectHyperlink(ITextViewer textViewer, IRegion region) {
-		BestMatch match = findBestMatch(region.getOffset(), include, extend_s, action, action_in_tag, tag);		
+		BestMatch match = findBestMatch(region.getOffset(), include, extend_s, action, action_in_tag, tag);
 		if(match != null) {
 			if(match.is(action)) {
 				return match.hyperlink("action", 0, 0);
@@ -136,11 +136,6 @@ public class HTMLEditor extends Editor {
 			}	
 		}
 		return null;
-	}
-	
-	@Override
-	public void openLink(IHyperlink link) {
-	    getNav().openLink(link);
 	}
 	
 	// Scanner

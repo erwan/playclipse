@@ -1,5 +1,7 @@
 package org.playframework.playclipse.editors;
 
+import java.util.regex.Pattern;
+
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.TextAttribute;
@@ -26,10 +28,17 @@ public class RouteEditor extends Editor {
         return null;
     }
 
-    @Override
+	Pattern action = Pattern.compile("(\\w+\\.\\w+)\\s*$");
+
+	@Override
     public IHyperlink detectHyperlink(ITextViewer textViewer, IRegion region) {
-        // TODO Auto-generated method stub
-        return null;
+		BestMatch match = findBestMatch(region.getOffset(), action);
+		if(match != null) {
+			if(match.is(action)) {
+				return match.hyperlink("action", 0, 0);
+			}
+		}
+		return null;
     }
 
     @Override
@@ -47,12 +56,6 @@ public class RouteEditor extends Editor {
 			return style(new RGB(200, 0, 0));
 		}
 		return style(new RGB(0, 0, 0));
-    }
-
-    @Override
-    public void openLink(IHyperlink link) {
-        // TODO Auto-generated method stub
-        
     }
 
     @Override

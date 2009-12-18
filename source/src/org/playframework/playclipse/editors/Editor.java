@@ -92,7 +92,11 @@ public abstract class Editor extends TextEditor {
 	// Hyperlinks
 	
 	public abstract IHyperlink detectHyperlink(ITextViewer textViewer, IRegion region);
-	public abstract void openLink(IHyperlink link);
+
+	public void openLink(IHyperlink link) {
+	    System.out.println(link);
+	    getNav().openLink(link);
+	}
 	
 	protected BestMatch findBestMatch(final int position, Pattern... patterns) {
 		Object[] line = getLine(position);
