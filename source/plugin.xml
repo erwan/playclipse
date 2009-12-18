@@ -140,6 +140,14 @@
             id="HTMLEditor"
             name="HTML (Play)">
       </editor>
+      <editor
+            class="org.playframework.playclipse.editors.RouteEditor"
+            default="false"
+            extensions="routes"
+            icon="icons/page_white_code_red.png"
+            id="RouteEditor"
+            name="Play routes">
+      </editor>
    </extension>
 
 	<extension point="org.eclipse.ui.editors.templates">

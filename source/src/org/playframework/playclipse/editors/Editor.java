@@ -240,7 +240,11 @@ public abstract class Editor extends TextEditor {
     		return false;
     	}
     }
-    
+
+    protected boolean nextIsSpace() {
+        return isNext(" ") || isNext("\t");
+    }
+
     TypedRegion nextToken() {
         for (;;) {
 
