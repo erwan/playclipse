@@ -70,7 +70,7 @@ public class FilesAccess {
 	}
 
 	public static void goToLineContaining(IEditorPart editorPart, String text) {
-		Editor editor = new Editor((ITextEditor)editorPart);
+		EditorHelper editor = new EditorHelper((ITextEditor)editorPart);
 		String line;
 		int lineNo = -1;
 		int i = 0;

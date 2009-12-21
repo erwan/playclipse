@@ -45,7 +45,7 @@ public abstract class Editor extends TextEditor {
 
 	protected Navigation getNav() {
 	    if (nav == null) {
-	        nav = new Navigation(new org.playframework.playclipse.Editor(this));
+	        nav = new Navigation(new org.playframework.playclipse.EditorHelper(this));
 	    }
         return nav;
 	}
@@ -109,7 +109,8 @@ public abstract class Editor extends TextEditor {
             return;
         }
         if (link.getTypeLabel().equals("extends")) {
-            // TODO
+            System.out.println(link);
+            getNav().goToView(link.getHyperlinkText());
             return;
         }
         if (link.getTypeLabel().equals("include")) {

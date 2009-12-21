@@ -18,7 +18,7 @@
 
 package org.playframework.playclipse.handlers;
 
-import org.playframework.playclipse.Editor;
+import org.playframework.playclipse.EditorHelper;
 import org.playframework.playclipse.Navigation;
 
 import org.eclipse.core.commands.AbstractHandler;
@@ -46,7 +46,7 @@ public class GoToViewHandler extends AbstractHandler {
 
 		String line;
 		String viewName = null;
-		Editor editor = Editor.getCurrent(event);
+		EditorHelper editor = EditorHelper.getCurrent(event);
 		int lineNo = editor.getCurrentLineNo();
 		line = editor.getLine(lineNo);
 		if (line.contains("render")) {

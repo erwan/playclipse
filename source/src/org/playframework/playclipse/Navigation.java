@@ -4,16 +4,15 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.text.IDocument;
-import org.eclipse.jface.text.hyperlink.IHyperlink;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.texteditor.ITextEditor;
 
 public final class Navigation {
-    private Editor editor;
+    private EditorHelper editor;
     private IWorkbenchWindow window;
 
-    public Navigation(Editor editor) {
+    public Navigation(EditorHelper editor) {
         this.editor = editor;
 		this.window = this.editor.getWindow();
     }
@@ -25,7 +24,7 @@ public final class Navigation {
 			IEditorPart newEditorPart;
 			try {
 				newEditorPart = FilesAccess.openFile(file, this.window);
-				Editor newEditor = new Editor((ITextEditor)newEditorPart);
+				EditorHelper newEditor = new EditorHelper((ITextEditor)newEditorPart);
 				int lineNo = -1;
 				int i = 0;
 				int length = newEditor.lineCount();
@@ -66,7 +65,7 @@ public final class Navigation {
    }
 
     public void openOrCreate(String path) {
- 		IFile file = this.editor.getProject().getFile(path);
+		IFile file = this.editor.getProject().getFile(path);
 		if (file.exists()) {
 			try {
 				FilesAccess.openFile(file, window);

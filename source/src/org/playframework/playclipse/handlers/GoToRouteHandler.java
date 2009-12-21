@@ -31,7 +31,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.handlers.HandlerUtil;
-import org.playframework.playclipse.Editor;
+import org.playframework.playclipse.EditorHelper;
 import org.playframework.playclipse.FilesAccess;
 
 /**
@@ -52,7 +52,7 @@ public class GoToRouteHandler extends AbstractHandler {
 
 		String line;
 		String action = null;
-		Editor editor = Editor.getCurrent(event);
+		EditorHelper editor = EditorHelper.getCurrent(event);
 		IProject project = editor.getProject();
 		int lineNo = editor.getCurrentLineNo();
 		line = editor.getLine(lineNo);

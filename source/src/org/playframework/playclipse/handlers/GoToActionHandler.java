@@ -24,7 +24,7 @@ import java.util.regex.Pattern;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
-import org.playframework.playclipse.Editor;
+import org.playframework.playclipse.EditorHelper;
 import org.playframework.playclipse.Navigation;
 
 /**
@@ -39,7 +39,7 @@ public class GoToActionHandler extends AbstractHandler {
 	public GoToActionHandler() {
 	}
 
-	private String fromView(Editor editor) {
+	private String fromView(EditorHelper editor) {
 		String line = editor.getLine(editor.getCurrentLineNo());
 		String controller = editor.enclosingDirectory();
 		String action;
@@ -56,7 +56,7 @@ public class GoToActionHandler extends AbstractHandler {
 		return controller + "." + action;
 	}
 
-	private String fromRoutes(Editor editor) {
+	private String fromRoutes(EditorHelper editor) {
 		String line = editor.getLine(editor.getCurrentLineNo());
 		String[] lineArr = line.trim().split("\\s+");
 		return lineArr[lineArr.length - 1];
@@ -68,7 +68,7 @@ public class GoToActionHandler extends AbstractHandler {
 	 */
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		String action = null;
-		Editor editor = Editor.getCurrent(event);
+		EditorHelper editor = EditorHelper.getCurrent(event);
 		if (editor.isView()) {
 			action = fromView(editor);
 			System.out.println("View!!");
