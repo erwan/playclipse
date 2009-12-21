@@ -76,26 +76,6 @@ public abstract class Editor extends TextEditor {
 		return null;
 	}
 
-	/**
-	 * Get the current module, meaning the first parent in the hierarchy whose name is "app"
-	 * @return the IContainer corresponding to the module
-	 */
-	protected IContainer getModule() {
-		IFile curfile = ((IFileEditorInput)getEditorInput()).getFile();
-		IContainer container = curfile.getParent();
-		while (container != null) {
-		    if (container.getName().equals("app")) {
-		        return container;
-		    }
-		    if (container instanceof IProject) {
-				return container;
-			}
-			container = container.getParent();
-		}
-		// Should not happen
-		return null;
-	}
-
 	// Templates
 	
 	private List<Template> templates = new ArrayList<Template>();
@@ -140,13 +120,27 @@ public abstract class Editor extends TextEditor {
 
 	public void openLink(IHyperlink link) {
 	    if (link.getTypeLabel().equals("action")) {
-            String target = link.getHyperlinkText();
-            if (target.startsWith("'") && target.endsWith("'")) {
-                String path = target.substring(1, target.length() - 1);
-                getNav().openOrCreate(path);
+	        String linkText = link.getHyperlinkText();
+	        if (linkText.startsWith("'") && linkText.endsWith("'")) {
+	            // Static file, e.g. @{'/public/images/favicon.png'}
+	            String path = linkText.substring(1, linkText.length() - 1);
+	            getNav().openOrCreate(path);
+	            return;
+	        }
+	        String controller, action;
+	        String[] target = linkText.split("\\.");
+            if (target.length >= 2) {
+                // Absolute reference, e.g. Application.index
+                controller = target[0];
+                action = target[1].replace("()", "");
             } else {
-                getNav().goToAction(target.split("\\.")[0], target.split("\\.")[1].replace("()", ""));
+                // Relative reference, e.g. just "index"
+                action = target[0].replace("()", "");
+                IFile curfile = ((IFileEditorInput)getEditorInput()).getFile();
+                IContainer container = curfile.getParent();
+                controller = container.getName();
             }
+            getNav().goToAction(controller, action);
             return;
         }
         if (link.getTypeLabel().equals("tag")) {
