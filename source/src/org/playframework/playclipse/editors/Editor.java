@@ -7,6 +7,10 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.ITextViewerExtension;
@@ -18,7 +22,9 @@ import org.eclipse.jface.text.source.SourceViewer;
 import org.eclipse.jface.text.templates.Template;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.editors.text.TextEditor;
+import org.playframework.playclipse.EditorHelper;
 import org.playframework.playclipse.Navigation;
 
 
@@ -33,7 +39,7 @@ public abstract class Editor extends TextEditor {
 		setSourceViewerConfiguration(new Configuration(this));
 		documentProvider = new DocumentProvider(this);
 		setDocumentProvider(documentProvider);
-		for(String type : getTypes()) {
+		for (String type : getTypes()) {
 			type.intern();
 		}
 	}
@@ -43,14 +49,53 @@ public abstract class Editor extends TextEditor {
 		super.dispose();
 	}
 
+	// Helpers
+
 	protected Navigation getNav() {
 	    if (nav == null) {
-	        nav = new Navigation(new org.playframework.playclipse.EditorHelper(this));
+	        nav = new Navigation(new EditorHelper(this));
 	    }
         return nav;
 	}
 
-	
+	protected IPath getPath() {
+		IFileEditorInput input = (IFileEditorInput)getEditorInput();
+		return input.getFile().getFullPath();
+	}
+
+	protected IProject getProject() {
+		IFile curfile = ((IFileEditorInput)getEditorInput()).getFile();
+		IContainer container = curfile.getParent();
+		while (container != null) {
+			if (container instanceof IProject) {
+				return (IProject)container;
+			}
+			container = container.getParent();
+		}
+		// Should not happen
+		return null;
+	}
+
+	/**
+	 * Get the current module, meaning the first parent in the hierarchy whose name is "app"
+	 * @return the IContainer corresponding to the module
+	 */
+	protected IContainer getModule() {
+		IFile curfile = ((IFileEditorInput)getEditorInput()).getFile();
+		IContainer container = curfile.getParent();
+		while (container != null) {
+		    if (container.getName().equals("app")) {
+		        return container;
+		    }
+		    if (container instanceof IProject) {
+				return container;
+			}
+			container = container.getParent();
+		}
+		// Should not happen
+		return null;
+	}
+
 	// Templates
 	
 	private List<Template> templates = new ArrayList<Template>();
@@ -105,19 +150,15 @@ public abstract class Editor extends TextEditor {
             return;
         }
         if (link.getTypeLabel().equals("tag")) {
-            // TODO
+            getNav().goToView("tags/" + link.getHyperlinkText().replace('.', '/') + ".html");
             return;
         }
-        if (link.getTypeLabel().equals("extends")) {
-            System.out.println(link);
-            getNav().goToView(link.getHyperlinkText());
-            return;
-        }
-        if (link.getTypeLabel().equals("include")) {
-            getNav().goToView(link.getHyperlinkText());
-            return;
+        if (link.getTypeLabel().equals("extends") || link.getTypeLabel().equals("include")) {
+            String path = link.getHyperlinkText();
+            getNav().goToView(path);
         }
         if (link.getTypeLabel().equals("action_in_tag")) {
+            System.out.println(link);
             // TODO
             return;
         }
