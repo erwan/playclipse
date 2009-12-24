@@ -122,13 +122,6 @@
             id="org.playframework.playclipse"
             name="Play! Framework">
       </category>
-      <wizard
-            category="org.playframework.playclipse"
-            class="org.playframework.playclipse.wizards.ControllerWizard"
-            icon="icons/controller.png"
-            id="org.playframework.playclipse.wizards.ControllerWizard"
-            name="Controller">
-      </wizard>
    </extension>
    <extension
          point="org.eclipse.ui.editors">
@@ -144,9 +137,17 @@
             class="org.playframework.playclipse.editors.RouteEditor"
             default="false"
             filenames="routes"
-            icon="icons/page_white_code_red.png"
+            icon="icons/page_white_go.png"
             id="RouteEditor"
             name="Play routes">
+      </editor>
+      <editor
+            class="org.playframework.playclipse.editors.ConfEditor"
+            default="false"
+            filenames="application.conf"
+            icon="icons/page_white_gear.png"
+            id="ConfEditor"
+            name="Play Configuration File">
       </editor>
    </extension>
 
