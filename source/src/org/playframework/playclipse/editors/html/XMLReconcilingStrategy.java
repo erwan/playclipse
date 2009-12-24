@@ -14,364 +14,338 @@ import org.eclipse.swt.widgets.Display;
 
 public class XMLReconcilingStrategy implements IReconcilingStrategy, IReconcilingStrategyExtension {
 
-       private HTMLEditor editor;
-       private IDocument fDocument;
+	private HTMLEditor editor;
+	private IDocument fDocument;
 
-       /** holds the calculated positions */
-       protected final ArrayList<Position> fPositions = new ArrayList<Position>();
+	/** holds the calculated positions */
+	protected final ArrayList<Position> fPositions = new ArrayList<Position>();
 
-       /** The offset of the next character to be read */
-       protected int fOffset;
+	/** The offset of the next character to be read */
+	protected int fOffset;
 
-       /** The end offset of the range to be scanned */
-       protected int fRangeEnd;
+	/** The end offset of the range to be scanned */
+	protected int fRangeEnd;
 
-       /**
-        * @return Returns the editor.
-        */
-       public HTMLEditor getEditor() {
-               return editor;
-       }
+	/**
+	 * @return Returns the editor.
+	 */
+	public HTMLEditor getEditor() {
+		return editor;
+	}
 
-       public void setEditor(HTMLEditor editor) {
-               this.editor = editor;
-       }
+	public void setEditor(HTMLEditor editor) {
+		this.editor = editor;
+	}
 
-       /*
-        * (non-Javadoc)
-        *
-        * @see org.eclipse.jface.text.reconciler.IReconcilingStrategy#setDocument(org.eclipse.jface.text.IDocument)
-        */
-       public void setDocument(IDocument document) {
-               this.fDocument = document;
+	@Override
+	public void setDocument(IDocument document) {
+		this.fDocument = document;
+	}
 
-       }
+	@Override
+	public void reconcile(DirtyRegion dirtyRegion, IRegion subRegion) {
+		initialReconcile();
+	}
 
-       /*
-        * (non-Javadoc)
-        *
-        * @see org.eclipse.jface.text.reconciler.IReconcilingStrategy#reconcile(org.eclipse.jface.text.reconciler.DirtyRegion,
-        *      org.eclipse.jface.text.IRegion)
-        */
-       public void reconcile(DirtyRegion dirtyRegion, IRegion subRegion) {
-               initialReconcile();
-       }
+	@Override
+	public void reconcile(IRegion partition) {
+		initialReconcile();
+	}
 
-       /*
-        * (non-Javadoc)
-        *
-        * @see org.eclipse.jface.text.reconciler.IReconcilingStrategy#reconcile(org.eclipse.jface.text.IRegion)
-        */
-       public void reconcile(IRegion partition) {
-               initialReconcile();
-       }
+	@Override
+	public void setProgressMonitor(IProgressMonitor monitor) {
+		// TODO Auto-generated method stub
+	}
 
-       /*
-        * (non-Javadoc)
-        *
-        * @see org.eclipse.jface.text.reconciler.IReconcilingStrategyExtension#setProgressMonitor(org.eclipse.core.runtime.IProgressMonitor)
-        */
-       public void setProgressMonitor(IProgressMonitor monitor) {
-               // TODO Auto-generated method stub
+	@Override
+	public void initialReconcile() {
+		fOffset = 0;
+		fRangeEnd = fDocument.getLength();
+		calculatePositions();
+	}
 
-       }
+	/**
+	 * next character position - used locally and only valid while
+	 * {@link #calculatePositions()} is in progress.
+	 */
+	protected int cNextPos = 0;
 
-       /*
-        * (non-Javadoc)
-        *
-        * @see org.eclipse.jface.text.reconciler.IReconcilingStrategyExtension#initialReconcile()
-        */
-       public void initialReconcile() {
-               fOffset = 0;
-               fRangeEnd = fDocument.getLength();
-               calculatePositions();
+	/** number of newLines found by {@link #classifyTag()} */
+	protected int cNewLines = 0;
 
-       }
+	protected char cLastNLChar = ' ';
 
-       /**
-        * next character position - used locally and only valid while
-        * {@link #calculatePositions()} is in progress.
-        */
-       protected int cNextPos = 0;
+	protected static final int START_TAG = 1;
 
-       /** number of newLines found by {@link #classifyTag()} */
-       protected int cNewLines = 0;
+	protected static final int LEAF_TAG = 2;
 
-       protected char cLastNLChar = ' ';
+	protected static final int END_TAG = 3;
 
-       protected static final int START_TAG = 1;
+	protected static final int EOR_TAG = 4;
 
-       protected static final int LEAF_TAG = 2;
+	protected static final int COMMENT_TAG = 5;
 
-       protected static final int END_TAG = 3;
+	protected static final int PI_TAG = 6;
 
-       protected static final int EOR_TAG = 4;
+	/**
+	 * uses {@link #fDocument}, {@link #fOffset} and {@link #fRangeEnd} to
+	 * calculate {@link #fPositions}. About syntax errors: this method is not a
+	 * validator, it is useful.
+	 */
+	protected void calculatePositions() {
+		fPositions.clear();
+		cNextPos = fOffset;
 
-       protected static final int COMMENT_TAG = 5;
+		try {
+			recursiveTokens(0);
+		} catch (BadLocationException e) {
+			e.printStackTrace();
+		}
+		// Collections.sort(fPositions, new RangeTokenComparator());
 
-       protected static final int PI_TAG = 6;
+		Display.getDefault().asyncExec(new Runnable() {
+			public void run() {
+				editor.updateFoldingStructure(fPositions);
+			}
+		});
+	}
 
-       /**
-        * uses {@link #fDocument}, {@link #fOffset} and {@link #fRangeEnd} to
-        * calculate {@link #fPositions}. About syntax errors: this method is not a
-        * validator, it is useful.
-        */
-       protected void calculatePositions() {
-               fPositions.clear();
-               cNextPos = fOffset;
+	/**
+	 * emits tokens to {@link #fPositions}.
+	 *
+	 * @return number of newLines
+	 * @throws BadLocationException
+	 */
+	protected int recursiveTokens(int depth) throws BadLocationException {
+		int newLines = 0;
+		while (cNextPos < fRangeEnd) {
+			while (cNextPos < fRangeEnd) {
+				char ch = fDocument.getChar(cNextPos++);
+				switch (ch) {
+				case '<':
+					int startOffset = cNextPos - 1;
+					int startNewLines = newLines;
+					int classification = classifyTag();
+					newLines += cNewLines; // cNewLines is written by
+					// classifyTag()
 
-               try {
-                       recursiveTokens(0);
-               } catch (BadLocationException e) {
-                       e.printStackTrace();
-               }
-               // Collections.sort(fPositions, new RangeTokenComparator());
+					switch (classification) {
+					case START_TAG:
+						newLines += recursiveTokens(depth + 1);
+						if (newLines > startNewLines+1) {
+							emitPosition(startOffset, cNextPos - startOffset);
+						}
+						break;
+					case LEAF_TAG:
+						if (newLines > startNewLines+1) {
+							emitPosition(startOffset, cNextPos - startOffset);
+						}
+						break;
+					case COMMENT_TAG:
+						if (newLines > startNewLines+1) {
+							emitPosition(startOffset, cNextPos - startOffset);
+						}
+						break;
+					case PI_TAG:
+						break;
+					case END_TAG:
+					case EOR_TAG:
+						return newLines;
+					default:
+						break;
+					}
+					break;
+				case '\n':
+				case '\r':
+					if ((ch == cLastNLChar) || (' ' == cLastNLChar)) {
+						newLines++;
+						cLastNLChar = ch;
+					}
+					break;
+				default:
+					break;
+				}
+			}
 
-               Display.getDefault().asyncExec(new Runnable() {
-                       public void run() {
-                               editor.updateFoldingStructure(fPositions);
-                       }
+		}
+		return newLines;
+	}
 
-               });
-       }
+	protected void emitPosition(int startOffset, int length) {
+		fPositions.add(new Position(startOffset, length));
+	}
 
-       /**
-        * emits tokens to {@link #fPositions}.
-        *
-        * @return number of newLines
-        * @throws BadLocationException
-        */
-       protected int recursiveTokens(int depth) throws BadLocationException {
-               int newLines = 0;
-               while (cNextPos < fRangeEnd) {
-                       while (cNextPos < fRangeEnd) {
-                               char ch = fDocument.getChar(cNextPos++);
-                               switch (ch) {
-                               case '<':
-                                       int startOffset = cNextPos - 1;
-                                       int startNewLines = newLines;
-                                       int classification = classifyTag();
-                                       newLines += cNewLines; // cNewLines is written by
-                                                                                       // classifyTag()
+	/**
+	 * classifies a tag: <br />
+	 * &lt;?...?&gt;: {@link #PI_TAG} <br />
+	 * &lt;!...--&gt;: {@link #COMMENT_TAG} <br />
+	 * &lt;...&gt;: {@link #START_TAG} <br />
+	 * &lt;.../&gt;: {@link #LEAF_TAG} <br />
+	 * &lt;/...&gt;: {@link #END_TAG} <br />
+	 * &lt;...: {@link #EOR_TAG} (end of range reached before closing &gt; is
+	 * found). <br />
+	 * when this method is called, {@link #cNextPos} must point to the character
+	 * after &lt;, when it returns, it points to the character after &gt; or
+	 * after the range. About syntax errors: this method is not a validator, it
+	 * is useful. Side effect: writes number of found newLines to
+	 * {@link #cNewLines}.
+	 *
+	 * @return the tag classification
+	 */
+	protected int classifyTag() {
+		try {
+			char ch = fDocument.getChar(cNextPos++);
+			cNewLines = 0;
 
-                                       switch (classification) {
-                                       case START_TAG:
-                                               newLines += recursiveTokens(depth + 1);
-                                               if (newLines > startNewLines+1) {
-                                                       emitPosition(startOffset, cNextPos - startOffset);
-                                               }
-                                               break;
-                                       case LEAF_TAG:
-                                               if (newLines > startNewLines+1) {
-                                                       emitPosition(startOffset, cNextPos - startOffset);
-                                               }
-                                               break;
-                                       case COMMENT_TAG:
-                                               if (newLines > startNewLines+1) {
-                                                       emitPosition(startOffset, cNextPos - startOffset);
-                                               }
-                                               break;
-                                       case PI_TAG:
-                                               break;
-                                       case END_TAG:
-                                       case EOR_TAG:
-                                               return newLines;
-                                       default:
-                                               break;
-                                       }
-                                       break;
-                               case '\n':
-                               case '\r':
-                                       if ((ch == cLastNLChar) || (' ' == cLastNLChar)) {
-                                               newLines++;
-                                               cLastNLChar = ch;
-                                       }
-                                       break;
-                               default:
-                                       break;
-                               }
-                       }
+			// processing instruction?
+			if ('?' == ch) {
+				boolean piFlag = false;
+				while (cNextPos < fRangeEnd) {
+					ch = fDocument.getChar(cNextPos++);
+					if (('>' == ch) && piFlag)
+						return PI_TAG;
+					piFlag = ('?' == ch);
+				}
+				return EOR_TAG;
+			}
 
-               }
-               return newLines;
-       }
+			// comment?
+			if ('!' == ch) {
+				cNextPos++; // must be '-' but we don't care if not
+				cNextPos++; // must be '-' but we don't care if not
+				int commEnd = 0;
+				while (cNextPos < fRangeEnd) {
+					ch = fDocument.getChar(cNextPos++);
+					if (('>' == ch) && (commEnd >= 2))
+						return COMMENT_TAG;
+					if (('\n' == ch) || (       '\r' == ch)) {
+						if ((ch == cLastNLChar) || (' ' == cLastNLChar)) {
+							cNewLines++;
+							cLastNLChar = ch;
+						}
+					}
+					if ('-' == ch) {
+						commEnd++;
+					} else {
+						commEnd = 0;
+					}
+				}
+				return EOR_TAG;
+			}
 
-       protected void emitPosition(int startOffset, int length) {
-               fPositions.add(new Position(startOffset, length));
-       }
+			// consume whitespaces
+			while ((' ' == ch) || ('\t' == ch) || ('\n' == ch) || ('\r' == ch)) {
+				ch = fDocument.getChar(cNextPos++);
+				if (cNextPos > fRangeEnd)
+					return EOR_TAG;
+			}
 
-       /**
-        * classifies a tag: <br />
-        * &lt;?...?&gt;: {@link #PI_TAG} <br />
-        * &lt;!...--&gt;: {@link #COMMENT_TAG} <br />
-        * &lt;...&gt;: {@link #START_TAG} <br />
-        * &lt;.../&gt;: {@link #LEAF_TAG} <br />
-        * &lt;/...&gt;: {@link #END_TAG} <br />
-        * &lt;...: {@link #EOR_TAG} (end of range reached before closing &gt; is
-        * found). <br />
-        * when this method is called, {@link #cNextPos} must point to the character
-        * after &lt;, when it returns, it points to the character after &gt; or
-        * after the range. About syntax errors: this method is not a validator, it
-        * is useful. Side effect: writes number of found newLines to
-        * {@link #cNewLines}.
-        *
-        * @return the tag classification
-        */
-       protected int classifyTag() {
-               try {
-                       char ch = fDocument.getChar(cNextPos++);
-                       cNewLines = 0;
+			// end tag?
+			if ('/' == ch) {
+				while (cNextPos < fRangeEnd) {
+					ch = fDocument.getChar(cNextPos++);
+					if ('>' == ch) {
+						cNewLines += eatToEndOfLine();
+						return END_TAG;
+					}
+					if ('"' == ch) {
+						ch = fDocument.getChar(cNextPos++);
+						while ((cNextPos < fRangeEnd) && ('"' != ch)) {
+							ch = fDocument.getChar(cNextPos++);
+						}
+					} else if ('\'' == ch) {
+						ch = fDocument.getChar(cNextPos++);
+						while ((cNextPos < fRangeEnd) && ('\'' != ch)) {
+							ch = fDocument.getChar(cNextPos++);
+						}
+					}
+				}
+				return EOR_TAG;
+			}
 
-                       // processing instruction?
-                       if ('?' == ch) {
-                               boolean piFlag = false;
-                               while (cNextPos < fRangeEnd) {
-                                       ch = fDocument.getChar(cNextPos++);
-                                       if (('>' == ch) && piFlag)
-                                               return PI_TAG;
-                                       piFlag = ('?' == ch);
-                               }
-                               return EOR_TAG;
-                       }
+			// start tag or leaf tag?
+			while (cNextPos < fRangeEnd) {
+				ch = fDocument.getChar(cNextPos++);
+				// end tag?
+				s: switch (ch) {
+				case '/':
+					while (cNextPos < fRangeEnd) {
+						ch = fDocument.getChar(cNextPos++);
+						if ('>' == ch) {
+							cNewLines += eatToEndOfLine();
+							return LEAF_TAG;
+						}
+					}
+					return EOR_TAG;
+				case '"':
+					while (cNextPos < fRangeEnd) {
+						ch = fDocument.getChar(cNextPos++);
+						if ('"' == ch)
+							break s;
+					}
+					return EOR_TAG;
+				case '\'':
+					while (cNextPos < fRangeEnd) {
+						ch = fDocument.getChar(cNextPos++);
+						if ('\'' == ch)
+							break s;
+					}
+					return EOR_TAG;
+				case '>':
+					cNewLines += eatToEndOfLine();
+					return START_TAG;
+				default:
+					break;
+				}
 
-                       // comment?
-                       if ('!' == ch) {
-                               cNextPos++; // must be '-' but we don't care if not
-                               cNextPos++; // must be '-' but we don't care if not
-                               int commEnd = 0;
-                               while (cNextPos < fRangeEnd) {
-                                       ch = fDocument.getChar(cNextPos++);
-                                       if (('>' == ch) && (commEnd >= 2))
-                                               return COMMENT_TAG;
-                                   if (('\n' == ch) || (       '\r' == ch)) {
-                                               if ((ch == cLastNLChar) || (' ' == cLastNLChar)) {
-                                                       cNewLines++;
-                                                       cLastNLChar = ch;
-                                               }
-                                   }
-                                       if ('-' == ch) {
-                                               commEnd++;
-                                       } else {
-                                               commEnd = 0;
-                                       }
-                               }
-                               return EOR_TAG;
-                       }
+			}
+			return EOR_TAG;
 
-                       // consume whitespaces
-                       while ((' ' == ch) || ('\t' == ch) || ('\n' == ch) || ('\r' == ch)) {
-                               ch = fDocument.getChar(cNextPos++);
-                               if (cNextPos > fRangeEnd)
-                                       return EOR_TAG;
-                       }
+		} catch (BadLocationException e) {
+			// should not happen, but we treat it as end of range
+			return EOR_TAG;
+		}
+	}
+	protected int eatToEndOfLine() throws BadLocationException {
+		if (cNextPos >= fRangeEnd) {
+			return 0;
+		}
+		char ch = fDocument.getChar(cNextPos++);
+		// 1. eat all spaces and tabs
+		while ((cNextPos < fRangeEnd) && ((' ' == ch) || ('\t' == ch))) {
+			ch = fDocument.getChar(cNextPos++);
+		}
+		if (cNextPos >= fRangeEnd) {
+			cNextPos--;
+			return 0;
+		}
 
-                       // end tag?
-                       if ('/' == ch) {
-                               while (cNextPos < fRangeEnd) {
-                                       ch = fDocument.getChar(cNextPos++);
-                                       if ('>' == ch) {
-                                               cNewLines += eatToEndOfLine();
-                                               return END_TAG;
-                                       }
-                                       if ('"' == ch) {
-                                               ch = fDocument.getChar(cNextPos++);
-                                               while ((cNextPos < fRangeEnd) && ('"' != ch)) {
-                                                       ch = fDocument.getChar(cNextPos++);
-                                               }
-                                       } else if ('\'' == ch) {
-                                               ch = fDocument.getChar(cNextPos++);
-                                               while ((cNextPos < fRangeEnd) && ('\'' != ch)) {
-                                                       ch = fDocument.getChar(cNextPos++);
-                                               }
-                                       }
-                               }
-                               return EOR_TAG;
-                       }
+		// now ch is a new line or a non-whitespace
+		if ('\n' == ch) {
+			if (cNextPos < fRangeEnd) {
+				ch = fDocument.getChar(cNextPos++);
+				if ('\r' != ch) {
+					cNextPos--;
+				}
+			} else {
+				cNextPos--;
+			}
+			return 1;
+		}
 
-                       // start tag or leaf tag?
-                       while (cNextPos < fRangeEnd) {
-                               ch = fDocument.getChar(cNextPos++);
-                               // end tag?
-                               s: switch (ch) {
-                               case '/':
-                                       while (cNextPos < fRangeEnd) {
-                                               ch = fDocument.getChar(cNextPos++);
-                                               if ('>' == ch) {
-                                                       cNewLines += eatToEndOfLine();
-                                                       return LEAF_TAG;
-                                               }
-                                       }
-                                       return EOR_TAG;
-                               case '"':
-                                       while (cNextPos < fRangeEnd) {
-                                               ch = fDocument.getChar(cNextPos++);
-                                               if ('"' == ch)
-                                                       break s;
-                                       }
-                                       return EOR_TAG;
-                               case '\'':
-                                       while (cNextPos < fRangeEnd) {
-                                               ch = fDocument.getChar(cNextPos++);
-                                               if ('\'' == ch)
-                                                       break s;
-                                       }
-                                       return EOR_TAG;
-                               case '>':
-                                       cNewLines += eatToEndOfLine();
-                                       return START_TAG;
-                               default:
-                                       break;
-                               }
+		if ('\r' == ch) {
+			if (cNextPos < fRangeEnd) {
+				ch = fDocument.getChar(cNextPos++);
+				if ('\n' != ch) {
+					cNextPos--;
+				}
+			} else {
+				cNextPos--;
+			}
+			return 1;
+		}
 
-                       }
-                       return EOR_TAG;
-
-               } catch (BadLocationException e) {
-                       // should not happen, but we treat it as end of range
-                       return EOR_TAG;
-               }
-       }
-
-       protected int eatToEndOfLine() throws BadLocationException {
-               if (cNextPos >= fRangeEnd) {
-                       return 0;
-               }
-               char ch = fDocument.getChar(cNextPos++);
-               // 1. eat all spaces and tabs
-               while ((cNextPos < fRangeEnd) && ((' ' == ch) || ('\t' == ch))) {
-                       ch = fDocument.getChar(cNextPos++);
-               }
-               if (cNextPos >= fRangeEnd) {
-                       cNextPos--;
-                       return 0;
-               }
-
-               // now ch is a new line or a non-whitespace
-               if ('\n' == ch) {
-                       if (cNextPos < fRangeEnd) {
-                               ch = fDocument.getChar(cNextPos++);
-                               if ('\r' != ch) {
-                                       cNextPos--;
-                               }
-                       } else {
-                               cNextPos--;
-                       }
-                       return 1;
-               }
-
-               if ('\r' == ch) {
-                       if (cNextPos < fRangeEnd) {
-                               ch = fDocument.getChar(cNextPos++);
-                               if ('\n' != ch) {
-                                       cNextPos--;
-                               }
-                       } else {
-                               cNextPos--;
-                       }
-                       return 1;
-               }
-
-               return 0;
-       }
+		return 0;
+	}
 }
 

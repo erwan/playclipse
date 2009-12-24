@@ -7,6 +7,7 @@ import java.util.regex.Pattern;
 
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITextViewer;
+import org.eclipse.jface.text.Position;
 import org.eclipse.jface.text.TextAttribute;
 import org.eclipse.jface.text.hyperlink.IHyperlink;
 import org.eclipse.jface.text.source.Annotation;
@@ -22,14 +23,14 @@ import org.playframework.playclipse.editors.Editor;
 
 public class HTMLEditor extends Editor {
 	
-    private ProjectionSupport projectionSupport;
+	private ProjectionSupport projectionSupport;
 
- 	public HTMLEditor() {
+	public HTMLEditor() {
 		super();
 		setSourceViewerConfiguration(new HTMLConfiguration(this));
 	}
 
-    public String[] getTypes() {
+	public String[] getTypes() {
 		return new String[] {"default", "doctype", "html", "string", "tag", "expression", "action", "skipped", "keyword"};
 	}
 	
@@ -276,18 +277,18 @@ public class HTMLEditor extends Editor {
 	private Annotation[] oldAnnotations;
 	private ProjectionAnnotationModel annotationModel;
 
-	public void updateFoldingStructure(ArrayList positions)
+	public void updateFoldingStructure(ArrayList<Position> positions)
 	{
 		Annotation[] annotations = new Annotation[positions.size()];
-		
+
 		//this will hold the new annotations along
 		//with their corresponding positions
-		HashMap newAnnotations = new HashMap();
-		
+		HashMap<ProjectionAnnotation, Position> newAnnotations = new HashMap<ProjectionAnnotation, Position>();
+
 		for(int i =0;i<positions.size();i++)
 		{
 			ProjectionAnnotation annotation = new ProjectionAnnotation();
-			newAnnotations.put(annotation,positions.get(i));
+			newAnnotations.put(annotation, positions.get(i));
 			annotations[i]=annotation;
 		}
 		
@@ -298,11 +299,11 @@ public class HTMLEditor extends Editor {
 
 	@Override
 	public void createPartControl(Composite parent)
-    {
-        super.createPartControl(parent);
-        ProjectionViewer viewer =(ProjectionViewer)getSourceViewer();
-        
-        projectionSupport = new ProjectionSupport(viewer, getAnnotationAccess(), getSharedColors());
+	{
+		super.createPartControl(parent);
+		ProjectionViewer viewer =(ProjectionViewer)getSourceViewer();
+
+		projectionSupport = new ProjectionSupport(viewer, getAnnotationAccess(), getSharedColors());
 		projectionSupport.install();
 		
 		//turn projection mode on
@@ -310,17 +311,17 @@ public class HTMLEditor extends Editor {
 		
 		annotationModel = viewer.getProjectionAnnotationModel();
 		
-    }
+	}
 
 	@Override
 	protected ISourceViewer createSourceViewer(Composite parent, IVerticalRuler ruler, int styles)
-    {
-        ISourceViewer viewer = new ProjectionViewer(parent, ruler, getOverviewRuler(), isOverviewRulerVisible(), styles);
+	{
+		ISourceViewer viewer = new ProjectionViewer(parent, ruler, getOverviewRuler(), isOverviewRulerVisible(), styles);
 
-    	// ensure decoration support has been created and configured.
-    	getSourceViewerDecorationSupport(viewer);
-    	
-    	return viewer;
-    }
+		// ensure decoration support has been created and configured.
+		getSourceViewerDecorationSupport(viewer);
+		
+		return viewer;
+	}
 
 }

@@ -11,13 +11,11 @@ public class HTMLConfiguration extends Configuration {
 		super(editor);
 	}
 
-    public IReconciler getReconciler(ISourceViewer sourceViewer)
-    {
-        XMLReconcilingStrategy strategy = new XMLReconcilingStrategy();
-        strategy.setEditor((HTMLEditor)editor);
-        
-        MonoReconciler reconciler = new MonoReconciler(strategy,false);
-        
-        return reconciler;
-    }
+	public IReconciler getReconciler(ISourceViewer sourceViewer)
+	{
+		XMLReconcilingStrategy strategy = new XMLReconcilingStrategy();
+		strategy.setEditor((HTMLEditor)editor);
+		MonoReconciler reconciler = new MonoReconciler(strategy,false);
+		return reconciler;
+	}
 }
