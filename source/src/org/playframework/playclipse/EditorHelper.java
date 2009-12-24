@@ -99,7 +99,7 @@ public final class EditorHelper {
 	}
 
 	public IWorkbenchWindow getWindow() {
-	    return this.textEditor.getSite().getWorkbenchWindow();
+		return this.textEditor.getSite().getWorkbenchWindow();
 	}
 
 	public int getCurrentLineNo() {

@@ -52,10 +52,10 @@ public abstract class Editor extends TextEditor {
 	// Helpers
 
 	protected Navigation getNav() {
-	    if (nav == null) {
-	        nav = new Navigation(new EditorHelper(this));
-	    }
-        return nav;
+		if (nav == null) {
+			nav = new Navigation(new EditorHelper(this));
+		}
+		return nav;
 	}
 
 	protected IPath getPath() {
@@ -107,7 +107,7 @@ public abstract class Editor extends TextEditor {
 	public void createPartControl(Composite parent) {
 		super.createPartControl(parent);
 		ITextViewerExtension tve = (ITextViewerExtension)getSourceViewer();
-        tve.appendVerifyKeyListener(new AutoCloser(this, (SourceViewer)getSourceViewer()));
+		tve.appendVerifyKeyListener(new AutoCloser(this, (SourceViewer)getSourceViewer()));
 	}
 	
 	public static String SKIP = "__skip";
@@ -119,43 +119,43 @@ public abstract class Editor extends TextEditor {
 	public abstract IHyperlink detectHyperlink(ITextViewer textViewer, IRegion region);
 
 	public void openLink(IHyperlink link) {
-	    if (link.getTypeLabel().equals("action")) {
-	        String linkText = link.getHyperlinkText();
-	        if (linkText.startsWith("'") && linkText.endsWith("'")) {
-	            // Static file, e.g. @{'/public/images/favicon.png'}
-	            String path = linkText.substring(1, linkText.length() - 1);
-	            getNav().openOrCreate(path);
-	            return;
-	        }
-	        String controller, action;
-	        String[] target = linkText.split("\\.");
-            if (target.length >= 2) {
-                // Absolute reference, e.g. Application.index
-                controller = target[0];
-                action = target[1].replace("()", "");
-            } else {
-                // Relative reference, e.g. just "index"
-                action = target[0].replace("()", "");
-                IFile curfile = ((IFileEditorInput)getEditorInput()).getFile();
-                IContainer container = curfile.getParent();
-                controller = container.getName();
-            }
-            getNav().goToAction(controller, action);
-            return;
-        }
-        if (link.getTypeLabel().equals("tag")) {
-            getNav().goToView("tags/" + link.getHyperlinkText().replace('.', '/') + ".html");
-            return;
-        }
-        if (link.getTypeLabel().equals("extends") || link.getTypeLabel().equals("include")) {
-            String path = link.getHyperlinkText();
-            getNav().goToView(path);
-        }
-        if (link.getTypeLabel().equals("action_in_tag")) {
-            System.out.println(link);
-            // TODO
-            return;
-        }
+		if (link.getTypeLabel().equals("action")) {
+			String linkText = link.getHyperlinkText();
+			if (linkText.startsWith("'") && linkText.endsWith("'")) {
+				// Static file, e.g. @{'/public/images/favicon.png'}
+				String path = linkText.substring(1, linkText.length() - 1);
+				getNav().openOrCreate(path);
+				return;
+			}
+			String controller, action;
+			String[] target = linkText.split("\\.");
+			if (target.length >= 2) {
+				// Absolute reference, e.g. Application.index
+				controller = target[0];
+				action = target[1].replace("()", "");
+			} else {
+				// Relative reference, e.g. just "index"
+				action = target[0].replace("()", "");
+				IFile curfile = ((IFileEditorInput)getEditorInput()).getFile();
+				IContainer container = curfile.getParent();
+				controller = container.getName();
+			}
+			getNav().goToAction(controller, action);
+			return;
+		}
+		if (link.getTypeLabel().equals("tag")) {
+			getNav().goToView("tags/" + link.getHyperlinkText().replace('.', '/') + ".html");
+			return;
+		}
+		if (link.getTypeLabel().equals("extends") || link.getTypeLabel().equals("include")) {
+			String path = link.getHyperlinkText();
+			getNav().goToView(path);
+		}
+		if (link.getTypeLabel().equals("action_in_tag")) {
+			System.out.println(link);
+			// TODO
+			return;
+		}
 	}
 	
 	protected BestMatch findBestMatch(final int position, Pattern... patterns) {
@@ -268,68 +268,68 @@ public abstract class Editor extends TextEditor {
 	
 	String content;
 	int end,  begin,  end2,  begin2,  len;
-    protected String state = "default";
-    boolean eof = false;
-    
-    protected String found(String newState, int skip) {
-        begin2 = begin;
-        end2 = --end + skip;
-        begin = end += skip;
-        String lastState = state;
-        state = newState;
-        return lastState;
-    }
-    
-    protected void reset() {
-    	eof = false;
-        end = begin = end2 = begin2 = 0;
-        state = "default";
-        content = ((DocumentProvider)getDocumentProvider()).document.get();
-        len = content.length();
-    }
-    
-    protected boolean isNext(String s) {
-    	try {
-    		int i = end - 1;
-	    	for(char c : s.toCharArray()) {
-	    		if(c != content.charAt(i++)) {
-	    			return false;
-	    		}
-	    		if(i > content.length()) {
-	    			return false;
-	    		}
-	    	}
-	    	return true;
-    	} catch(StringIndexOutOfBoundsException e) {
-    		return false;
-    	}
-    }
+	protected String state = "default";
+	boolean eof = false;
 
-    protected boolean nextIsSpace() {
-        return isNext(" ") || isNext("\t");
-    }
+	protected String found(String newState, int skip) {
+		begin2 = begin;
+		end2 = --end + skip;
+		begin = end += skip;
+		String lastState = state;
+		state = newState;
+		return lastState;
+	}
 
-    TypedRegion nextToken() {
-        for (;;) {
+	protected void reset() {
+		eof = false;
+		end = begin = end2 = begin2 = 0;
+		state = "default";
+		content = ((DocumentProvider)getDocumentProvider()).document.get();
+		len = content.length();
+	}
 
-            int left = len - end;
-            if (left == 0) {
-                end++;
-                found("default", 0);
-                eof = true;
-                return new TypedRegion(begin2, end2-begin2, "default");
-            }
-            
-            end++;
-            
-            String token = scan();
-            
-             if(token != null) {
-            	return new TypedRegion(begin2, end2-begin2, token);
-            }
-        }
-    }
-	
+	protected boolean isNext(String s) {
+		try {
+			int i = end - 1;
+			for(char c : s.toCharArray()) {
+				if(c != content.charAt(i++)) {
+					return false;
+				}
+				if(i > content.length()) {
+					return false;
+				}
+			}
+			return true;
+		} catch(StringIndexOutOfBoundsException e) {
+			return false;
+		}
+	}
+
+	protected boolean nextIsSpace() {
+		return isNext(" ") || isNext("\t");
+	}
+
+	TypedRegion nextToken() {
+		for (;;) {
+
+			int left = len - end;
+			if (left == 0) {
+				end++;
+				found("default", 0);
+				eof = true;
+				return new TypedRegion(begin2, end2-begin2, "default");
+			}
+
+			end++;
+
+			String token = scan();
+
+			if(token != null) {
+				return new TypedRegion(begin2, end2-begin2, token);
+			}
+		}
+	}
+
 	public abstract String scan();
 
 }

@@ -11,15 +11,15 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.texteditor.ITextEditor;
 
 public final class Navigation {
-    private EditorHelper editorHelper;
-    private IWorkbenchWindow window;
+	private EditorHelper editorHelper;
+	private IWorkbenchWindow window;
 
-    public Navigation(EditorHelper editorHelper) {
-        this.editorHelper = editorHelper;
+	public Navigation(EditorHelper editorHelper) {
+		this.editorHelper = editorHelper;
 		this.window = this.editorHelper.getWindow();
-    }
+	}
 
-    public void goToAction(String controller, String method) {
+	public void goToAction(String controller, String method) {
 		String path = "app/controllers/" + controller + ".java";
 		IFile file = this.editorHelper.getProject().getFile(path);
 		if (file.exists()) {
@@ -48,9 +48,9 @@ public final class Navigation {
 				// Should never happen
 				e.printStackTrace();
 			} catch (org.eclipse.jface.text.BadLocationException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		} else {
 			if (MessageDialog.openConfirm(
 					window.getShell(),
@@ -60,26 +60,26 @@ public final class Navigation {
 				FilesAccess.createAndOpen(file, content, FilesAccess.FileType.JAVA);
 			}
 		}
-    }
+	}
 
-    public void goToView(String viewName) {
+	public void goToView(String viewName) {
 		IProject project = editorHelper.getProject();
 		IFile file = project.getFile("app/views/" + viewName);
 		if (!file.exists()) {
-		    // The file doesn't exist from the absolute path, let's try from the relative path
-		    IContainer cont = editorHelper.getFirstParentFor("views");
-		    file = project.getFile(cont.getProjectRelativePath() + "/" + viewName);
+			// The file doesn't exist from the absolute path, let's try from the relative path
+			IContainer cont = editorHelper.getFirstParentFor("views");
+			file = project.getFile(cont.getProjectRelativePath() + "/" + viewName);
 		}
 		openOrCreate(file);
-   }
+	}
 
-    public void openOrCreate(String path) {
+	public void openOrCreate(String path) {
 		IFile file = editorHelper.getProject().getFile(path);
 		openOrCreate(file);
-    }
+	}
 
-    private void openOrCreate(IFile file) {
- 		if (file.exists()) {
+	private void openOrCreate(IFile file) {
+		if (file.exists()) {
 			try {
 				FilesAccess.openFile(file, window);
 			} catch (CoreException e) {
@@ -98,6 +98,6 @@ public final class Navigation {
 			String content = CodeTemplates.view(title);
 			FilesAccess.createAndOpen(file, content, FilesAccess.FileType.HTML);
 		}
-    }
+	}
 
 }

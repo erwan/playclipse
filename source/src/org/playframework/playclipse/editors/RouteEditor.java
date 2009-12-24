@@ -12,26 +12,26 @@ public class RouteEditor extends Editor {
 
 	String oldState = "default";
 
-    @Override
+	@Override
 	public String[] getTypes() {
 		return new String[] {
-		        "default",
-		        "keyword",
-		        "url",
-		        "action",
-		        "comment"
+				"default",
+				"keyword",
+				"url",
+				"action",
+				"comment"
 		};
 	}
 
-    @Override
-    public String autoClose(char pc, char c, char nc) {
-        return null;
-    }
+	@Override
+	public String autoClose(char pc, char c, char nc) {
+		return null;
+	}
 
 	Pattern action = Pattern.compile("\\s(\\w+\\.\\w+)");
 
 	@Override
-    public IHyperlink detectHyperlink(ITextViewer textViewer, IRegion region) {
+	public IHyperlink detectHyperlink(ITextViewer textViewer, IRegion region) {
 		BestMatch match = findBestMatch(region.getOffset(), action);
 		if(match != null) {
 			if(match.is(action)) {
@@ -39,10 +39,10 @@ public class RouteEditor extends Editor {
 			}
 		}
 		return null;
-    }
+	}
 
-    @Override
-    public TextAttribute getStyle(String type) {
+	@Override
+	public TextAttribute getStyle(String type) {
 		if(type.equals("keyword")) {
 			return style(new RGB(0, 200, 0));
 		}
@@ -56,48 +56,48 @@ public class RouteEditor extends Editor {
 			return style(new RGB(200, 0, 0));
 		}
 		return style(new RGB(0, 0, 0));
-    }
+	}
 
-    @Override
-    public String scan() {
-        if (isNext("\n")) {
-            return found("start", 1);
-        }
-        if (state != "comment" && isNext("#")) {
-            return found("comment", 0);
-        }
-        if (state == "start" && isNext("GET")) {
-            return found("keyword", 0);
-        }
-        if (state == "start" && isNext("POST")) {
-            return found("keyword", 0);
-        }
-        if (state == "start" && isNext("PUT")) {
-            return found("keyword", 0);
-        }
-        if (state == "start" && isNext("DELETE")) {
-            return found("keyword", 0);
-        }
-        if (state == "start" && isNext("*")) {
-            return found("keyword", 0);
-        }
-        if ((state == "keyword" || state == "url") && nextIsSpace()) {
-            oldState = state;
-            return found("default", 1);
-        }
-        if (state == "default" && isNext("/")) {
-            return found("url", 0);
-        }
-        if (state == "default" && oldState == "url" && nextIsSpace()) {
-            return found("action", 0);
-        }
-        return null;
-    }
+	@Override
+	public String scan() {
+		if (isNext("\n")) {
+			return found("start", 1);
+		}
+		if (state != "comment" && isNext("#")) {
+			return found("comment", 0);
+		}
+		if (state == "start" && isNext("GET")) {
+			return found("keyword", 0);
+		}
+		if (state == "start" && isNext("POST")) {
+			return found("keyword", 0);
+		}
+		if (state == "start" && isNext("PUT")) {
+			return found("keyword", 0);
+		}
+		if (state == "start" && isNext("DELETE")) {
+			return found("keyword", 0);
+		}
+		if (state == "start" && isNext("*")) {
+			return found("keyword", 0);
+		}
+		if ((state == "keyword" || state == "url") && nextIsSpace()) {
+			oldState = state;
+			return found("default", 1);
+		}
+		if (state == "default" && isNext("/")) {
+			return found("url", 0);
+		}
+		if (state == "default" && oldState == "url" && nextIsSpace()) {
+			return found("action", 0);
+		}
+		return null;
+	}
 
-    @Override
-    public void templates(String contentType, String ctx) {
-        // TODO Auto-generated method stub
-        
-    }
+	@Override
+	public void templates(String contentType, String ctx) {
+		// TODO Auto-generated method stub
+
+	}
 
 }
