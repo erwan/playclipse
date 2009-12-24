@@ -61,24 +61,24 @@ public class RouteEditor extends Editor {
 	@Override
 	public String scan() {
 		if (isNext("\n")) {
-			return found("start", 1);
+			return found("default", 1);
 		}
 		if (state != "comment" && isNext("#")) {
 			return found("comment", 0);
 		}
-		if (state == "start" && isNext("GET")) {
+		if (state == "default" && isNext("GET")) {
 			return found("keyword", 0);
 		}
-		if (state == "start" && isNext("POST")) {
+		if (state == "default" && isNext("POST")) {
 			return found("keyword", 0);
 		}
-		if (state == "start" && isNext("PUT")) {
+		if (state == "default" && isNext("PUT")) {
 			return found("keyword", 0);
 		}
-		if (state == "start" && isNext("DELETE")) {
+		if (state == "default" && isNext("DELETE")) {
 			return found("keyword", 0);
 		}
-		if (state == "start" && isNext("*")) {
+		if (state == "default" && isNext("*")) {
 			return found("keyword", 0);
 		}
 		if ((state == "keyword" || state == "url") && nextIsSpace()) {
