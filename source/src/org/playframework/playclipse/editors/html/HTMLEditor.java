@@ -285,14 +285,13 @@ public class HTMLEditor extends Editor {
 		//with their corresponding positions
 		HashMap<ProjectionAnnotation, Position> newAnnotations = new HashMap<ProjectionAnnotation, Position>();
 
-		for(int i =0;i<positions.size();i++)
-		{
+		for (int i = 0; i < positions.size(); i++) {
 			ProjectionAnnotation annotation = new ProjectionAnnotation();
 			newAnnotations.put(annotation, positions.get(i));
-			annotations[i]=annotation;
+			annotations[i] = annotation;
 		}
 		
-		annotationModel.modifyAnnotations(oldAnnotations,newAnnotations,null);
+		annotationModel.modifyAnnotations(oldAnnotations, newAnnotations, null);
 		
 		oldAnnotations = annotations;
 	}

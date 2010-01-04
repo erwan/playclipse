@@ -132,17 +132,17 @@ public class XMLReconcilingStrategy implements IReconcilingStrategy, IReconcilin
 					switch (classification) {
 					case START_TAG:
 						newLines += recursiveTokens(depth + 1);
-						if (newLines > startNewLines+1) {
+						if (newLines > startNewLines + 1) {
 							emitPosition(startOffset, cNextPos - startOffset);
 						}
 						break;
 					case LEAF_TAG:
-						if (newLines > startNewLines+1) {
+						if (newLines > startNewLines + 1) {
 							emitPosition(startOffset, cNextPos - startOffset);
 						}
 						break;
 					case COMMENT_TAG:
-						if (newLines > startNewLines+1) {
+						if (newLines > startNewLines + 1) {
 							emitPosition(startOffset, cNextPos - startOffset);
 						}
 						break;
@@ -308,6 +308,7 @@ public class XMLReconcilingStrategy implements IReconcilingStrategy, IReconcilin
 	}
 	protected int eatToEndOfLine() throws BadLocationException {
 		if (cNextPos >= fRangeEnd) {
+			cNextPos--;
 			return 0;
 		}
 		char ch = fDocument.getChar(cNextPos++);
@@ -345,6 +346,7 @@ public class XMLReconcilingStrategy implements IReconcilingStrategy, IReconcilin
 			return 1;
 		}
 
+		cNextPos--;
 		return 0;
 	}
 }
