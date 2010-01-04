@@ -126,7 +126,7 @@
    <extension
          point="org.eclipse.ui.editors">
       <editor
-            class="org.playframework.playclipse.editors.HTMLEditor"
+            class="org.playframework.playclipse.editors.html.HTMLEditor"
             default="false"
             extensions="html"
             icon="icons/page_white_code_red.png"

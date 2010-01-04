@@ -14,7 +14,7 @@ import org.eclipse.jface.text.source.SourceViewerConfiguration;
 
 public class Configuration extends SourceViewerConfiguration {
 
-	Editor editor;
+	protected Editor editor;
 	
 	public Configuration(Editor editor) {
 		this.editor = editor;
