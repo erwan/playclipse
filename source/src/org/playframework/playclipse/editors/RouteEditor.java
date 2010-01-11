@@ -83,12 +83,12 @@ public class RouteEditor extends Editor {
 		}
 		if ((state == "keyword" || state == "url") && nextIsSpace()) {
 			oldState = state;
-			return found("default", 1);
+			return found("default", 0);
 		}
 		if (state == "default" && isNext("/")) {
 			return found("url", 0);
 		}
-		if (state == "default" && oldState == "url" && nextIsSpace()) {
+		if (state == "default" && oldState == "url" && !nextIsSpace()) {
 			return found("action", 0);
 		}
 		return null;
