@@ -154,5 +154,56 @@
 	<extension point="org.eclipse.ui.editors.templates">
        <include file="templates/templates.xml"/>
 	</extension>
+ <extension
+       id="PlayBuilder"
+       name="Play Project Builder"
+       point="org.eclipse.core.resources.builders">
+    <builder
+          hasNature="true">
+       <run
+             class="org.playframework.playclipse.builder.PlayBuilder">
+       </run>
+    </builder>
+ </extension>
+ <extension
+       id="playNature"
+       name="Play Project Nature"
+       point="org.eclipse.core.resources.natures">
+    <runtime>
+       <run
+             class="org.playframework.playclipse.builder.PlayNature">
+       </run>
+    </runtime>
+    <builder
+          id="org.playframework.playclipse.PlayBuilder">
+    </builder>
+ </extension>
+ <extension
+       point="org.eclipse.ui.popupMenus">
+    <objectContribution
+          adaptable="true"
+          id="org.playframework.playclipse.contribution1"
+          nameFilter="*"
+          objectClass="org.eclipse.core.resources.IProject">
+       <action
+             class="org.playframework.playclipse.builder.ToggleNatureAction"
+             enablesFor="+"
+             id="org.playframework.playclipse.addRemoveNatureAction"
+             label="Add/Remove Play Nature"
+             menubarPath="additions">
+       </action>
+    </objectContribution>
+ </extension>
+ <extension
+       id="xmlProblem"
+       name="XML Problem"
+       point="org.eclipse.core.resources.markers">
+    <super
+          type="org.eclipse.core.resources.problemmarker">
+    </super>
+    <persistent
+          value="true">
+    </persistent>
+ </extension>
 
 </plugin>
