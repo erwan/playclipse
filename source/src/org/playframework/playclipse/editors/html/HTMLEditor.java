@@ -249,7 +249,7 @@ public class HTMLEditor extends Editor {
 				return found("default", 1);
 			}
 		}
-		if(state == "html" || state == "default") {
+		if(state == "html") {
 			if(isNext("\"")) {
 				openedString = '\"';
 				consumeString = false;
