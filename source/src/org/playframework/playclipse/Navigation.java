@@ -9,6 +9,7 @@ import org.eclipse.jface.text.IDocument;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.texteditor.ITextEditor;
+import org.playframework.playclipse.builder.PlayNature;
 
 public final class Navigation {
 	private EditorHelper editorHelper;
@@ -63,7 +64,15 @@ public final class Navigation {
 	}
 
 	public void goToView(String viewName) {
+		System.out.println("goToView");
 		IProject project = editorHelper.getProject();
+		try {
+			PlayNature nature = (PlayNature)project.getNature("org.playframework.playclipse.playNature");
+			System.out.println("Nature: " + nature);
+			System.out.println(nature.getModules());
+		} catch (CoreException e) {
+			e.printStackTrace();
+		}
 		IFile file = project.getFile("app/views/" + viewName);
 		if (!file.exists()) {
 			// The file doesn't exist from the absolute path, let's try from the relative path

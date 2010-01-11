@@ -1,12 +1,14 @@
 package org.playframework.playclipse.builder;
 
 import java.lang.IllegalArgumentException;
+import java.util.Map;
+
 import org.eclipse.core.resources.ICommand;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IProjectNature;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 
 public class PlayNature implements IProjectNature {
@@ -24,6 +26,7 @@ public class PlayNature implements IProjectNature {
 	 * @see org.eclipse.core.resources.IProjectNature#configure()
 	 */
 	public void configure() throws CoreException {
+		System.out.println("Nature Configure");
 		IProjectDescription desc = project.getDescription();
 		ICommand[] commands = desc.getBuildSpec();
 
@@ -40,9 +43,11 @@ public class PlayNature implements IProjectNature {
 		newCommands[newCommands.length - 1] = command;
 		desc.setBuildSpec(newCommands);
 		project.setDescription(desc, null);
-		
-		IClasspathEntry[] classpath = ((IJavaProject)project).getRawClasspath();
-		
+	}
+
+	public Map<String, String> getModules() {
+		ConfigurationFile conf = new ConfigurationFile(project);
+		return conf.getModules();
 	}
 
 	/*
@@ -81,9 +86,6 @@ public class PlayNature implements IProjectNature {
 	 * @see org.eclipse.core.resources.IProjectNature#setProject(org.eclipse.core.resources.IProject)
 	 */
 	public void setProject(IProject project) {
-		if (!(project instanceof IJavaProject)) {
-			throw new IllegalArgumentException();
-		}
 		this.project = project;
 	}
 
