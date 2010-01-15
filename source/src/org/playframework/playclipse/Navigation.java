@@ -8,31 +8,33 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IMethod;
 import org.eclipse.jdt.core.ISourceRange;
 import org.eclipse.jdt.core.IType;
+import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchWindow;
-import org.playframework.playclipse.builder.PlayNature;
 
 public final class Navigation {
 	private EditorHelper editorHelper;
 	private IWorkbenchWindow window;
+	private IProject project;
+	private IJavaProject javaProject;
 
 	public Navigation(EditorHelper editorHelper) {
 		this.editorHelper = editorHelper;
 		this.window = this.editorHelper.getWindow();
+		this.project = this.editorHelper.getProject();
+		this.javaProject = JavaCore.create(project);
 	}
 
 	private IType findType(String name) {
-		IProject project = this.editorHelper.getProject();
 		try {
-			PlayNature nature = (PlayNature)project.getNature("org.playframework.playclipse.playNature");
-			IJavaProject javaProj = nature.getJavaProject();
-			IType type = javaProj.findType(name);
+			IType type = javaProject.findType(name);
 			System.out.println("Type for " + name + ": " + type);
 			return type;
 		} catch (CoreException e) {
 			// TODO Auto-generated catch block
+			System.out.println(e);
 			e.printStackTrace();
 		}
 		return null;
@@ -44,6 +46,7 @@ public final class Navigation {
 	 */
 	public void goToAction(String action) {
 		String fullClassName = "controllers." + action.replaceFirst(".[^.]+$", "");
+		System.out.println("goToAction for class: " + fullClassName);
 		String method = action.substring(action.lastIndexOf('.') + 1);
 		IType type = findType(fullClassName);
 		IFile file;
@@ -105,15 +108,6 @@ public final class Navigation {
 	}
 
 	public void goToView(String viewName) {
-		System.out.println("goToView");
-		IProject project = editorHelper.getProject();
-		try {
-			PlayNature nature = (PlayNature)project.getNature("org.playframework.playclipse.playNature");
-			System.out.println("Nature: " + nature);
-			System.out.println(nature.getModules());
-		} catch (CoreException e) {
-			e.printStackTrace();
-		}
 		IFile file = project.getFile("app/views/" + viewName);
 		if (!file.exists()) {
 			// The file doesn't exist from the absolute path, let's try from the relative path
