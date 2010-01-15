@@ -119,8 +119,8 @@ public abstract class Editor extends TextEditor {
 	public abstract IHyperlink detectHyperlink(ITextViewer textViewer, IRegion region);
 
 	public void openLink(IHyperlink link) {
+		String linkText = link.getHyperlinkText();
 		if (link.getTypeLabel().equals("action")) {
-			String linkText = link.getHyperlinkText();
 			if (linkText.startsWith("'") && linkText.endsWith("'")) {
 				// Static file, e.g. @{'/public/images/favicon.png'}
 				String path = linkText.substring(1, linkText.length() - 1);
@@ -146,9 +146,9 @@ public abstract class Editor extends TextEditor {
 			getNav().goToView(path);
 		}
 		if (link.getTypeLabel().equals("action_in_tag")) {
-			System.out.println(link);
-			// TODO
-			return;
+			System.out.println(linkText);
+			String nakedAction = linkText.replace("@", "").replaceFirst("\\(.*\\)", "");
+			getNav().goToAction(nakedAction);
 		}
 	}
 	
