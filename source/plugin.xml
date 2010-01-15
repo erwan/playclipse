@@ -135,7 +135,7 @@
             id="org.playframework.playclipse.wizards.ViewWizard"/>
       <wizard
             class="org.playframework.playclipse.wizards.ModelWizard"
-            icon="icons/controller.png"
+            icon="icons/model.png"
             category="org.playframework.playclipse"
             name="Play Model"
             id="org.playframework.playclipse.wizards.ModelWizard"/>
