@@ -120,8 +120,25 @@
          point="org.eclipse.ui.newWizards">
       <category
             id="org.playframework.playclipse"
-            name="Play! Framework">
-      </category>
+            name="Play! Framework" />
+      <wizard
+            class="org.playframework.playclipse.wizards.ControllerWizard"
+            icon="icons/controller.png"
+            category="org.playframework.playclipse"
+            name="Play Controller"
+            id="org.playframework.playclipse.wizards.ControllerWizard"/>
+      <wizard
+            class="org.playframework.playclipse.wizards.ViewWizard"
+            icon="icons/page_white_code_red.png"
+            category="org.playframework.playclipse"
+            name="Play View"
+            id="org.playframework.playclipse.wizards.ViewWizard"/>
+      <wizard
+            class="org.playframework.playclipse.wizards.ModelWizard"
+            icon="icons/controller.png"
+            category="org.playframework.playclipse"
+            name="Play Model"
+            id="org.playframework.playclipse.wizards.ModelWizard"/>
    </extension>
    <extension
          point="org.eclipse.ui.editors">

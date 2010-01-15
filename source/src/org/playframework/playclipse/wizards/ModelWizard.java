@@ -5,17 +5,17 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.Path;
 import org.playframework.playclipse.CodeTemplates;
 
-public class ControllerWizard extends PlayWizard {
+public class ModelWizard extends PlayWizard {
 
 	@Override
 	public void addPages() {
-		page = new ControllerWizardPage(selection);
+		page = new ModelWizardPage(selection);
 		addPage(page);
 	}
 
 	@Override
 	protected String getContent(String name) {
-		return CodeTemplates.controller(name);
+		return CodeTemplates.model(name);
 	}
 
 	@Override
