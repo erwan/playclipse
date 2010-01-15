@@ -2,6 +2,7 @@ package org.playframework.playclipse.editors;
 
 import java.util.regex.Pattern;
 
+import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.TextAttribute;
@@ -10,12 +11,12 @@ import org.eclipse.swt.graphics.RGB;
 
 public class RouteEditor extends Editor {
 
-	String oldState = "default";
+	String oldState = IDocument.DEFAULT_CONTENT_TYPE;
 
 	@Override
 	public String[] getTypes() {
 		return new String[] {
-				"default",
+				IDocument.DEFAULT_CONTENT_TYPE,
 				"keyword",
 				"url",
 				"action",
@@ -61,34 +62,34 @@ public class RouteEditor extends Editor {
 	@Override
 	public String scan() {
 		if (isNext("\n")) {
-			return found("default", 1);
+			return found(IDocument.DEFAULT_CONTENT_TYPE, 1);
 		}
 		if (state != "comment" && isNext("#")) {
 			return found("comment", 0);
 		}
-		if (state == "default" && isNext("GET")) {
+		if (state == IDocument.DEFAULT_CONTENT_TYPE && isNext("GET")) {
 			return found("keyword", 0);
 		}
-		if (state == "default" && isNext("POST")) {
+		if (state == IDocument.DEFAULT_CONTENT_TYPE && isNext("POST")) {
 			return found("keyword", 0);
 		}
-		if (state == "default" && isNext("PUT")) {
+		if (state == IDocument.DEFAULT_CONTENT_TYPE && isNext("PUT")) {
 			return found("keyword", 0);
 		}
-		if (state == "default" && isNext("DELETE")) {
+		if (state == IDocument.DEFAULT_CONTENT_TYPE && isNext("DELETE")) {
 			return found("keyword", 0);
 		}
-		if (state == "default" && isNext("*")) {
+		if (state == IDocument.DEFAULT_CONTENT_TYPE && isNext("*")) {
 			return found("keyword", 0);
 		}
 		if ((state == "keyword" || state == "url") && nextIsSpace()) {
 			oldState = state;
-			return found("default", 0);
+			return found(IDocument.DEFAULT_CONTENT_TYPE, 0);
 		}
-		if (state == "default" && isNext("/")) {
+		if (state == IDocument.DEFAULT_CONTENT_TYPE && isNext("/")) {
 			return found("url", 0);
 		}
-		if (state == "default" && oldState == "url" && !nextIsSpace()) {
+		if (state == IDocument.DEFAULT_CONTENT_TYPE && oldState == "url" && !nextIsSpace()) {
 			return found("action", 0);
 		}
 		return null;

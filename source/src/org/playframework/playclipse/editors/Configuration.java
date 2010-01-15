@@ -30,7 +30,7 @@ public class Configuration extends SourceViewerConfiguration {
 			NonRuleBasedDamagerRepairer ndr = new NonRuleBasedDamagerRepairer(editor.getStyle(type));
 			presentationReconciler.setDamager(ndr, type);
 			presentationReconciler.setRepairer(ndr, type);
-		}		
+		}
 		return presentationReconciler;
 	}
 	
@@ -59,17 +59,15 @@ public class Configuration extends SourceViewerConfiguration {
 		result[result.length-1] = mine;
 		return result;
 	}
-	
+
 	@Override
 	public IContentAssistant getContentAssistant(ISourceViewer sourceViewer) {
 		ContentAssistant assistant = new ContentAssistant();
 		for(String type : editor.getTypes()) {
 			CompletionProcessor processor = new CompletionProcessor(type, sourceViewer, editor);
-			assistant.setContentAssistProcessor(processor, type);	        
+			assistant.setContentAssistProcessor(processor, type);
 		}
 		return assistant;
 	}
-	
-	
-	
+
 }

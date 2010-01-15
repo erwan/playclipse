@@ -19,6 +19,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.ContainerSelectionDialog;
+import org.eclipse.jdt.core.IJavaElement;
 
 /**
  * The "New" wizard page allows setting the container for the new file as well
@@ -55,7 +56,7 @@ public class ControllerWizardPage extends WizardPage {
 		layout.numColumns = 3;
 		layout.verticalSpacing = 9;
 		Label label = new Label(container, SWT.NULL);
-		label.setText("&Project:");
+		label.setText("&Package:");
 
 		containerText = new Text(container, SWT.BORDER | SWT.SINGLE);
 		GridData gd = new GridData(GridData.FILL_HORIZONTAL);
@@ -100,6 +101,9 @@ public class ControllerWizardPage extends WizardPage {
 			if (ssel.size() > 1)
 				return;
 			Object obj = ssel.getFirstElement();
+			if (obj instanceof IJavaElement) {
+				obj = ((IJavaElement)obj).getResource();
+			}
 			if (obj instanceof IResource) {
 				IContainer container;
 				if (obj instanceof IContainer)
