@@ -127,6 +127,9 @@ public abstract class Editor extends TextEditor {
 				getNav().openOrCreate(path);
 				return;
 			}
+/*			String controllerName = "controllers." + linkText.replaceFirst(".[^.]+$", "");
+			System.out.println(controllerName);
+			getNav().findType(controllerName);
 			String controller, action;
 			String[] target = linkText.split("\\.");
 			if (target.length >= 2) {
@@ -139,8 +142,9 @@ public abstract class Editor extends TextEditor {
 				IFile curfile = ((IFileEditorInput)getEditorInput()).getFile();
 				IContainer container = curfile.getParent();
 				controller = container.getName();
-			}
-			getNav().goToAction(controller, action);
+			}*/
+			// TODO: Make absolute if it's relative
+			getNav().goToAction("controllers." + linkText);
 			return;
 		}
 		if (link.getTypeLabel().equals("tag")) {

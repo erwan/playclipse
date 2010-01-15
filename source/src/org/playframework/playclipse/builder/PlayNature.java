@@ -7,6 +7,8 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IProjectNature;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.core.JavaCore;
 
 public class PlayNature implements IProjectNature {
 
@@ -16,6 +18,7 @@ public class PlayNature implements IProjectNature {
 	public static final String NATURE_ID = "org.playframework.playclipse.playNature";
 
 	private IProject project;
+	private IJavaProject javaProject;
 
 	/*
 	 * (non-Javadoc)
@@ -77,6 +80,10 @@ public class PlayNature implements IProjectNature {
 		return project;
 	}
 
+	public IJavaProject getJavaProject() {
+		return javaProject;
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -84,6 +91,8 @@ public class PlayNature implements IProjectNature {
 	 */
 	public void setProject(IProject project) {
 		this.project = project;
+		this.javaProject = JavaCore.create(project);
+
 	}
 
 }

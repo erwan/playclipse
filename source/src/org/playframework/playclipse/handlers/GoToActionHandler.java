@@ -80,7 +80,8 @@ public class GoToActionHandler extends AbstractHandler {
 		String controller = action.split("\\.")[0];
 		String method = action.split("\\.")[1];
 		
-		(new Navigation(editor)).goToAction(controller, method);
+		// TODO: fix that
+		// (new Navigation(editor)).goToAction(controller, method);
 		return null;
 	}
 }

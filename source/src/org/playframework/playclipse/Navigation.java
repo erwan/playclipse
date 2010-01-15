@@ -4,7 +4,11 @@ import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.core.IType;
+import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchWindow;
@@ -20,46 +24,64 @@ public final class Navigation {
 		this.window = this.editorHelper.getWindow();
 	}
 
-	public void goToAction(String controller, String method) {
-		String path = "app/controllers/" + controller + ".java";
-		IFile file = this.editorHelper.getProject().getFile(path);
-		if (file.exists()) {
-			IEditorPart newEditorPart;
-			try {
-				newEditorPart = FilesAccess.openFile(file, this.window);
-				EditorHelper newEditor = new EditorHelper((ITextEditor)newEditorPart);
-				int lineNo = -1;
-				int i = 0;
-				int length = newEditor.lineCount();
-				String line;
-				IDocument doc = newEditor.getDocument();
-				while (i < length && lineNo < 0) {
-					line = doc.get(doc.getLineOffset(i), doc.getLineLength(i));
-					if (line.contains("public") &&
-						line.contains("static") &&
-						line.contains("void") &&
-						line.contains(method))
-					{
-						lineNo = i;
-					}
-					i++;
+	private IType findType(String name) {
+		IProject project = this.editorHelper.getProject();
+		try {
+			PlayNature nature = (PlayNature)project.getNature("org.playframework.playclipse.playNature");
+			IJavaProject javaProj = nature.getJavaProject();
+			IType type = javaProj.findType(name);
+			System.out.println(type);
+			return type;
+		} catch (CoreException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	/**
+	 * Open the requested action in an editor
+	 * @param action the fully qualified action, such as namespace.className.method
+	 */
+	public void goToAction(String action) {
+		String fullClassName = action.replaceFirst(".[^.]+$", "");
+		String method = action.substring(action.lastIndexOf('.'));
+		IType type = findType(fullClassName);
+		IFile file;
+		try {
+			file = (IFile)type.getCompilationUnit().getCorrespondingResource();
+		} catch (JavaModelException e1) {
+			// Should not happen
+			e1.printStackTrace();
+			return;
+		}
+		IEditorPart newEditorPart;
+		try {
+			newEditorPart = FilesAccess.openFile(file, this.window);
+			EditorHelper newEditor = new EditorHelper((ITextEditor)newEditorPart);
+			int lineNo = -1;
+			int i = 0;
+			int length = newEditor.lineCount();
+			String line;
+			IDocument doc = newEditor.getDocument();
+			while (i < length && lineNo < 0) {
+				line = doc.get(doc.getLineOffset(i), doc.getLineLength(i));
+				if (line.contains("public") &&
+					line.contains("static") &&
+					line.contains("void") &&
+					line.contains(method))
+				{
+					lineNo = i;
 				}
-				FilesAccess.goToLine(newEditorPart, i);
-			} catch (CoreException e) {
-				// Should never happen
-				e.printStackTrace();
-			} catch (org.eclipse.jface.text.BadLocationException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				i++;
 			}
-		} else {
-			if (MessageDialog.openConfirm(
-					window.getShell(),
-					"Playclipse",
-					"The file " + path + " can't be found, do you want to create it?")) {
-				String content = CodeTemplates.controller(controller);
-				FilesAccess.createAndOpen(file, content, FilesAccess.FileType.JAVA);
-			}
+			FilesAccess.goToLine(newEditorPart, i);
+		} catch (CoreException e) {
+			// Should never happen
+			e.printStackTrace();
+		} catch (BadLocationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 
