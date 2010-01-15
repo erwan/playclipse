@@ -125,8 +125,14 @@
             class="org.playframework.playclipse.wizards.ControllerWizard"
             icon="icons/controller.png"
             category="org.playframework.playclipse"
-            name="New Play Controller"
+            name="Play Controller"
             id="org.playframework.playclipse.wizards.ControllerWizard"/>
+      <wizard
+            class="org.playframework.playclipse.wizards.ViewWizard"
+            icon="icons/page_white_code_red.png"
+            category="org.playframework.playclipse"
+            name="Play View"
+            id="org.playframework.playclipse.wizards.ViewWizard"/>
    </extension>
    <extension
          point="org.eclipse.ui.editors">
