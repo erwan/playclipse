@@ -5,6 +5,8 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.core.IMethod;
+import org.eclipse.jdt.core.ISourceRange;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -30,7 +32,7 @@ public final class Navigation {
 			PlayNature nature = (PlayNature)project.getNature("org.playframework.playclipse.playNature");
 			IJavaProject javaProj = nature.getJavaProject();
 			IType type = javaProj.findType(name);
-			System.out.println(type);
+			System.out.println("Type for " + name + ": " + type);
 			return type;
 		} catch (CoreException e) {
 			// TODO Auto-generated catch block
@@ -45,7 +47,7 @@ public final class Navigation {
 	 */
 	public void goToAction(String action) {
 		String fullClassName = action.replaceFirst(".[^.]+$", "");
-		String method = action.substring(action.lastIndexOf('.'));
+		String method = action.substring(action.lastIndexOf('.') + 1);
 		IType type = findType(fullClassName);
 		IFile file;
 		try {
@@ -58,30 +60,50 @@ public final class Navigation {
 		IEditorPart newEditorPart;
 		try {
 			newEditorPart = FilesAccess.openFile(file, this.window);
-			EditorHelper newEditor = new EditorHelper((ITextEditor)newEditorPart);
-			int lineNo = -1;
-			int i = 0;
-			int length = newEditor.lineCount();
-			String line;
-			IDocument doc = newEditor.getDocument();
-			while (i < length && lineNo < 0) {
-				line = doc.get(doc.getLineOffset(i), doc.getLineLength(i));
-				if (line.contains("public") &&
-					line.contains("static") &&
-					line.contains("void") &&
-					line.contains(method))
-				{
-					lineNo = i;
-				}
-				i++;
-			}
-			FilesAccess.goToLine(newEditorPart, i);
+			focusOrCreateMethod(newEditorPart, type, method);
 		} catch (CoreException e) {
 			// Should never happen
 			e.printStackTrace();
-		} catch (BadLocationException e) {
+		}
+	}
+
+	/**
+	 * In an open editor, move the cursor to the line corresponding to the method if
+	 * it exists, offer the user to create it otherwise.
+	 * @param editorPart
+	 * @param type
+	 * @param methodName
+	 */
+	private void focusOrCreateMethod(IEditorPart editorPart, IType type, String methodName) {
+		// We can't just use IType.getMethod because we don't know the arguments
+		ISourceRange sourceRange = null;
+		IMethod[] methods;
+		System.out.println("Looking for method: " + methodName);
+		try {
+			methods = type.getMethods();
+			for (int i = 0; i < methods.length; i++) {
+				System.out.println("Checking with " + methods[i].getElementName());
+				if (methods[i].getElementName().equals(methodName)) {
+					sourceRange = methods[i].getSourceRange();
+				}
+			}
+		} catch (JavaModelException e1) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			e1.printStackTrace();
+		}
+		if (sourceRange != null) {
+			FilesAccess.goToCharacter(editorPart, sourceRange.getOffset());
+		} else if (MessageDialog.openConfirm(
+				window.getShell(),
+				"Playclipse",
+				"The method " + methodName + " doesn't exist, do you want to create it?")) {
+			try {
+				IMethod newMethod = type.createMethod("public static void "+methodName+"() {\n\n}\n", null, false, null);
+				FilesAccess.goToCharacter(editorPart, newMethod.getSourceRange().getOffset());
+			} catch (JavaModelException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 	}
 

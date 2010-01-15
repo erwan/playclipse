@@ -127,24 +127,14 @@ public abstract class Editor extends TextEditor {
 				getNav().openOrCreate(path);
 				return;
 			}
-/*			String controllerName = "controllers." + linkText.replaceFirst(".[^.]+$", "");
-			System.out.println(controllerName);
-			getNav().findType(controllerName);
-			String controller, action;
-			String[] target = linkText.split("\\.");
-			if (target.length >= 2) {
-				// Absolute reference, e.g. Application.index
-				controller = target[0];
-				action = target[1].replace("()", "");
-			} else {
+			String nakedAction = linkText.replaceFirst("\\(.*\\)", "");
+			if (nakedAction.indexOf('.') == -1) {
 				// Relative reference, e.g. just "index"
-				action = target[0].replace("()", "");
 				IFile curfile = ((IFileEditorInput)getEditorInput()).getFile();
-				IContainer container = curfile.getParent();
-				controller = container.getName();
-			}*/
-			// TODO: Make absolute if it's relative
-			getNav().goToAction("controllers." + linkText);
+				String controller = curfile.getParent().getName();
+				nakedAction = controller + "." + nakedAction;
+			}
+			getNav().goToAction("controllers." + nakedAction);
 			return;
 		}
 		if (link.getTypeLabel().equals("tag")) {

@@ -69,6 +69,17 @@ public class FilesAccess {
 		IDE.gotoMarker(editor, marker);
 	}
 
+	public static void goToCharacter(IEditorPart editor, int character) {
+		IMarker marker = null;
+		try {
+			marker = getFile(editor).createMarker(IMarker.TEXT);
+			marker.setAttribute(IMarker.CHAR_START, character);
+		} catch (CoreException e) {
+			// Never happens! We got the file from the editor.
+		}
+		IDE.gotoMarker(editor, marker);
+	}
+
 	public static void goToLineContaining(IEditorPart editorPart, String text) {
 		EditorHelper editor = new EditorHelper((ITextEditor)editorPart);
 		String line;
