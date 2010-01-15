@@ -43,7 +43,7 @@ public final class Navigation {
 	 * @param action the fully qualified action, such as namespace.className.method
 	 */
 	public void goToAction(String action) {
-		String fullClassName = action.replaceFirst(".[^.]+$", "");
+		String fullClassName = "controllers." + action.replaceFirst(".[^.]+$", "");
 		String method = action.substring(action.lastIndexOf('.') + 1);
 		IType type = findType(fullClassName);
 		IFile file;

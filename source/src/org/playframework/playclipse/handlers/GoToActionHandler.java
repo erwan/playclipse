@@ -41,19 +41,18 @@ public class GoToActionHandler extends AbstractHandler {
 
 	private String fromView(EditorHelper editor) {
 		String line = editor.getLine(editor.getCurrentLineNo());
-		String controller = editor.enclosingDirectory();
 		String action;
-		Pattern pt = Pattern.compile("@\\{[^\\(]+\\(\\)\\}");
+		Pattern pt = Pattern.compile("@\\{([^}]+)\\}");
 		Matcher m = pt.matcher(line);
 		if (m.find()) {
-			action = m.group().replace("@{", "").replace("()}", "");
-			if (action.contains(".")) {
-				controller = action.split("\\.")[0];
+			action = m.group().replace("@{", "").replace("}", "").replace("(.*)", "");
+			if (!action.contains(".")) {
+				action = editor.enclosingDirectory() + "." + action;
 			}
 		} else {
-			action = editor.getTitle().replace(".html", "");
+			action = editor.enclosingDirectory() + "." + editor.getTitle().replace(".html", "");
 		}
-		return controller + "." + action;
+		return action;
 	}
 
 	private String fromRoutes(EditorHelper editor) {
@@ -77,11 +76,8 @@ public class GoToActionHandler extends AbstractHandler {
 			System.out.println("Routes!!");
 		}
 		System.out.println("action = " + action);
-		String controller = action.split("\\.")[0];
-		String method = action.split("\\.")[1];
 		
-		// TODO: fix that
-		// (new Navigation(editor)).goToAction(controller, method);
+		(new Navigation(editor)).goToAction(action);
 		return null;
 	}
 }

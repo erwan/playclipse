@@ -134,7 +134,7 @@ public abstract class Editor extends TextEditor {
 				String controller = curfile.getParent().getName();
 				nakedAction = controller + "." + nakedAction;
 			}
-			getNav().goToAction("controllers." + nakedAction);
+			getNav().goToAction(nakedAction);
 			return;
 		}
 		if (link.getTypeLabel().equals("tag")) {

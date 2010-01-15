@@ -32,6 +32,8 @@ import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.handlers.HandlerUtil;
 import org.eclipse.ui.texteditor.ITextEditor;
+import org.playframework.playclipse.editors.RouteEditor;
+import org.playframework.playclipse.editors.html.HTMLEditor;
 
 /**
  * A helper class to handle the Eclipse-specific heavy lifting to access and
@@ -124,8 +126,7 @@ public final class EditorHelper {
 	 * @return true if the file owned by the editor corresponds to a view
 	 */
 	public boolean isView() {
-		IPath path = getFilePath();
-		return path.segment(path.segmentCount() - 2).equals("views");
+		return (textEditor instanceof HTMLEditor);
 	}
 
 	/**
@@ -133,8 +134,7 @@ public final class EditorHelper {
 	 * @return true if the file owned by the editor is the conf/routes files
 	 */
 	public boolean isRoutes() {
-		IPath path = getFilePath();
-		return path.segment(path.segmentCount() - 1).equals("routes");
+		return (textEditor instanceof RouteEditor);
 	}
 
 	/**
