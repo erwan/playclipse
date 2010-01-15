@@ -26,4 +26,18 @@ public final class CodeTemplates {
 		return builder.toString();
 	}
 
+	public static String model(String modelName) {
+		StringBuilder builder = new StringBuilder();
+		builder.append("package models;\n\n");
+		builder.append("import play.*;\n");
+		builder.append("import play.db.jpa.*;\n\n");
+		builder.append("import javax.persistence.*;\n");
+		builder.append("import java.util.*;\n\n");
+		builder.append("@Entity\n");
+		builder.append("public class ");
+		builder.append(modelName);
+		builder.append(" extends Model {\n    \n}\n");
+		return builder.toString();
+	}
+
 }
