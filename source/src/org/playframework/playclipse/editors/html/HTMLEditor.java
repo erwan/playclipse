@@ -191,7 +191,7 @@ public class HTMLEditor extends Editor {
 				oldState = state;
 				return found("expression", 0);
 			}
-			if(isNext("@{")) {
+			if(isNext("@{") || isNext("@@{")) {
 				oldState = state;
 				return found("action", 0);
 			}
