@@ -46,7 +46,7 @@ public class RouteEditor extends Editor {
 		BestMatch match = findBestMatch(region.getOffset(), action);
 		if(match != null) {
 			if(match.is(action)) {
-				return match.hyperlink("action", 0, 0);
+				return match.hyperlink("action", 1, 0);
 			}
 		}
 		return null;
