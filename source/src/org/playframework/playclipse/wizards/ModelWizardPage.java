@@ -3,7 +3,7 @@ package org.playframework.playclipse.wizards;
 
 import org.eclipse.jface.viewers.ISelection;
 
-public class ModelWizardPage extends PlayWizardPage {
+public class ModelWizardPage extends ClassWizardPage {
 
 	public ModelWizardPage(ISelection selection) {
 		super(selection);

@@ -28,9 +28,11 @@ public final class CodeTemplates {
 		return builder.toString();
 	}
 
-	public static String model(String modelName) {
+	public static String model(String modelName, String packageName) {
 		StringBuilder builder = new StringBuilder();
-		builder.append("package models;\n\n");
+		builder.append("package ");
+		builder.append(packageName);
+		builder.append(";\n\n");
 		builder.append("import play.*;\n");
 		builder.append("import play.db.jpa.*;\n\n");
 		builder.append("import javax.persistence.*;\n");

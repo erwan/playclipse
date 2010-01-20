@@ -16,7 +16,7 @@ public class ModelWizard extends PlayWizard {
 
 	@Override
 	protected String getContent(Map<String, String> parameters) {
-		return CodeTemplates.model(parameters.get("name"));
+		return CodeTemplates.model(parameters.get("name"), parameters.get("package"));
 	}
 
 	@Override
