@@ -27,6 +27,8 @@ import org.eclipse.ui.dialogs.SelectionDialog;
 
 public abstract class ClassWizardPage extends PlayWizardPage {
 
+	private Button packageBrowse;
+
 	protected Text packageText;
 
 	protected abstract String defaultPackage();
@@ -74,9 +76,9 @@ public abstract class ClassWizardPage extends PlayWizardPage {
 				dialogChanged();
 			}
 		});
-		button = new Button(container, SWT.PUSH);
-		button.setText("Browse...");
-		button.addSelectionListener(new SelectionAdapter() {
+		packageBrowse = new Button(container, SWT.PUSH);
+		packageBrowse.setText("Browse...");
+		packageBrowse.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				handlePackageBrowse();
 			}
@@ -115,6 +117,9 @@ public abstract class ClassWizardPage extends PlayWizardPage {
 		}
 		if (packageText.getText().isEmpty()) {
 			packageText.setText(defaultPackage());
+		}
+		if (project == null) {
+			packageBrowse.setEnabled(false);
 		}
 	}
 
