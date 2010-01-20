@@ -106,7 +106,7 @@ public class HTMLEditor extends Editor {
 	
 	// Template
 	
-	public void templates(String contentType, String ctx) {		
+	public void templates(String contentType, String ctx) {
 		if(contentType == "default" || contentType == "html" || contentType == "string") {
 			template("$", "Insert dynamic expression", "$${${}}${cursor}");
 			template("tag", "Insert tag without body", "#{${name} ${}/}${cursor}");

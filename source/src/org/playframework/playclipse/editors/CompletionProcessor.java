@@ -31,7 +31,7 @@ public class CompletionProcessor extends TemplateCompletionProcessor {
 
 	@Override
 	protected Image getImage(Template template) {
-		return null;
+		return editor.getImage(template);
 	}
 
 	@Override

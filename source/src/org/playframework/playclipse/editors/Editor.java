@@ -20,6 +20,7 @@ import org.eclipse.jface.text.TypedRegion;
 import org.eclipse.jface.text.hyperlink.IHyperlink;
 import org.eclipse.jface.text.source.SourceViewer;
 import org.eclipse.jface.text.templates.Template;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IFileEditorInput;
@@ -101,6 +102,10 @@ public abstract class Editor extends TextEditor {
 		templates.add(new Template(name, description, getClass().getName(), pattern, true));
 	}
 	
+	public Image getImage(Template template) {
+		return null;
+	}
+
 	// Auto-close
 	
 	@Override

@@ -82,7 +82,6 @@ public final class Navigation {
 		try {
 			methods = type.getMethods();
 			for (int i = 0; i < methods.length; i++) {
-				System.out.println("Checking with " + methods[i].getElementName());
 				if (methods[i].getElementName().equals(methodName)) {
 					sourceRange = methods[i].getSourceRange();
 				}
