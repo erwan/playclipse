@@ -1,6 +1,10 @@
 package org.playframework.playclipse.wizards;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.Path;
@@ -28,9 +32,10 @@ import org.eclipse.jdt.core.IJavaElement;
  */
 
 public abstract class PlayWizardPage extends WizardPage {
-	private Text containerText;
-	private Text name;
-	private ISelection selection;
+	protected Text containerText;
+	protected Text name;
+	protected ISelection selection;
+	protected IProject project;
 
 	protected abstract String description();
 	protected abstract String defaultName();
@@ -95,7 +100,7 @@ public abstract class PlayWizardPage extends WizardPage {
 	 * Tests if the current workbench selection is a suitable container to use.
 	 */
 
-	private void initialize() {
+	protected void initialize() {
 		if (selection != null && selection.isEmpty() == false
 				&& selection instanceof IStructuredSelection) {
 			IStructuredSelection ssel = (IStructuredSelection) selection;
@@ -112,6 +117,12 @@ public abstract class PlayWizardPage extends WizardPage {
 				else
 					container = ((IResource) obj).getParent();
 				containerText.setText(container.getFullPath().toString());
+				while (container != null) {
+					if (container instanceof IProject) {
+						project = (IProject)container;
+					}
+					container = container.getParent();
+				}
 			}
 		}
 		name.setText(defaultName());
@@ -122,7 +133,7 @@ public abstract class PlayWizardPage extends WizardPage {
 	 * the container field.
 	 */
 
-	private void handleBrowse() {
+	protected void handleBrowse() {
 		ContainerSelectionDialog dialog = new ContainerSelectionDialog(
 				getShell(), ResourcesPlugin.getWorkspace().getRoot(), false,
 				"Select new file container");
@@ -138,7 +149,7 @@ public abstract class PlayWizardPage extends WizardPage {
 	 * Ensures that both text fields are set.
 	 */
 
-	private void dialogChanged() {
+	protected void dialogChanged() {
 		IResource container = ResourcesPlugin.getWorkspace().getRoot()
 				.findMember(new Path(getContainerName()));
 		String fileName = getControllerName();
@@ -172,11 +183,18 @@ public abstract class PlayWizardPage extends WizardPage {
 		setPageComplete(message == null);
 	}
 
-	public String getContainerName() {
+	public Map<String, String> getParameters() {
+		Map<String, String> result = new HashMap<String, String>();
+		result.put("name", name.getText());
+		result.put("container", containerText.getText());
+		return result;
+	}
+
+	private String getContainerName() {
 		return containerText.getText();
 	}
 
-	public String getControllerName() {
+	private String getControllerName() {
 		return name.getText();
 	}
 }

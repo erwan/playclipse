@@ -1,5 +1,7 @@
 package org.playframework.playclipse.wizards;
 
+import java.util.Map;
+
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.Path;
@@ -14,13 +16,13 @@ public class ViewWizard extends PlayWizard {
 	}
 
 	@Override
-	protected String getContent(String name) {
-		return CodeTemplates.view(name);
+	protected IFile getTargetFile(IContainer container, String name) {
+		return container.getFile(new Path(name));
 	}
 
 	@Override
-	protected IFile getTargetFile(IContainer container, String name) {
-		return container.getFile(new Path(name));
+	protected String getContent(Map<String, String> parameters) {
+		return CodeTemplates.view(parameters.get("name"));
 	}
 
 }

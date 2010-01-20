@@ -2,7 +2,11 @@ package org.playframework.playclipse.wizards;
 
 import org.eclipse.jface.viewers.ISelection;
 
-public class ControllerWizardPage extends PlayWizardPage {
+public class ControllerWizardPage extends ClassWizardPage {
+
+	public ControllerWizardPage(ISelection selection) {
+		super(selection);
+	}
 
 	@Override
 	protected String description() { return "Create a new controller for your Play project."; }
@@ -10,8 +14,4 @@ public class ControllerWizardPage extends PlayWizardPage {
 	@Override
 	protected String defaultName() { return "MyController"; }
 	
-	public ControllerWizardPage(ISelection selection) {
-		super(selection);
-	}
-
 }

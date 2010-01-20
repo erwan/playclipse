@@ -1,5 +1,6 @@
 package org.playframework.playclipse.wizards;
 
+import java.util.Map;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.Path;
@@ -14,8 +15,8 @@ public class ControllerWizard extends PlayWizard {
 	}
 
 	@Override
-	protected String getContent(String name) {
-		return CodeTemplates.controller(name);
+	protected String getContent(Map<String, String> parameters) {
+		return CodeTemplates.controller(parameters.get("name"), parameters.get("package"));
 	}
 
 	@Override

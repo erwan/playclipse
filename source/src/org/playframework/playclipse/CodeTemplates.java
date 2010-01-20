@@ -2,9 +2,11 @@ package org.playframework.playclipse;
 
 public final class CodeTemplates {
 
-	public static String controller(String name) {
+	public static String controller(String name, String packageName) {
 		StringBuilder builder = new StringBuilder();
-		builder.append("package controllers;\n\n");
+		builder.append("package ");
+		builder.append(packageName);
+		builder.append(";\n\n");
 		builder.append("import play.mvc.*;\n\n");
 		builder.append("public class ");
 		builder.append(name);

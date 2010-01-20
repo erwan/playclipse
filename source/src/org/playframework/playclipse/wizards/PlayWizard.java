@@ -7,6 +7,8 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.core.runtime.*;
 import org.eclipse.jface.operation.*;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Map;
+
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.core.resources.*;
@@ -50,12 +52,11 @@ public abstract class PlayWizard extends Wizard implements INewWizard {
 	 * using wizard as execution context.
 	 */
 	public boolean performFinish() {
-		final String containerName = page.getContainerName();
-		final String controllerName = page.getControllerName();
+		final Map<String, String> parameters = page.getParameters();
 		IRunnableWithProgress op = new IRunnableWithProgress() {
 			public void run(IProgressMonitor monitor) throws InvocationTargetException {
 				try {
-					doFinish(containerName, controllerName, monitor);
+					doFinish(parameters, monitor);
 				} catch (CoreException e) {
 					throw new InvocationTargetException(e);
 				} finally {
@@ -82,8 +83,10 @@ public abstract class PlayWizard extends Wizard implements INewWizard {
 	 * the editor on the newly created file.
 	 */
 
-	private void doFinish(String containerName, String name, IProgressMonitor monitor)
+	private void doFinish(Map<String, String> parameters, IProgressMonitor monitor)
 		throws CoreException {
+		String name = parameters.get("name");
+		String containerName = parameters.get("container");
 		// create a sample file
 		monitor.beginTask("Creating " + name, 2);
 		IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
@@ -94,7 +97,7 @@ public abstract class PlayWizard extends Wizard implements INewWizard {
 		IContainer container = (IContainer) resource;
 		final IFile file = getTargetFile(container, name);
 		try {
-			InputStream stream = openContentStream(name);
+			InputStream stream = new ByteArrayInputStream(getContent(parameters).getBytes());
 			if (file.exists()) {
 				file.setContents(stream, true, true, monitor);
 			} else {
@@ -123,13 +126,9 @@ public abstract class PlayWizard extends Wizard implements INewWizard {
 	 * @param controllerName 
 	 */
 
-	protected abstract String getContent(String name);
+	protected abstract String getContent(Map<String, String> parameters);
 
 	protected abstract IFile getTargetFile(IContainer container, String name);
-
-	private InputStream openContentStream(String name) {
-		return new ByteArrayInputStream(getContent(name).getBytes());
-	}
 
 	private void throwCoreException(String message) throws CoreException {
 		IStatus status =
