@@ -13,5 +13,10 @@ public class ControllerWizardPage extends ClassWizardPage {
 
 	@Override
 	protected String defaultName() { return "MyController"; }
-	
+
+	@Override
+	protected String defaultPackage() {
+		return "controllers";
+	}
+
 }

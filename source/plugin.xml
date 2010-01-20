@@ -29,6 +29,27 @@
             id="org.playframework.playclipse.commands.goToRouteCommand"
             name="Go to Route">
       </command>
+      <command
+            categoryId="org.playframework.playclipse.commands.main"
+            description="New Controller"
+            helpContextId="Create a new Play controller."
+            id="org.playframework.playclipse.commands.newController"
+            name="New Controller">
+      </command>
+      <command
+            categoryId="org.playframework.playclipse.commands.main"
+            description="New Model"
+            helpContextId="Create a new Play model."
+            id="org.playframework.playclipse.commands.newModel"
+            name="New Model">
+      </command>
+      <command
+            categoryId="org.playframework.playclipse.commands.main"
+            description="New View"
+            helpContextId="Create a new Play view."
+            id="org.playframework.playclipse.commands.newView"
+            name="New View">
+      </command>
    </extension>
    <extension
          point="org.eclipse.ui.handlers">
@@ -43,6 +64,18 @@
       <handler
             commandId="org.playframework.playclipse.commands.goToRouteCommand"
             class="org.playframework.playclipse.handlers.GoToRouteHandler">
+      </handler>
+      <handler
+            commandId="org.playframework.playclipse.commands.newController"
+            class="org.playframework.playclipse.handlers.NewControllerHandler">
+      </handler>
+      <handler
+            commandId="org.playframework.playclipse.commands.newModel"
+            class="org.playframework.playclipse.handlers.NewModelHandler">
+      </handler>
+      <handler
+            commandId="org.playframework.playclipse.commands.newView"
+            class="org.playframework.playclipse.handlers.NewViewHandler">
       </handler>
    </extension>
    <extension
@@ -75,9 +108,34 @@
                mnemonic="l"
                id="org.playframework.playclipse.menus.play">
             <command
-                  commandId="org.playframework.playclipse.commands.goToViewCommand"
+                  commandId="org.playframework.playclipse.commands.newController"
+                  icon="icons/controller.png"
+                  label="New Controller"
+                  mnemonic="C"
+                  style="push">
+            </command>
+            <command
+                  commandId="org.playframework.playclipse.commands.newModel"
+                  icon="icons/model.png"
+                  label="New Model"
+                  mnemonic="M"
+                  style="push">
+            </command>
+            <command
+                  commandId="org.playframework.playclipse.commands.newView"
+                  icon="icons/view.png"
+                  label="New View"
                   mnemonic="V"
-                  id="org.playframework.playclipse.menus.goToViewCommand">
+                  style="push">
+            </command>
+            <separator
+                  name="Playclipse.separator1"
+                  visible="true">
+            </separator>
+            <command
+                  commandId="org.playframework.playclipse.commands.goToViewCommand"
+                  id="org.playframework.playclipse.menus.goToViewCommand"
+                  mnemonic="w">
             </command>
             <command
                   commandId="org.playframework.playclipse.commands.goToActionCommand"

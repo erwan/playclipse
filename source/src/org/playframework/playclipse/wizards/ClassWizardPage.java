@@ -29,6 +29,8 @@ public abstract class ClassWizardPage extends PlayWizardPage {
 
 	protected Text packageText;
 
+	protected abstract String defaultPackage();
+
 	public ClassWizardPage(ISelection selection) {
 		super(selection);
 	}
@@ -110,6 +112,9 @@ public abstract class ClassWizardPage extends PlayWizardPage {
 			if (obj instanceof IJavaElement) {
 				packageText.setText(((IJavaElement)obj).getElementName());
 			}
+		}
+		if (packageText.getText().isEmpty()) {
+			packageText.setText(defaultPackage());
 		}
 	}
 

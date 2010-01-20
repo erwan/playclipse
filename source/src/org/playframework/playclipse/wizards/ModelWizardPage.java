@@ -15,4 +15,9 @@ public class ModelWizardPage extends ClassWizardPage {
 	@Override
 	protected String description() { return "Create a new model for your Play project."; }
 
+	@Override
+	protected String defaultPackage() {
+		return "models";
+	}
+
 }

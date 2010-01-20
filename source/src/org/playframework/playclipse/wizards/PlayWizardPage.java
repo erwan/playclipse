@@ -62,7 +62,7 @@ public abstract class PlayWizardPage extends WizardPage {
 		layout.numColumns = 3;
 		layout.verticalSpacing = 9;
 		Label label = new Label(container, SWT.NULL);
-		label.setText("&Package:");
+		label.setText("&Source folder:");
 
 		containerText = new Text(container, SWT.BORDER | SWT.SINGLE);
 		GridData gd = new GridData(GridData.FILL_HORIZONTAL);
@@ -81,7 +81,7 @@ public abstract class PlayWizardPage extends WizardPage {
 			}
 		});
 		label = new Label(container, SWT.NULL);
-		label.setText("&Controller name:");
+		label.setText("&Name:");
 
 		name = new Text(container, SWT.BORDER | SWT.SINGLE);
 		gd = new GridData(GridData.FILL_HORIZONTAL);
@@ -112,10 +112,11 @@ public abstract class PlayWizardPage extends WizardPage {
 			}
 			if (obj instanceof IResource) {
 				IContainer container;
-				if (obj instanceof IContainer)
+				if (obj instanceof IContainer) {
 					container = (IContainer) obj;
-				else
+				} else {
 					container = ((IResource) obj).getParent();
+				}
 				containerText.setText(container.getFullPath().toString());
 				while (container != null) {
 					if (container instanceof IProject) {
