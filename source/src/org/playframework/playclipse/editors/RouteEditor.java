@@ -9,7 +9,6 @@ import org.eclipse.jdt.core.IMethod;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
-import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.TextAttribute;
@@ -21,13 +20,13 @@ import org.playframework.playclipse.handlers.PlayPlugin;
 
 public class RouteEditor extends Editor {
 
-	String oldState = IDocument.DEFAULT_CONTENT_TYPE;
+	String oldState = "default";
 	private Image controllerImage;
 
 	@Override
 	public String[] getTypes() {
 		return new String[] {
-				IDocument.DEFAULT_CONTENT_TYPE,
+				"default",
 				"keyword",
 				"url",
 				"action",
@@ -40,7 +39,7 @@ public class RouteEditor extends Editor {
 		return null;
 	}
 
-	Pattern action = Pattern.compile("\\s(\\w+\\.\\w+)");
+	Pattern action = Pattern.compile("\\s(\\w[\\.\\w]+)");
 
 	@Override
 	public IHyperlink detectHyperlink(ITextViewer textViewer, IRegion region) {
@@ -73,34 +72,34 @@ public class RouteEditor extends Editor {
 	@Override
 	public String scan() {
 		if (isNext("\n")) {
-			return found(IDocument.DEFAULT_CONTENT_TYPE, 1);
+			return found("default", 1);
 		}
 		if (state != "comment" && isNext("#")) {
 			return found("comment", 0);
 		}
-		if (state == IDocument.DEFAULT_CONTENT_TYPE && isNext("GET")) {
+		if (state == "default" && isNext("GET")) {
 			return found("keyword", 0);
 		}
-		if (state == IDocument.DEFAULT_CONTENT_TYPE && isNext("POST")) {
+		if (state == "default" && isNext("POST")) {
 			return found("keyword", 0);
 		}
-		if (state == IDocument.DEFAULT_CONTENT_TYPE && isNext("PUT")) {
+		if (state == "default" && isNext("PUT")) {
 			return found("keyword", 0);
 		}
-		if (state == IDocument.DEFAULT_CONTENT_TYPE && isNext("DELETE")) {
+		if (state == "default" && isNext("DELETE")) {
 			return found("keyword", 0);
 		}
-		if (state == IDocument.DEFAULT_CONTENT_TYPE && isNext("*")) {
+		if (state == "default" && isNext("*")) {
 			return found("keyword", 0);
 		}
 		if ((state == "keyword" || state == "url") && nextIsSpace()) {
 			oldState = state;
-			return found(IDocument.DEFAULT_CONTENT_TYPE, 0);
+			return found("default", 0);
 		}
-		if (state == IDocument.DEFAULT_CONTENT_TYPE && isNext("/")) {
+		if (state == "default" && isNext("/")) {
 			return found("url", 0);
 		}
-		if (state == IDocument.DEFAULT_CONTENT_TYPE && oldState == "url" && !nextIsSpace()) {
+		if (state == "default" && oldState == "url" && !nextIsSpace()) {
 			return found("action", 0);
 		}
 		return null;
