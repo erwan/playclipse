@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import org.eclipse.jdt.core.Flags;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IMethod;
 import org.eclipse.jdt.core.IType;
@@ -143,9 +144,13 @@ public class RouteEditor extends Editor {
 			}
 			IMethod[] allMethods = type.getMethods();
 			for (int i = 0; i < allMethods.length; i++) {
-				System.out.println("Try to match " + allMethods[i].getElementName() + " and " + query);
 				IMethod method = allMethods[i];
-				if (query.isEmpty() || method.getElementName().startsWith(query)) {
+				int flags = method.getFlags();
+				if ((query.isEmpty() || method.getElementName().startsWith(query))
+						&& Flags.isPublic(flags)
+						&& Flags.isStatic(flags)
+						&& method.getReturnType().equals("V")
+						) {
 					result.add(allMethods[i]);
 				}
 			}
