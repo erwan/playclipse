@@ -13,10 +13,10 @@ import org.eclipse.swt.graphics.Image;
 
 public class CompletionProcessor extends TemplateCompletionProcessor {
 
-	private Editor editor;
+	protected Editor editor;
 	private ISourceViewer sourceViewer;
 	private String type;
-	private String contentType;
+	protected String contentType;
 
 	public CompletionProcessor(String contentType, ISourceViewer sourceViewer, Editor editor) {
 		this.contentType = contentType;
@@ -32,15 +32,15 @@ public class CompletionProcessor extends TemplateCompletionProcessor {
 
 	@Override
 	protected Image getImage(Template template) {
-		return editor.getImage(template);
+		return null;
 	}
 
 	@Override
 	protected Template[] getTemplates(String contextTypeId) {
-		return editor.getTemplates(contentType, getCxt());
+		return editor.getTemplates(contentType, getCtx());
 	}
 
-	protected String getCxt() {
+	protected String getCtx() {
 		String txt = editor.documentProvider.document.get();
 		String ctx = "";
 		int position = sourceViewer.getSelectedRange().x - 1;

@@ -1,28 +1,21 @@
 package org.playframework.playclipse.editors;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.regex.Pattern;
 
-import org.eclipse.jdt.core.Flags;
-import org.eclipse.jdt.core.IJavaProject;
-import org.eclipse.jdt.core.IMethod;
-import org.eclipse.jdt.core.IType;
-import org.eclipse.jdt.core.JavaCore;
-import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.TextAttribute;
 import org.eclipse.jface.text.hyperlink.IHyperlink;
-import org.eclipse.jface.text.templates.Template;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.RGB;
-import org.playframework.playclipse.handlers.PlayPlugin;
 
 public class RouteEditor extends PlayEditor {
 
 	String oldState = "default";
-	private Image controllerImage;
+
+	public RouteEditor() {
+		super();
+		setSourceViewerConfiguration(new RouteConfiguration(this));
+	}
 
 	@Override
 	public String[] getTypes() {
@@ -104,69 +97,6 @@ public class RouteEditor extends PlayEditor {
 			return found("action", 0);
 		}
 		return null;
-	}
-
-	@Override
-	public Template[] getTemplates(String contentType, String ctx) {
-		System.out.println("templates " + contentType + " - " + ctx);
-		List<Template> result = new ArrayList<Template>();
-		if (contentType.equals("action") && ctx.contains(".")) {
-			String[] splitted = ctx.split("\\.");
-			String query = "";
-			if (splitted.length > 1) {
-				query = splitted[1];
-			}
-			List<IMethod> methods = getMatchingMethods(splitted[0], query);
-			for (int i = 0; i < methods.size(); i++) {
-				result.add(getTemplate(methods.get(i)));
-			}
-		}
-		return result.toArray(new Template[result.size()]);
-	}
-
-	private Template getTemplate(IMethod javaMethod) {
-		String name = javaMethod.getElementName();
-		String description = javaMethod.getCompilationUnit().getElementName();
-		return new Template(name, description, getClass().getName(), name, true);
-	}
-
-	private List<IMethod> getMatchingMethods(String fullClassName, String query) {
-		System.out.println("getMatchingMethods " + fullClassName + " - " + query);
-		List<IMethod> result = new ArrayList<IMethod>();
-		IJavaProject javaProject = JavaCore.create(getProject());
-		try {
-			IType type = javaProject.findType("controllers." + fullClassName);
-			if (type == null) {
-				type = javaProject.findType(fullClassName);
-			}
-			if (type == null) {
-				return result;
-			}
-			IMethod[] allMethods = type.getMethods();
-			for (int i = 0; i < allMethods.length; i++) {
-				IMethod method = allMethods[i];
-				int flags = method.getFlags();
-				if ((query.isEmpty() || method.getElementName().startsWith(query))
-						&& Flags.isPublic(flags)
-						&& Flags.isStatic(flags)
-						&& method.getReturnType().equals("V")
-						) {
-					result.add(allMethods[i]);
-				}
-			}
-		} catch (JavaModelException e) {
-			e.printStackTrace();
-		}
-
-		return result;
-	}
-
-	@Override
-	public Image getImage(Template template) {
-		if (controllerImage == null) {
-			controllerImage = PlayPlugin.getImageDescriptor("icons/controller.png").createImage();
-		}
-		return controllerImage;
 	}
 
 	@Override
