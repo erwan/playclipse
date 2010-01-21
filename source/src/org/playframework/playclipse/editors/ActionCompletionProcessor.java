@@ -6,6 +6,7 @@ import java.util.List;
 import org.eclipse.jdt.core.Flags;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IMethod;
+import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
@@ -34,7 +35,19 @@ public class ActionCompletionProcessor extends CompletionProcessor {
 		}
 		System.out.println("templates " + contextTypeId + " - " + ctx);
 		List<Template> result = new ArrayList<Template>();
-		if (ctx.contains(".")) {
+		if (ctx.isEmpty()) {
+			IJavaProject javaProject = JavaCore.create(editor.getProject());
+			try {
+				IPackageFragmentRoot[] roots = javaProject.getPackageFragmentRoots();
+				for (int i = 0; i < roots.length; i++) {
+					result.add(getTemplate(contextTypeId, roots[i]));
+				}
+			} catch (JavaModelException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+		} else if (ctx.contains(".")) {
 			String[] splitted = ctx.split("\\.");
 			String query = "";
 			if (splitted.length > 1) {
@@ -46,6 +59,12 @@ public class ActionCompletionProcessor extends CompletionProcessor {
 			}
 		}
 		return result.toArray(new Template[result.size()]);
+	}
+
+	private Template getTemplate(String contextTypeId, IPackageFragmentRoot root) {
+		String name = root.getElementName();
+		String description = root.getElementName();
+		return new Template(name, description, contextTypeId, name, true);
 	}
 
 	private Template getTemplate(String contextTypeId, IMethod javaMethod) {
