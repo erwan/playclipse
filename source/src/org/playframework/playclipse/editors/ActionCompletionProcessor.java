@@ -26,6 +26,12 @@ public class ActionCompletionProcessor extends CompletionProcessor {
 	@Override
 	public Template[] getTemplates(String contextTypeId) {
 		String ctx = getCtx();
+		if (ctx.startsWith("@@{")) {
+			ctx = ctx.replace("@@{", "");
+		}
+		if (ctx.startsWith("@{")) {
+			ctx = ctx.replace("@{", "");
+		}
 		System.out.println("templates " + contextTypeId + " - " + ctx);
 		List<Template> result = new ArrayList<Template>();
 		if (ctx.contains(".")) {
@@ -36,21 +42,19 @@ public class ActionCompletionProcessor extends CompletionProcessor {
 			}
 			List<IMethod> methods = getMatchingMethods(splitted[0], query);
 			for (int i = 0; i < methods.size(); i++) {
-				result.add(getTemplate(methods.get(i)));
+				result.add(getTemplate(contextTypeId, methods.get(i)));
 			}
 		}
-		System.out.println("RETURN: "+result);
 		return result.toArray(new Template[result.size()]);
 	}
 
-	private Template getTemplate(IMethod javaMethod) {
+	private Template getTemplate(String contextTypeId, IMethod javaMethod) {
 		String name = javaMethod.getElementName();
 		String description = javaMethod.getCompilationUnit().getElementName();
-		return new Template(name, description, editor.getClass().getName(), name, true);
+		return new Template(name, description, contextTypeId, name, true);
 	}
 
 	private List<IMethod> getMatchingMethods(String fullClassName, String query) {
-		System.out.println("getMatchingMethods " + fullClassName + " - " + query);
 		List<IMethod> result = new ArrayList<IMethod>();
 		IJavaProject javaProject = JavaCore.create(editor.getProject());
 		try {
