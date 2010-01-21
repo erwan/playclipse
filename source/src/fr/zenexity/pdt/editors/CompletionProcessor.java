@@ -1,4 +1,4 @@
-package org.playframework.playclipse.editors;
+package fr.zenexity.pdt.editors;
 
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITextViewer;
@@ -9,6 +9,7 @@ import org.eclipse.jface.text.templates.TemplateCompletionProcessor;
 import org.eclipse.jface.text.templates.TemplateContext;
 import org.eclipse.jface.text.templates.TemplateContextType;
 import org.eclipse.swt.graphics.Image;
+
 
 public class CompletionProcessor extends TemplateCompletionProcessor {
 

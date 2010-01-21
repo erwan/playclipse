@@ -1,4 +1,4 @@
-package org.playframework.playclipse.editors;
+package fr.zenexity.pdt.editors;
 
 
 import org.eclipse.jface.text.BadLocationException;
@@ -7,6 +7,7 @@ import org.eclipse.jface.text.source.SourceViewer;
 import org.eclipse.swt.custom.VerifyKeyListener;
 import org.eclipse.swt.events.VerifyEvent;
 import org.eclipse.swt.graphics.Point;
+
 
 public class AutoCloser implements VerifyKeyListener {
 

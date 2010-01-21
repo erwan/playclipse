@@ -19,9 +19,9 @@ import org.eclipse.jface.text.source.projection.ProjectionSupport;
 import org.eclipse.jface.text.source.projection.ProjectionViewer;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Composite;
-import org.playframework.playclipse.editors.Editor;
+import org.playframework.playclipse.editors.PlayEditor;
 
-public class HTMLEditor extends Editor {
+public class HTMLEditor extends PlayEditor {
 	
 	private ProjectionSupport projectionSupport;
 

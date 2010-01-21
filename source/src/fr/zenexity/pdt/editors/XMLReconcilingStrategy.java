@@ -1,5 +1,5 @@
 
-package org.playframework.playclipse.editors.html;
+package fr.zenexity.pdt.editors;
 
 import java.util.ArrayList;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -11,6 +11,7 @@ import org.eclipse.jface.text.reconciler.DirtyRegion;
 import org.eclipse.jface.text.reconciler.IReconcilingStrategy;
 import org.eclipse.jface.text.reconciler.IReconcilingStrategyExtension;
 import org.eclipse.swt.widgets.Display;
+import org.playframework.playclipse.editors.html.HTMLEditor;
 
 public class XMLReconcilingStrategy implements IReconcilingStrategy, IReconcilingStrategyExtension {
 

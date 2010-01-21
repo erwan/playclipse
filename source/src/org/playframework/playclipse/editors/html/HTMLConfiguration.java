@@ -3,7 +3,9 @@ package org.playframework.playclipse.editors.html;
 import org.eclipse.jface.text.reconciler.IReconciler;
 import org.eclipse.jface.text.reconciler.MonoReconciler;
 import org.eclipse.jface.text.source.ISourceViewer;
-import org.playframework.playclipse.editors.Configuration;
+
+import fr.zenexity.pdt.editors.Configuration;
+import fr.zenexity.pdt.editors.XMLReconcilingStrategy;
 
 public class HTMLConfiguration extends Configuration {
 

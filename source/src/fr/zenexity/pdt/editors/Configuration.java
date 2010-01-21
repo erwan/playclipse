@@ -1,4 +1,4 @@
-package org.playframework.playclipse.editors;
+package fr.zenexity.pdt.editors;
 
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITextViewer;
@@ -10,6 +10,7 @@ import org.eclipse.jface.text.presentation.IPresentationReconciler;
 import org.eclipse.jface.text.presentation.PresentationReconciler;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.text.source.SourceViewerConfiguration;
+
 
 
 public class Configuration extends SourceViewerConfiguration {

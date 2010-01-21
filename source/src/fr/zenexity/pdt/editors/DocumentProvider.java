@@ -1,4 +1,4 @@
-package org.playframework.playclipse.editors;
+package fr.zenexity.pdt.editors;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,6 +9,7 @@ import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IDocumentPartitioner;
 import org.eclipse.jface.text.ITypedRegion;
 import org.eclipse.ui.editors.text.FileDocumentProvider;
+
 
 public class DocumentProvider extends FileDocumentProvider {
 	

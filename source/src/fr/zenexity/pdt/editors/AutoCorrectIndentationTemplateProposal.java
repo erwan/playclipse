@@ -1,4 +1,4 @@
-package org.playframework.playclipse.editors;
+package fr.zenexity.pdt.editors;
 
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITextViewer;

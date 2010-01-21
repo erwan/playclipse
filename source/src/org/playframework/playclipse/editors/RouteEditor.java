@@ -19,7 +19,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.RGB;
 import org.playframework.playclipse.handlers.PlayPlugin;
 
-public class RouteEditor extends Editor {
+public class RouteEditor extends PlayEditor {
 
 	String oldState = "default";
 	private Image controllerImage;

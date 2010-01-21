@@ -6,10 +6,10 @@ import org.eclipse.jface.text.TextAttribute;
 import org.eclipse.jface.text.hyperlink.IHyperlink;
 import org.eclipse.swt.graphics.RGB;
 
-public class ConfEditor extends Editor {
+public class ConfEditor extends PlayEditor {
 
-    @Override
-    public String autoClose(char pc, char c, char nc) {
+	@Override
+	public String autoClose(char pc, char c, char nc) {
 		if(c == '{') {
 			return "}";
 		}
