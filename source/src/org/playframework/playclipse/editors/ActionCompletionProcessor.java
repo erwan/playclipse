@@ -53,17 +53,6 @@ public class ActionCompletionProcessor extends CompletionProcessor {
 				return result.toArray(new Template[result.size()]);
 			}
 		} else if (ctx.contains(".")) {
-/*			System.out.println("ALL PACKAGE FRAGMENTS");
-			try {
-				IPackageFragment[] frags = javaProject.getPackageFragments();
-				for (int i = 0; i < frags.length; i++) {
-					System.out.println(frags[i].getElementName());
-				}
-			} catch (JavaModelException e) {
-				e.printStackTrace();
-				return result.toArray(new Template[result.size()]);
-			}
-			System.out.println("/ ALL PACKAGE FRAGMENTS");*/
 			String typeName = ctx.substring(0, ctx.lastIndexOf('.'));
 			String query = ctx.substring(ctx.lastIndexOf('.') + 1);
 			result.addAll(getMatchingTemplates(typeName, query, contextTypeId));
