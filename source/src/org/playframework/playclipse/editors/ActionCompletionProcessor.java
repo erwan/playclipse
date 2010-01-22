@@ -40,8 +40,8 @@ public class ActionCompletionProcessor extends CompletionProcessor {
 		if (ctx.startsWith("@{")) ctx = ctx.replace("@{", "");
 		System.out.println("templates " + contextTypeId + " - " + ctx);
 		List<Template> result = new ArrayList<Template>();
+		IJavaProject javaProject = JavaCore.create(editor.getProject());
 		if (ctx.isEmpty()) {
-			IJavaProject javaProject = JavaCore.create(editor.getProject());
 			try {
 				IPackageFragmentRoot[] roots = javaProject.getPackageFragmentRoots();
 				for (int i = 0; i < roots.length; i++) {
@@ -49,10 +49,21 @@ public class ActionCompletionProcessor extends CompletionProcessor {
 						result.add(getTemplate(contextTypeId, roots[i]));
 				}
 			} catch (JavaModelException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
+				return result.toArray(new Template[result.size()]);
 			}
 		} else if (ctx.contains(".")) {
+/*			System.out.println("ALL PACKAGE FRAGMENTS");
+			try {
+				IPackageFragment[] frags = javaProject.getPackageFragments();
+				for (int i = 0; i < frags.length; i++) {
+					System.out.println(frags[i].getElementName());
+				}
+			} catch (JavaModelException e) {
+				e.printStackTrace();
+				return result.toArray(new Template[result.size()]);
+			}
+			System.out.println("/ ALL PACKAGE FRAGMENTS");*/
 			String typeName = ctx.substring(0, ctx.lastIndexOf('.'));
 			String query = ctx.substring(ctx.lastIndexOf('.') + 1);
 			result.addAll(getMatchingTemplates(typeName, query, contextTypeId));
@@ -79,7 +90,7 @@ public class ActionCompletionProcessor extends CompletionProcessor {
 	}
 
 	private Template getTemplate(String contextTypeId, ICompilationUnit compilationUnit) {
-		String name = compilationUnit.getElementName();
+		String name = compilationUnit.getElementName().replace(".java", "");
 		String description = "Controller";
 		return new Template(name, description, contextTypeId, name, true);
 	}
@@ -94,6 +105,13 @@ public class ActionCompletionProcessor extends CompletionProcessor {
 			parent = javaProject.findType("controllers." + fullClassName);
 			if (parent == null) {
 				parent = javaProject.findType(fullClassName);
+			}
+			// Look for package fragments
+			if (parent == null) {
+				parent = getPackageFragment(javaProject, "controllers." + fullClassName);
+			}
+			if (parent == null) {
+				parent = getPackageFragment(javaProject, fullClassName);
 			}
 			if (parent == null) {
 				System.out.println("Can't find anything!");
@@ -124,6 +142,21 @@ public class ActionCompletionProcessor extends CompletionProcessor {
 		}
 
 		return result;
+	}
+
+	private IPackageFragment getPackageFragment(IJavaProject project, String fragmentName) {
+		IPackageFragment[] frags;
+		try {
+			frags = project.getPackageFragments();
+			for (int i = 0; i < frags.length; i++) {
+				if (frags[i].getElementName().equals(fragmentName)) {
+					return frags[i];
+				}
+			}
+		} catch (JavaModelException e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 	private Map<String, Image> templateImages;
