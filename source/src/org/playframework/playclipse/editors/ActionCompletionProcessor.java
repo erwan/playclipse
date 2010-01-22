@@ -23,6 +23,13 @@ import org.playframework.playclipse.handlers.PlayPlugin;
 import fr.zenexity.pdt.editors.CompletionProcessor;
 import fr.zenexity.pdt.editors.Editor;
 
+/**
+ * Auto complete for actions, e.g. public static void methods on controllers. Currently used in the
+ * route editor and in the template editor.
+ * @author erwan
+ * @see org.playframework.editors.RouteEditor, org.playframework.editors.html.HTMLEditor
+ *
+ */
 public class ActionCompletionProcessor extends CompletionProcessor {
 
 	public ActionCompletionProcessor(ISourceViewer sourceViewer, Editor editor) {
@@ -92,15 +99,9 @@ public class ActionCompletionProcessor extends CompletionProcessor {
 			IParent parent;
 			// Look for classes
 			parent = javaProject.findType("controllers." + fullClassName);
-			if (parent == null) {
-				parent = javaProject.findType(fullClassName);
-			}
 			// Look for package fragments
 			if (parent == null) {
 				parent = getPackageFragment(javaProject, "controllers." + fullClassName);
-			}
-			if (parent == null) {
-				parent = getPackageFragment(javaProject, fullClassName);
 			}
 			if (parent == null) {
 				System.out.println("Can't find anything!");

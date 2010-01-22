@@ -6,6 +6,7 @@ public class ControllerWizardPage extends ClassWizardPage {
 
 	public ControllerWizardPage(ISelection selection) {
 		super(selection);
+		setTitle("Play Controller");
 	}
 
 	@Override

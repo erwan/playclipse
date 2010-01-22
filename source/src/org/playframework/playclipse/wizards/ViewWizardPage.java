@@ -6,6 +6,7 @@ public class ViewWizardPage extends PlayWizardPage {
 
 	public ViewWizardPage(ISelection selection) {
 		super(selection);
+		setTitle("Play View");
 	}
 
 	@Override

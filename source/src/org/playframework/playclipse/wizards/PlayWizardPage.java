@@ -47,7 +47,6 @@ public abstract class PlayWizardPage extends WizardPage {
 	 */
 	public PlayWizardPage(ISelection selection) {
 		super("wizardPage");
-		setTitle("Multi-page Editor File");
 		setDescription(description());
 		this.selection = selection;
 	}

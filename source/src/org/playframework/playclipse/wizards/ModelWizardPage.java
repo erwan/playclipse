@@ -7,6 +7,7 @@ public class ModelWizardPage extends ClassWizardPage {
 
 	public ModelWizardPage(ISelection selection) {
 		super(selection);
+		setTitle("Play Model");
 	}
 
 	@Override

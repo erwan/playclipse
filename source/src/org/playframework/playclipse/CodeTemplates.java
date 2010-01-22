@@ -1,5 +1,10 @@
 package org.playframework.playclipse;
 
+/**
+ * Helpers to provide code templates for various files (controllers, views, models)
+ * @author erwan
+ *
+ */
 public final class CodeTemplates {
 
 	public static String controller(String name, String packageName) {

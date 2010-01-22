@@ -81,12 +81,6 @@
    <extension
          point="org.eclipse.ui.bindings">
       <key
-            commandId="org.playframework.playclipse.commands.goToViewCommand"
-            contextId="org.eclipse.ui.contexts.window"
-            sequence="M1+ALT+V"
-            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration">
-      </key>
-      <key
             commandId="org.playframework.playclipse.commands.goToActionCommand"
             contextId="org.eclipse.ui.contexts.window"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
@@ -97,6 +91,24 @@
             contextId="org.eclipse.ui.contexts.window"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
             sequence="M1+ALT+R">
+      </key>
+      <key
+            commandId="org.playframework.playclipse.commands.newController"
+            contextId="org.eclipse.ui.contexts.window"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="M1+SHIFT+C">
+      </key>
+      <key
+            commandId="org.playframework.playclipse.commands.newView"
+            contextId="org.eclipse.ui.contexts.window"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="M1+SHIFT+V">
+      </key>
+      <key
+            commandId="org.playframework.playclipse.commands.newModel"
+            contextId="org.eclipse.ui.contexts.window"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="M1+SHIFT+M">
       </key>
    </extension>
    <extension
@@ -154,16 +166,22 @@
          <toolbar
                id="org.playframework.playclipse.toolbars.playToolbar">
             <command
-                  commandId="org.playframework.playclipse.commands.goToViewCommand"
-                  icon="icons/view.png"
-                  tooltip="Go to View"
-                  id="org.playframework.playclipse.toolbars.goToViewCommand">
+                  commandId="org.playframework.playclipse.commands.newController"
+                  icon="icons/controller.png"
+                  tooltip="New Controller"
+                  id="org.playframework.playclipse.toolbars.newControllerCommand">
             </command>
             <command
-                  commandId="org.playframework.playclipse.commands.goToActionCommand"
-                  icon="icons/controller.png"
-                  id="org.playframework.playclipse.toolbars.goToActionCommand"
-                  tooltip="Go to Action">
+                  commandId="org.playframework.playclipse.commands.newView"
+                  icon="icons/page_white_code_red.png"
+                  id="org.playframework.playclipse.toolbars.newViewCommand"
+                  tooltip="New View">
+            </command>
+            <command
+                  commandId="org.playframework.playclipse.commands.newModel"
+                  icon="icons/model.png"
+                  id="org.playframework.playclipse.toolbars.newModelCommand"
+                  tooltip="New Model">
             </command>
             <command
                   commandId="org.playframework.playclipse.commands.goToRouteCommand"
