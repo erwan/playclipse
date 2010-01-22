@@ -1,13 +1,18 @@
 package org.playframework.playclipse.editors;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.jdt.core.Flags;
+import org.eclipse.jdt.core.ICompilationUnit;
+import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IMethod;
+import org.eclipse.jdt.core.IPackageFragment;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
-import org.eclipse.jdt.core.IType;
+import org.eclipse.jdt.core.IParent;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.text.source.ISourceViewer;
@@ -22,6 +27,10 @@ public class ActionCompletionProcessor extends CompletionProcessor {
 
 	public ActionCompletionProcessor(ISourceViewer sourceViewer, Editor editor) {
 		super("action", sourceViewer, editor);
+		templateImages = new HashMap<String, Image>();
+		templateImages.put("Package", PlayPlugin.getImageDescriptor("icons/package_obj.gif").createImage());
+		templateImages.put("Controller", PlayPlugin.getImageDescriptor("icons/class_obj.gif").createImage());
+		templateImages.put("Action", PlayPlugin.getImageDescriptor("icons/controller.png").createImage());
 	}
 
 	@Override
@@ -36,7 +45,8 @@ public class ActionCompletionProcessor extends CompletionProcessor {
 			try {
 				IPackageFragmentRoot[] roots = javaProject.getPackageFragmentRoots();
 				for (int i = 0; i < roots.length; i++) {
-					result.add(getTemplate(contextTypeId, roots[i]));
+					if (!roots[i].isArchive())
+						result.add(getTemplate(contextTypeId, roots[i]));
 				}
 			} catch (JavaModelException e) {
 				// TODO Auto-generated catch block
@@ -45,48 +55,68 @@ public class ActionCompletionProcessor extends CompletionProcessor {
 		} else if (ctx.contains(".")) {
 			String typeName = ctx.substring(0, ctx.lastIndexOf('.'));
 			String query = ctx.substring(ctx.lastIndexOf('.') + 1);
-			List<IMethod> methods = getMatchingMethods(typeName, query);
-			for (int i = 0; i < methods.size(); i++) {
-				result.add(getTemplate(contextTypeId, methods.get(i)));
-			}
+			result.addAll(getMatchingTemplates(typeName, query, contextTypeId));
 		}
 		return result.toArray(new Template[result.size()]);
 	}
 
 	private Template getTemplate(String contextTypeId, IPackageFragmentRoot root) {
 		String name = root.getElementName();
-		String description = root.getElementName();
+		String description = "Package";
 		return new Template(name, description, contextTypeId, name, true);
 	}
 
 	private Template getTemplate(String contextTypeId, IMethod javaMethod) {
 		String name = javaMethod.getElementName();
-		String description = javaMethod.getCompilationUnit().getElementName();
+		String description = "Action";
 		return new Template(name, description, contextTypeId, name, true);
 	}
 
-	private List<IMethod> getMatchingMethods(String fullClassName, String query) {
+	private Template getTemplate(String contextTypeId, IPackageFragment packageFragment) {
+		String name = packageFragment.getElementName();
+		String description = "Package";
+		return new Template(name, description, contextTypeId, name, true);
+	}
+
+	private Template getTemplate(String contextTypeId, ICompilationUnit compilationUnit) {
+		String name = compilationUnit.getElementName();
+		String description = "Controller";
+		return new Template(name, description, contextTypeId, name, true);
+	}
+
+	private List<Template> getMatchingTemplates(String fullClassName, String query, String contextTypeId) {
 		System.out.println("getMatchingMethods {" + fullClassName + "}.{" + query + "}");
-		List<IMethod> result = new ArrayList<IMethod>();
+		List<Template> result = new ArrayList<Template>();
 		IJavaProject javaProject = JavaCore.create(editor.getProject());
 		try {
-			IType type = javaProject.findType("controllers." + fullClassName);
-			if (type == null) {
-				type = javaProject.findType(fullClassName);
+			IParent parent;
+			// Look for classes
+			parent = javaProject.findType("controllers." + fullClassName);
+			if (parent == null) {
+				parent = javaProject.findType(fullClassName);
 			}
-			if (type == null) {
-				return result;
+			if (parent == null) {
+				System.out.println("Can't find anything!");
+				return null;
 			}
-			IMethod[] allMethods = type.getMethods();
-			for (int i = 0; i < allMethods.length; i++) {
-				IMethod method = allMethods[i];
-				int flags = method.getFlags();
-				if ((query.isEmpty() || method.getElementName().startsWith(query))
-						&& Flags.isPublic(flags)
-						&& Flags.isStatic(flags)
-						&& method.getReturnType().equals("V")
-						) {
-					result.add(allMethods[i]);
+			IJavaElement[] children = parent.getChildren();
+			for (int i = 0; i < children.length; i++) {
+				IJavaElement child = children[i];
+				System.out.println(child.getElementName() + "?");
+				if (child instanceof IMethod) {
+					IMethod method = (IMethod)child;
+					int flags = method.getFlags();
+					if ((query.isEmpty() || method.getElementName().startsWith(query))
+							&& Flags.isPublic(flags)
+							&& Flags.isStatic(flags)
+							&& method.getReturnType().equals("V")) {
+						result.add(getTemplate(contextTypeId, method));
+					}
+				} else if (child instanceof IPackageFragment) {
+					result.add(getTemplate(contextTypeId, (IPackageFragment)child));
+				} else if (child instanceof ICompilationUnit) { // Java class
+					System.out.println(child.getElementName() + " is a ICompilationUnit");
+					result.add(getTemplate(contextTypeId, (ICompilationUnit)child));
 				}
 			}
 		} catch (JavaModelException e) {
@@ -96,14 +126,14 @@ public class ActionCompletionProcessor extends CompletionProcessor {
 		return result;
 	}
 
-	private Image controllerImage;
+	private Map<String, Image> templateImages;
 
 	@Override
 	protected Image getImage(Template template) {
-		if (controllerImage == null) {
-			controllerImage = PlayPlugin.getImageDescriptor("icons/controller.png").createImage();
+		if (templateImages.containsKey(template.getDescription())) {
+			return templateImages.get(template.getDescription());
 		}
-		return controllerImage;
+		return null;
 	}
 
 }
