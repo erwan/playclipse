@@ -46,7 +46,7 @@ public class CompletionProcessor extends TemplateCompletionProcessor {
 		int position = sourceViewer.getSelectedRange().x - 1;
 		while (position >= 0) {
 			char c = txt.charAt(position--);
-			if (c == ' ' || c == '\n') {
+			if (c == ' ' || c == '\t' || c == '\n') {
 				break;
 			}
 			ctx = c + ctx;

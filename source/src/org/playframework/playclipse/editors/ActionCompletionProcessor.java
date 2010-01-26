@@ -43,8 +43,8 @@ public class ActionCompletionProcessor extends CompletionProcessor {
 	@Override
 	public Template[] getTemplates(String contextTypeId) {
 		String ctx = getCtx();
-		if (ctx.startsWith("@@{")) ctx = ctx.replace("@@{", "");
-		if (ctx.startsWith("@{")) ctx = ctx.replace("@{", "");
+		if (ctx.contains("@@{")) ctx = ctx.substring(ctx.indexOf("@@{") + 3);
+		if (ctx.contains("@{")) ctx = ctx.substring(ctx.indexOf("@{") + 2);
 		System.out.println("templates " + contextTypeId + " - " + ctx);
 		List<Template> result = new ArrayList<Template>();
 		IJavaProject javaProject = JavaCore.create(editor.getProject());
