@@ -18,49 +18,21 @@
 
 package org.playframework.playclipse.handlers;
 
-import java.io.IOException;
-
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.HttpResponseException;
-import org.apache.http.client.ResponseHandler;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.conn.HttpHostConnectException;
-import org.apache.http.impl.client.BasicResponseHandler;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.PlatformUI;
+import org.playframework.playclipse.tests.TestDialog;
 
 public class TestsHandler extends AbstractHandler {
 
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		System.out.println("TEST!!");
-		try {
-			System.out.println(getPageContent("http://localhost:9000/@tests?select=all&auto=yes"));
-		} catch (HttpHostConnectException e) {
-			// TODO: Show an error dialog "application not running"
-			System.out.println("Error: application not running");
-		} catch (HttpResponseException e) {
-			if (e.getStatusCode() == 404) {
-				// 404 probably means the server is not running in test mode
-				System.out.println("Error: 404 - not running in test mode?");
-			}
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		Shell shell = PlatformUI.getWorkbench().getDisplay().getActiveShell();
+		TestDialog dialog = new TestDialog(shell);
+		dialog.open();
 		return null;
 	}
-
-	private String getPageContent(String url) throws ClientProtocolException, IOException {
-		HttpClient httpclient = new DefaultHttpClient();
-		HttpGet httpget = new HttpGet(url);
-		ResponseHandler<String> responseHandler = new BasicResponseHandler();
-		String responseBody = httpclient.execute(httpget, responseHandler);
-		httpclient.getConnectionManager().shutdown();
-		return responseBody;
-	}
-
 }
