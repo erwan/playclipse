@@ -54,7 +54,6 @@ public class GoToActionHandler extends AbstractHandler {
 		}
 		return action;
 	}
-
 	private String fromRoutes(EditorHelper editor) {
 		String line = editor.getLine(editor.getCurrentLineNo());
 		String[] lineArr = line.trim().split("\\s+");

@@ -22,8 +22,10 @@ import java.io.IOException;
 
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.HttpResponseException;
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.conn.HttpHostConnectException;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.eclipse.core.commands.AbstractHandler;
@@ -36,7 +38,15 @@ public class TestsHandler extends AbstractHandler {
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		System.out.println("TEST!!");
 		try {
-			System.out.println(getPageContent("http://www.google.com"));
+			System.out.println(getPageContent("http://localhost:9000/@tests?select=all&auto=yes"));
+		} catch (HttpHostConnectException e) {
+			// TODO: Show an error dialog "application not running"
+			System.out.println("Error: application not running");
+		} catch (HttpResponseException e) {
+			if (e.getStatusCode() == 404) {
+				// 404 probably means the server is not running in test mode
+				System.out.println("Error: 404 - not running in test mode?");
+			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
