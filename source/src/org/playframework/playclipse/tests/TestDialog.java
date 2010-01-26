@@ -1,8 +1,6 @@
 package org.playframework.playclipse.tests;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
@@ -50,12 +48,11 @@ public class TestDialog extends Dialog {
 		return c;
 	}
 
-	@SuppressWarnings("unchecked")
 	private void buildTestList(String inputJson) {
+//		{"seleniumTests":["Application.test.html"],"functionalTests":["ApplicationTest"],"unitTests":["BasicTest"]}
 		System.out.println("buildTestList");
 		Gson gson = new Gson();
-		Map<String, List<String>> tests = new HashMap<String, List<String>>();
-		tests = gson.fromJson(inputJson, tests.getClass());
+		AllTests tests = gson.fromJson(inputJson, AllTests.class);
 		System.out.println("Tests: {" + tests + "}");
 		// Control c = getContents();
 	}
@@ -72,6 +69,25 @@ public class TestDialog extends Dialog {
 		};
 		HttpThread listCall = new HttpThread(listener, LISTURL, null);
 		listCall.start();
+	}
+
+	// Classes for Gson deserialization
+
+	static class AllTests {
+
+		public AllTests() {}
+
+		private List<String> unitTests;
+
+		private List<String> functionalTests;
+
+		private List<String> seleniumTests;
+
+		public String toString() {
+			return "unitTests: " + unitTests + "; "
+				  + "functionalTests: " + functionalTests + "; "
+				  + "seleniumTests: " + seleniumTests + "; ";
+		}
 	}
 
 }
