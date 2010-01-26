@@ -56,7 +56,7 @@ public class TestDialog extends Dialog {
 		Gson gson = new Gson();
 		Map<String, List<String>> tests = new HashMap<String, List<String>>();
 		tests = gson.fromJson(inputJson, tests.getClass());
-		System.out.println(tests);
+		System.out.println("Tests: {" + tests + "}");
 		// Control c = getContents();
 	}
 
