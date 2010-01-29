@@ -21,7 +21,7 @@ public class TestDialog extends FancyDialog {
 
 	private String LISTURL = "http://localhost:9000/@tests?format=json";
 	private Button start;
-	private List<TestControl> unitTestControls;
+	private List<TestControl> testControls;
 
 	public TestDialog(Shell parentShell) {
 		super(parentShell, "icons/tests.png");
@@ -40,22 +40,20 @@ public class TestDialog extends FancyDialog {
 	}
 
 	private void buildTestList(String inputJson) {
-		System.out.println("buildTestList");
 		Gson gson = new Gson();
 		AllTests tests = gson.fromJson(inputJson, AllTests.class);
-		System.out.println("Tests: {" + tests + "}");
 
-		unitTestControls = new ArrayList<TestControl>();
+		testControls = new ArrayList<TestControl>();
 		List<String> unitTests = tests.getUnitTests();
 		(new Label(pageComposite, SWT.NONE)).setText("Unit tests");
 		for (int i = 0; i < unitTests.size(); i++) {
-			unitTestControls.add(new TestControl(pageComposite, unitTests.get(i)));
+			testControls.add(new TestControl(pageComposite, unitTests.get(i)));
 		}
 
 		List<String> functionalTests = tests.getFunctionalTests();
 		(new Label(pageComposite, SWT.NONE)).setText("Functional tests");
 		for (int i = 0; i < functionalTests.size(); i++) {
-			new TestControl(pageComposite, functionalTests.get(i));
+			testControls.add(new TestControl(pageComposite, functionalTests.get(i)));
 		}
 
 		// TODO: Make sure this is grayed when no test is selected
@@ -86,8 +84,8 @@ public class TestDialog extends FancyDialog {
 
 	private void startTests() {
 		System.out.println("START TESTS!!");
-		for (int i = 0; i < unitTestControls.size(); i++) {
-			TestControl test = unitTestControls.get(i);
+		for (int i = 0; i < testControls.size(); i++) {
+			TestControl test = testControls.get(i);
 			System.out.println(test.getTestName() + ": " + test.isChecked());
 			if (test.isChecked()) {
 				startTest(test);
@@ -102,7 +100,7 @@ public class TestDialog extends FancyDialog {
 			public void onSuccess(String result, String callId) {
 				System.out.println(result);
 				Gson gson = new Gson();
-				UnitTestResult results = gson.fromJson(result, UnitTestResult.class);
+				GlobalTestResult results = gson.fromJson(result, GlobalTestResult.class);
 				if (results.isPassed()) {
 					test.setResult(TestResult.SUCCESS);
 				} else {
@@ -173,7 +171,7 @@ public class TestDialog extends FancyDialog {
 		}
 	}
 
-	static class UnitTestResult {
+	static class GlobalTestResult {
 		private List<SingleResult> results;
 		private boolean passed;
 
