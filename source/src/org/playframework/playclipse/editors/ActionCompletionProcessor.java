@@ -48,21 +48,25 @@ public class ActionCompletionProcessor extends CompletionProcessor {
 		System.out.println("templates " + contextTypeId + " - " + ctx);
 		List<Template> result = new ArrayList<Template>();
 		IJavaProject javaProject = JavaCore.create(editor.getProject());
-		if (ctx.isEmpty()) {
+		if (ctx.isEmpty() || !ctx.contains(".")) {
+			// Look for controllers
+			result.addAll(getMatchingTemplates("controllers", ctx, contextTypeId));
+			// Packages (that may include controllers)
 			try {
 				IPackageFragmentRoot[] roots = javaProject.getPackageFragmentRoots();
 				for (int i = 0; i < roots.length; i++) {
-					if (!roots[i].isArchive())
+					if (!roots[i].isArchive() &&
+							(ctx.isEmpty() || roots[i].getElementName().startsWith(ctx)))
 						result.add(getTemplate(contextTypeId, roots[i]));
 				}
 			} catch (JavaModelException e) {
 				e.printStackTrace();
 				return result.toArray(new Template[result.size()]);
 			}
-		} else if (ctx.contains(".")) {
+		} else {
 			String typeName = ctx.substring(0, ctx.lastIndexOf('.'));
 			String query = ctx.substring(ctx.lastIndexOf('.') + 1);
-			result.addAll(getMatchingTemplates(typeName, query, contextTypeId));
+			result.addAll(getMatchingTemplates("controllers." + typeName, query, contextTypeId));
 		}
 		return result.toArray(new Template[result.size()]);
 	}
@@ -98,14 +102,14 @@ public class ActionCompletionProcessor extends CompletionProcessor {
 		try {
 			IParent parent;
 			// Look for classes
-			parent = javaProject.findType("controllers." + fullClassName);
+			parent = javaProject.findType(fullClassName);
 			// Look for package fragments
 			if (parent == null) {
-				parent = getPackageFragment(javaProject, "controllers." + fullClassName);
+				parent = getPackageFragment(javaProject, fullClassName);
 			}
 			if (parent == null) {
 				System.out.println("Can't find anything!");
-				return null;
+				return result;
 			}
 			IJavaElement[] children = parent.getChildren();
 			for (int i = 0; i < children.length; i++) {
