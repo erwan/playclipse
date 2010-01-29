@@ -44,7 +44,8 @@ public class TestDialog extends Dialog {
 		Composite c = (Composite) super.createDialogArea(parent);
 		Label label = new Label(c, SWT.BOLD);
 		label.setText("Play Tests");
-
+		new TestControl(c, "Test1");
+		new TestControl(c, "Test2");
 		return c;
 	}
 

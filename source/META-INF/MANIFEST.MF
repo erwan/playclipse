@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Playclipse
 Bundle-SymbolicName: org.playframework.playclipse; singleton:=true
 Bundle-Version: 0.4.1
-Bundle-Activator: org.playframework.playclipse.handlers.PlayPlugin
+Bundle-Activator: org.playframework.playclipse.PlayPlugin
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.ui.ide,

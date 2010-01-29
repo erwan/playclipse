@@ -18,7 +18,7 @@ import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.text.templates.Template;
 import org.eclipse.swt.graphics.Image;
-import org.playframework.playclipse.handlers.PlayPlugin;
+import org.playframework.playclipse.PlayPlugin;
 
 import fr.zenexity.pdt.editors.CompletionProcessor;
 import fr.zenexity.pdt.editors.Editor;
