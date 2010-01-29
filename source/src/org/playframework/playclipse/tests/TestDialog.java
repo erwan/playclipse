@@ -1,21 +1,26 @@
 package org.playframework.playclipse.tests;
 
 import java.util.List;
+import org.playframework.playclipse.PlayPlugin;
 
-import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 
 import com.google.gson.Gson;
 
-public class TestDialog extends Dialog {
+import fr.zenexity.pdt.swt.FancyDialog;
+
+public class TestDialog extends FancyDialog {
 
 	private String LISTURL = "http://localhost:9000/@tests?format=json";
-	private Composite pageComposite;
+	private Image logo;
 
 	public TestDialog(Shell parentShell) {
 		super(parentShell);
@@ -29,21 +34,8 @@ public class TestDialog extends Dialog {
 
 	@Override
 	protected void configureShell(Shell newShell) {
-		newShell.setSize(200, 300);
+		newShell.setSize(300, 300);
 		super.configureShell(newShell);
-	}
-
-	@Override
-	public void create() {
-		super.create();
-	}
-
-	@Override
-	protected Control createDialogArea(Composite parent) {
-		pageComposite = (Composite) super.createDialogArea(parent);
-		Label label = new Label(pageComposite, SWT.BOLD);
-		label.setText("Play Tests");
-		return pageComposite;
 	}
 
 	private void buildTestList(String inputJson) {
@@ -65,7 +57,8 @@ public class TestDialog extends Dialog {
 			new TestControl(pageComposite, functionalTests.get(i));
 		}
 
-		pageComposite.layout();
+		// pageComposite.layout();
+		refresh();
 	}
 
 	private void getTestList() {
