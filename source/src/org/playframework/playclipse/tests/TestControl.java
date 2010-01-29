@@ -40,6 +40,7 @@ class TestControl extends Composite {
 	public void setResult(TestResult result) {
 		this.result = result;
 		icon.setImage(result.image());
+		redraw();
 	}
 
 	public TestResult getResult() {

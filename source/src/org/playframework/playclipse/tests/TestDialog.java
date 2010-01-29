@@ -14,9 +14,8 @@ import com.google.gson.Gson;
 
 public class TestDialog extends Dialog {
 
-	public Label message;
-
 	private String LISTURL = "http://localhost:9000/@tests?format=json";
+	private Composite pageComposite;
 
 	public TestDialog(Shell parentShell) {
 		super(parentShell);
@@ -30,7 +29,7 @@ public class TestDialog extends Dialog {
 
 	@Override
 	protected void configureShell(Shell newShell) {
-		newShell.setSize(500, 500);
+		newShell.setSize(200, 300);
 		super.configureShell(newShell);
 	}
 
@@ -41,12 +40,10 @@ public class TestDialog extends Dialog {
 
 	@Override
 	protected Control createDialogArea(Composite parent) {
-		Composite c = (Composite) super.createDialogArea(parent);
-		Label label = new Label(c, SWT.BOLD);
+		pageComposite = (Composite) super.createDialogArea(parent);
+		Label label = new Label(pageComposite, SWT.BOLD);
 		label.setText("Play Tests");
-		new TestControl(c, "Test1");
-		new TestControl(c, "Test2");
-		return c;
+		return pageComposite;
 	}
 
 	private void buildTestList(String inputJson) {
@@ -55,7 +52,20 @@ public class TestDialog extends Dialog {
 		Gson gson = new Gson();
 		AllTests tests = gson.fromJson(inputJson, AllTests.class);
 		System.out.println("Tests: {" + tests + "}");
-		// Control c = getContents();
+
+		List<String> unitTests = tests.getUnitTests();
+		(new Label(pageComposite, SWT.NONE)).setText("Unit tests");
+		for (int i = 0; i < unitTests.size(); i++) {
+			new TestControl(pageComposite, unitTests.get(i));
+		}
+
+		List<String> functionalTests = tests.getFunctionalTests();
+		(new Label(pageComposite, SWT.NONE)).setText("Functional tests");
+		for (int i = 0; i < functionalTests.size(); i++) {
+			new TestControl(pageComposite, functionalTests.get(i));
+		}
+
+		pageComposite.layout();
 	}
 
 	private void getTestList() {
@@ -84,11 +94,24 @@ public class TestDialog extends Dialog {
 
 		private List<String> seleniumTests;
 
+		public List<String> getUnitTests() {
+			return unitTests;
+		}
+
+		public List<String> getFunctionalTests() {
+			return functionalTests;
+		}
+
+		public List<String> getSeleniumTests() {
+			return seleniumTests;
+		}
+
 		public String toString() {
 			return "unitTests: " + unitTests + "; "
 				  + "functionalTests: " + functionalTests + "; "
 				  + "seleniumTests: " + seleniumTests + "; ";
 		}
+
 	}
 
 }
