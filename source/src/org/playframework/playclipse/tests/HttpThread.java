@@ -37,20 +37,32 @@ class HttpThread extends Thread {
 		} catch (HttpHostConnectException e) {
 			message = "Application not running. Make sure your application is running in test mode.";
 			System.out.println(message);
-			listener.onError(0, callId);
+			Display.getDefault().asyncExec(new Runnable() {
+				 public void run() {
+					 listener.onError(0, callId);
+				}
+			});
 		} catch (HttpResponseException e) {
 			if (e.getStatusCode() == 404) {
 				// 404 probably means the server is not running in test mode
 				message = "Error 404. Your application may be running but not in test mode.";
 				System.out.println(message);
 			}
-			listener.onError(e.getStatusCode(), callId);
+			Display.getDefault().asyncExec(new Runnable() {
+				 public void run() {
+					 listener.onError(0, callId);
+				}
+			});
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			message = "Unknown error: " + e.getMessage();
 			System.out.println(message);
-			listener.onError(0, callId);
+			Display.getDefault().asyncExec(new Runnable() {
+				 public void run() {
+					 listener.onError(0, callId);
+				}
+			});
 		}
 	}
 

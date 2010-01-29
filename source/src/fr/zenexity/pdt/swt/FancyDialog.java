@@ -18,9 +18,9 @@ public class FancyDialog extends Dialog {
 	protected Composite pageComposite;
 	private Image logo;
 
-	public FancyDialog(Shell parent) {
+	public FancyDialog(Shell parent, String logo) {
 		super(parent);
-		// TODO Auto-generated constructor stub
+		this.logo = PlayPlugin.getImageDescriptor(logo).createImage();
 	}
 
 	@Override
@@ -32,7 +32,6 @@ public class FancyDialog extends Dialog {
 		outer.setLayout(outerLayout);
 
 		Label label = new Label(outer, SWT.NONE);
-		logo = PlayPlugin.getImageDescriptor("icons/tests.png").createImage();
 		label.setImage(logo);
 		label.setBackground(new Color(Display.getCurrent(), 174, 174, 174));
 		label.setSize(getShell().getSize().x, 64);
@@ -42,6 +41,12 @@ public class FancyDialog extends Dialog {
 		pageComposite.setLayout(new RowLayout(SWT.VERTICAL));
 
 		return pageComposite;
+	}
+
+	@Override
+	protected void handleShellCloseEvent() {
+		super.handleShellCloseEvent();
+		this.logo.dispose();
 	}
 
 	public void refresh() {

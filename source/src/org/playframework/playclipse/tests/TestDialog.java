@@ -1,17 +1,17 @@
 package org.playframework.playclipse.tests;
 
+import java.util.ArrayList;
 import java.util.List;
-import org.playframework.playclipse.PlayPlugin;
 
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
+import org.playframework.playclipse.tests.TestControl.TestResult;
 
 import com.google.gson.Gson;
 
@@ -20,10 +20,11 @@ import fr.zenexity.pdt.swt.FancyDialog;
 public class TestDialog extends FancyDialog {
 
 	private String LISTURL = "http://localhost:9000/@tests?format=json";
-	private Image logo;
+	private Button start;
+	private List<TestControl> unitTestControls;
 
 	public TestDialog(Shell parentShell) {
-		super(parentShell);
+		super(parentShell, "icons/tests.png");
 		getTestList();
 	}
 
@@ -39,16 +40,16 @@ public class TestDialog extends FancyDialog {
 	}
 
 	private void buildTestList(String inputJson) {
-//		{"seleniumTests":["Application.test.html"],"functionalTests":["ApplicationTest"],"unitTests":["BasicTest"]}
 		System.out.println("buildTestList");
 		Gson gson = new Gson();
 		AllTests tests = gson.fromJson(inputJson, AllTests.class);
 		System.out.println("Tests: {" + tests + "}");
 
+		unitTestControls = new ArrayList<TestControl>();
 		List<String> unitTests = tests.getUnitTests();
 		(new Label(pageComposite, SWT.NONE)).setText("Unit tests");
 		for (int i = 0; i < unitTests.size(); i++) {
-			new TestControl(pageComposite, unitTests.get(i));
+			unitTestControls.add(new TestControl(pageComposite, unitTests.get(i)));
 		}
 
 		List<String> functionalTests = tests.getFunctionalTests();
@@ -57,7 +58,15 @@ public class TestDialog extends FancyDialog {
 			new TestControl(pageComposite, functionalTests.get(i));
 		}
 
-		// pageComposite.layout();
+		// TODO: Make sure this is grayed when no test is selected
+		start = new Button(pageComposite, SWT.NONE);
+		start.setText("Start tests");
+		start.addSelectionListener(new SelectionListener() {
+			public void widgetSelected(SelectionEvent event) {
+				startTests();
+			}
+			public void widgetDefaultSelected(SelectionEvent event) {}
+		});
 		refresh();
 	}
 
@@ -75,26 +84,61 @@ public class TestDialog extends FancyDialog {
 		listCall.start();
 	}
 
+	private void startTests() {
+		System.out.println("START TESTS!!");
+		for (int i = 0; i < unitTestControls.size(); i++) {
+			TestControl test = unitTestControls.get(i);
+			System.out.println(test.getTestName() + ": " + test.isChecked());
+			if (test.isChecked()) {
+				startTest(test);
+			}
+		}
+	}
+
+	private void startTest(final TestControl test) {
+		System.out.println("start the thingy");
+		test.setResult(TestResult.LOADING);
+		IHttpListener listener = new IHttpListener() {
+			public void onSuccess(String result, String callId) {
+				System.out.println(result);
+				Gson gson = new Gson();
+				UnitTestResult results = gson.fromJson(result, UnitTestResult.class);
+				if (results.isPassed()) {
+					test.setResult(TestResult.SUCCESS);
+				} else {
+					test.setResult(TestResult.FAILURE);
+				}
+				refresh();
+			}
+			public void onError(int status, String callId) {
+				// TODO
+				System.out.println("http Error "+status+"!");
+				test.setResult(TestResult.FAILURE);
+			}
+		};
+		HttpThread testCall = new HttpThread(listener, getTestUrl(test.getTestName() + ".class"), null);
+		testCall.start();
+	}
+
+	private String getTestUrl(String testName) {
+		return "http://localhost:9000/@tests/" + testName + "?format=json";
+	}
+
 	// Classes for Gson deserialization
 
 	static class AllTests {
-
 		public AllTests() {}
 
 		private List<String> unitTests;
-
 		private List<String> functionalTests;
-
 		private List<String> seleniumTests;
 
 		public List<String> getUnitTests() {
 			return unitTests;
 		}
-
 		public List<String> getFunctionalTests() {
 			return functionalTests;
 		}
-
 		public List<String> getSeleniumTests() {
 			return seleniumTests;
 		}
@@ -104,7 +148,41 @@ public class TestDialog extends FancyDialog {
 				  + "functionalTests: " + functionalTests + "; "
 				  + "seleniumTests: " + seleniumTests + "; ";
 		}
+	}
 
+	// {"results":{"results":[{"name":"aVeryImportantThingToTest","passed":true,"time":2,"sourceLine":0}],"passed":true},"test":"BasicTest.class"}
+
+	static class SingleResult {
+		public SingleResult() {}
+		private String name;
+		private boolean passed;
+		private int time;
+		private int sourceLine;
+
+		public String getName() {
+			return name;
+		}
+		public boolean isPassed() {
+			return passed;
+		}
+		public int getTime() {
+			return time;
+		}
+		public int getSourceLine() {
+			return sourceLine;
+		}
+	}
+
+	static class UnitTestResult {
+		private List<SingleResult> results;
+		private boolean passed;
+
+		public List<SingleResult> getResults() {
+			return results;
+		}
+		public boolean isPassed() {
+			return passed;
+		}
 	}
 
 }
