@@ -78,7 +78,7 @@ public class DocumentProvider extends FileDocumentProvider {
 					if(regions == null || true) {
 						List<ITypedRegion> rs = new ArrayList<ITypedRegion>();
 						editor.reset();
-						while(!editor.eof) {
+						while (!editor.eof) {
 							rs.add(editor.nextToken());
 						}
 						regions = rs.toArray(new ITypedRegion[rs.size()]);

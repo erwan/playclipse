@@ -29,27 +29,27 @@ public class AutoCloser implements VerifyKeyListener {
 	public void verifyKey(VerifyEvent event) {
 		try {
 			IDocument document = sourceViewer.getDocument();
-	        Point selection = sourceViewer.getSelectedRange();
-	        int cursorOffset = selection.x;
-	        int selectionLength = selection.y;
-	        char c = event.character;
-	        char pc = document.getChar(cursorOffset - 1);
-	        char nc = 0;
-	        try {
-	        	nc = document.getChar(cursorOffset);
-	        } catch(Exception e) {
-	        	// Now don't care
-	        }
-	        String insert = editor.autoClose(pc, c, nc);
-	        if(insert != null && insert.equals(Editor.SKIP)) {
-	        	event.doit = false;
-	        	moveCursor(1);
-	        } else if(insert != null) {
-	        	insert = c + insert;
-	        	document.replace(cursorOffset, selectionLength, insert);
-                event.doit = false;
-                moveCursor(1);
-	        }
+			Point selection = sourceViewer.getSelectedRange();
+			int cursorOffset = selection.x;
+			int selectionLength = selection.y;
+			char c = event.character;
+			char pc = document.getChar(cursorOffset - 1);
+			char nc = 0;
+			try {
+				nc = document.getChar(cursorOffset);
+			} catch(Exception e) {
+				// Now don't care
+			}
+			String insert = editor.autoClose(pc, c, nc);
+			if(insert != null && insert.equals(Editor.SKIP)) {
+				event.doit = false;
+				moveCursor(1);
+			} else if(insert != null) {
+				insert = c + insert;
+				document.replace(cursorOffset, selectionLength, insert);
+				event.doit = false;
+				moveCursor(1);
+			}
 		} catch(BadLocationException e) {
 			// Don't care
 		}

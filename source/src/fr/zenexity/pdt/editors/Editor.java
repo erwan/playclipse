@@ -271,7 +271,7 @@ public abstract class Editor extends TextEditor {
 		return isNext(" ") || isNext("\t");
 	}
 
-	TypedRegion nextToken() {
+	public TypedRegion nextToken() {
 		for (;;) {
 
 			int left = len - end;
