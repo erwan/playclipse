@@ -44,6 +44,7 @@ public abstract class Editor extends TextEditor {
 		}
 	}
 	
+	@Override
 	public void dispose() {
 		colorManager.dispose();
 		super.dispose();
@@ -242,12 +243,12 @@ public abstract class Editor extends TextEditor {
 		return lastState;
 	}
 
-	protected void reset() {
+	protected void reset(int offset, int length) {
 		eof = false;
-		end = begin = end2 = begin2 = 0;
+		end = begin = end2 = begin2 = offset;
 		state = "default";
 		content = ((DocumentProvider)getDocumentProvider()).document.get();
-		len = content.length();
+		len = offset + length;
 	}
 
 	protected boolean isNext(String s) {

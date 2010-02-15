@@ -165,8 +165,8 @@ public class HTMLEditor extends PlayEditor {
 	String oldStringState = "default";
 	
 	@Override
-	protected void reset() {
-		super.reset();
+	protected void reset(int offset, int length) {
+		super.reset(offset, length);
 		consumeString = false;
 		oldState = "default";
 	}
