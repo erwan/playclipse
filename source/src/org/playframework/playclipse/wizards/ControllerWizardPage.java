@@ -20,4 +20,9 @@ public class ControllerWizardPage extends ClassWizardPage {
 		return "controllers";
 	}
 
+	@Override
+	protected String nameLabel() {
+		return "&Controller name:";
+	}
+
 }

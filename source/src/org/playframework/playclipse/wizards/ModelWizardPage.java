@@ -21,4 +21,9 @@ public class ModelWizardPage extends ClassWizardPage {
 		return "models";
 	}
 
+	@Override
+	protected String nameLabel() {
+		return "&Model name:";
+	}
+
 }

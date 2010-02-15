@@ -33,6 +33,8 @@ public abstract class ClassWizardPage extends PlayWizardPage {
 
 	protected abstract String defaultPackage();
 
+	protected abstract String nameLabel();
+
 	public ClassWizardPage(ISelection selection) {
 		super(selection);
 	}
@@ -85,7 +87,7 @@ public abstract class ClassWizardPage extends PlayWizardPage {
 		});
 
 		label = new Label(container, SWT.NULL);
-		label.setText("&Controller name:");
+		label.setText(nameLabel());
 		name = new Text(container, SWT.BORDER | SWT.SINGLE);
 		gd = new GridData(GridData.FILL_HORIZONTAL);
 		name.setLayoutData(gd);
