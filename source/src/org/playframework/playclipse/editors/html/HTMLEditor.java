@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.Position;
@@ -165,10 +166,10 @@ public class HTMLEditor extends PlayEditor {
 	String oldStringState = "default";
 	
 	@Override
-	protected void reset(int offset, int length) {
-		super.reset(offset, length);
+	protected void reset(int offset, int length, String initstate) throws BadLocationException {
+		super.reset(offset, length, initstate);
 		consumeString = false;
-		oldState = "default";
+		oldState = initstate;
 	}
 	
 	@Override

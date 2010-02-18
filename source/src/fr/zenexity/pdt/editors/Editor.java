@@ -11,6 +11,7 @@ import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.ITextViewerExtension;
@@ -29,11 +30,11 @@ import org.playframework.playclipse.Navigation;
 
 
 public abstract class Editor extends TextEditor {
-	
+
 	ColorManager colorManager = new ColorManager();
 	DocumentProvider documentProvider;
 	Navigation nav;
-	
+
 	public Editor() {
 		super();
 		setSourceViewerConfiguration(new Configuration(this));
@@ -43,7 +44,7 @@ public abstract class Editor extends TextEditor {
 			type.intern();
 		}
 	}
-	
+
 	@Override
 	public void dispose() {
 		colorManager.dispose();
@@ -101,26 +102,26 @@ public abstract class Editor extends TextEditor {
 	public void template(String name, String description, String pattern) {
 		templates.add(new Template(name, description, getClass().getName(), pattern, true));
 	}
-	
+
 	// Auto-close
-	
+
 	@Override
 	public void createPartControl(Composite parent) {
 		super.createPartControl(parent);
 		ITextViewerExtension tve = (ITextViewerExtension)getSourceViewer();
 		tve.appendVerifyKeyListener(new AutoCloser(this, (SourceViewer)getSourceViewer()));
 	}
-	
+
 	public static String SKIP = "__skip";
-	
+
 	public abstract String autoClose(char pc, char c, char nc);
-	
+
 	// Hyperlinks
-	
+
 	public abstract IHyperlink detectHyperlink(ITextViewer textViewer, IRegion region);
 
 	public abstract void openLink(IHyperlink link);
-	
+
 	protected BestMatch findBestMatch(final int position, Pattern... patterns) {
 		Object[] line = getLine(position);
 		int offset = (Integer)line[1];
@@ -149,7 +150,7 @@ public abstract class Editor extends TextEditor {
 		}
 		return bestMatches.get(0);
 	}
-	
+
 	protected Object[] getLine(int offset) {
 		String text = documentProvider.document.get();
 		int start = offset, end = offset;
@@ -161,25 +162,25 @@ public abstract class Editor extends TextEditor {
 		}
 		return new Object[] {text.substring(start > 0 ? start+1 : 0, end), start > 0 ? start+1 : 0};
 	}
-	
+
 	public class BestMatch {
-		
+
 		public Matcher matcher;
 		public int offset;
-		
+
 		public BestMatch(Matcher matcher, int offset) {
 			this.matcher = matcher;
 			this.offset = offset;
 		}
-		
+
 		public boolean is(Pattern pattern) {
 			return matcher.pattern().equals(pattern);
 		}
-		
+
 		public String text() {
 			return matcher.group(1);
 		}
-		
+
 		public IHyperlink hyperlink(final String type, int startOffset, int endOffset) {
 			final IRegion region= new Region(offset+matcher.start()+startOffset, matcher.end()-matcher.start()-startOffset+endOffset);
 			return new IHyperlink() {
@@ -203,32 +204,32 @@ public abstract class Editor extends TextEditor {
 				public void open() {
 					Editor.this.openLink(this);
 				}
-				
+
 				@Override
 				public String toString() {
 					return getTypeLabel() + " --> " +getHyperlinkText();
 				}
-				
+
 			};
 		}
-		
+
 	}
-	
+
 	// Styles & types
-	
+
 	public TextAttribute style(RGB color) {
 		return new TextAttribute(colorManager.getColor(color));
 	}
-	
+
 	public TextAttribute style(RGB color, RGB back) {
 		return new TextAttribute(colorManager.getColor(color), colorManager.getColor(back), 0);
 	}
-	
+
 	public abstract String[] getTypes();
 	public abstract TextAttribute getStyle(String type);
-	
+
 	// Scanner
-	
+
 	String content;
 	int end,  begin,  end2,  begin2,  len;
 	protected String state = "default";
@@ -243,11 +244,12 @@ public abstract class Editor extends TextEditor {
 		return lastState;
 	}
 
-	protected void reset(int offset, int length) {
+	protected void reset(int offset, int length, String initstate) throws BadLocationException {
+		System.out.println("Reset " + offset + " " + length + " " + initstate);
 		eof = false;
 		end = begin = end2 = begin2 = offset;
-		state = "default";
-		content = ((DocumentProvider)getDocumentProvider()).document.get();
+		state = initstate;
+		content = ((DocumentProvider)getDocumentProvider()).document.get(offset, length);
 		len = offset + length;
 	}
 
@@ -272,7 +274,7 @@ public abstract class Editor extends TextEditor {
 		return isNext(" ") || isNext("\t");
 	}
 
-	public TypedRegion nextToken() {
+	public TypedRegion nextToken(int offset) {
 		for (;;) {
 
 			int left = len - end;
@@ -280,14 +282,15 @@ public abstract class Editor extends TextEditor {
 				end++;
 				found("default", 0);
 				eof = true;
-				return new TypedRegion(begin2, end2-begin2, "default");
+				return new TypedRegion(begin2, end2 - begin2, "default");
 			}
 
 			end++;
 
 			String token = scan();
 
-			if(token != null) {
+			if (token != null) {
+				System.out.println("Found " + token + " " + begin2 + " " + (end2-begin2));
 				return new TypedRegion(begin2, end2-begin2, token);
 			}
 		}
