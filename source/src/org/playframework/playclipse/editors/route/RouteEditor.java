@@ -1,4 +1,4 @@
-package org.playframework.playclipse.editors;
+package org.playframework.playclipse.editors.route;
 
 import java.util.regex.Pattern;
 
@@ -7,6 +7,7 @@ import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.TextAttribute;
 import org.eclipse.jface.text.hyperlink.IHyperlink;
 import org.eclipse.swt.graphics.RGB;
+import org.playframework.playclipse.editors.PlayEditor;
 
 public class RouteEditor extends PlayEditor {
 

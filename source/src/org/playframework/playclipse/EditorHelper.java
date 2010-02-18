@@ -32,8 +32,8 @@ import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.handlers.HandlerUtil;
 import org.eclipse.ui.texteditor.ITextEditor;
-import org.playframework.playclipse.editors.RouteEditor;
 import org.playframework.playclipse.editors.html.HTMLEditor;
+import org.playframework.playclipse.editors.route.RouteEditor;
 
 /**
  * A helper class to handle the Eclipse-specific heavy lifting to access and

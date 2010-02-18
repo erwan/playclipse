@@ -227,7 +227,7 @@
             name="HTML (Play)">
       </editor>
       <editor
-            class="org.playframework.playclipse.editors.RouteEditor"
+            class="org.playframework.playclipse.editors.route.RouteEditor"
             default="false"
             filenames="routes"
             icon="icons/page_white_go.png"

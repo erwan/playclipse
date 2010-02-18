@@ -20,10 +20,12 @@ public class Configuration extends SourceViewerConfiguration {
 		this.editor = editor;
 	}
 
+	@Override
 	public String[] getConfiguredContentTypes(ISourceViewer sourceViewer) {
 		return editor.getTypes();
 	}
 
+	@Override
 	public IPresentationReconciler getPresentationReconciler(ISourceViewer sourceViewer) {
 		PresentationReconciler presentationReconciler = new PresentationReconciler();		
 		for(String type: editor.getTypes()) {
