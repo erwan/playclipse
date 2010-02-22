@@ -39,7 +39,7 @@ public class DocumentProvider extends FileDocumentProvider {
 				@Override
 				public ITypedRegion getPartition(int offset) {
 					// for(ITypedRegion region : computePartitioning(offset, 0)) {
-					if (regions == null) computePartitioning(offset, 0);
+					if (regions == null) computePartitioning(0, document.getLength());
 					for(ITypedRegion region : regions) {
 						if(region.getOffset() + region.getLength() >= offset) {
 							return region;
@@ -84,6 +84,15 @@ public class DocumentProvider extends FileDocumentProvider {
 				public ITypedRegion[] computePartitioning(int offset, int length) {
 					System.out.println("COMPUTEPART " + offset + " " + length);
 					List<ITypedRegion> rs = new ArrayList<ITypedRegion>();
+
+					// Insert any region before the zone we recalculate
+					if (regions != null)
+						for (int i = 0; i < regions.length; i++) {
+							if (regions[i].getOffset() < offset)
+								rs.add(regions[i]);
+						}
+
+					// Calculate the regions for the requested zone
 					ITypedRegion current = getCachedPartition(offset);
 					String state = (current != null) ? current.getType() : "default";
 					try {
@@ -94,6 +103,14 @@ public class DocumentProvider extends FileDocumentProvider {
 					while (!editor.eof) {
 						rs.add(editor.nextToken(offset));
 					}
+
+					// Insert any region after the zone we recalculate
+					if (regions != null)
+						for (int i = 0; i < regions.length; i++) {
+							if (regions[i].getOffset() > (offset + length))
+								rs.add(regions[i]);
+						}
+
 					regions = rs.toArray(new ITypedRegion[rs.size()]);
 					return regions;
 				}
