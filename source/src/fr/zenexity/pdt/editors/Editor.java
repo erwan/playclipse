@@ -243,12 +243,12 @@ public abstract class Editor extends TextEditor {
 		return lastState;
 	}
 
-	protected void reset(int offset, int length) {
+	protected void reset() {
 		eof = false;
-		end = begin = end2 = begin2 = offset;
+		end = begin = end2 = begin2 = 0;
 		state = "default";
 		content = ((DocumentProvider)getDocumentProvider()).document.get();
-		len = offset + length;
+		len = content.length();
 	}
 
 	protected boolean isNext(String s) {
