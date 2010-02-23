@@ -233,22 +233,24 @@ public abstract class Editor extends TextEditor {
 	String content;
 	int end,  begin,  end2,  begin2,  len;
 	protected String state = "default";
+	protected String lastState = "default";
 	boolean eof = false;
 
 	protected String found(String newState, int skip) {
 		begin2 = begin;
 		end2 = --end + skip;
 		begin = end += skip;
-		String lastState = state;
+		lastState = state;
 		state = newState;
 		return lastState;
 	}
 
-	protected void reset(int offset, int length, String initstate) throws BadLocationException {
-		System.out.println("Reset " + offset + " " + length + " " + initstate);
+	protected void reset(int offset, int length, String state, String lastState) throws BadLocationException {
+		System.out.println("Reset " + offset + " " + length + " " + state + " " + lastState);
 		eof = false;
 		end = begin = end2 = begin2 = offset;
-		state = initstate;
+		this.state = state;
+		this.lastState = lastState;
 		content = ((DocumentProvider)getDocumentProvider()).document.get(offset, length);
 		len = offset + length;
 	}

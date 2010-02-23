@@ -67,6 +67,7 @@ public class DocumentProvider extends FileDocumentProvider {
 
 				@Override
 				public void documentAboutToBeChanged(DocumentEvent event) {
+					System.out.println("documentAboutToBeChanged");
 					oldRegions = regions;
 				}
 
@@ -93,10 +94,18 @@ public class DocumentProvider extends FileDocumentProvider {
 						}
 
 					// Calculate the regions for the requested zone
-					ITypedRegion current = getCachedPartition(offset);
-					String state = (current != null) ? current.getType() : "default";
+					int current = getPartitionIndex(offset);
+					String state = "default";
+					String lastState = "default";
+					if (current > -1) {
+						state = oldRegions[current].getType();
+						if (current > 0) {
+							lastState = oldRegions[current - 1].getType();
+						}
+					}
+					System.out.println("It appears that state at " + offset + " is " + state + " last " + lastState);
 					try {
-						editor.reset(offset, length, state);
+						editor.reset(offset, length, state, lastState);
 					} catch (BadLocationException e) {
 						// We trust Eclipse won't call us with bad offset/length
 					}
@@ -115,15 +124,16 @@ public class DocumentProvider extends FileDocumentProvider {
 					return regions;
 				}
 
-				public ITypedRegion getCachedPartition(int offset) {
+				public int getPartitionIndex(int offset) {
 					if (oldRegions == null)
-						return null;
-					for(ITypedRegion region : oldRegions) {
+						return -1;
+					for (int i = 0; i < oldRegions.length; i++) {
+						ITypedRegion region = oldRegions[i];
 						if(region.getOffset() + region.getLength() >= offset) {
-							return region;
+							return i;
 						}
 					}
-					return null;
+					return -1;
 				}
 
 			};

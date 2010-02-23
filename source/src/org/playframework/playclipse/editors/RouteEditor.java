@@ -87,13 +87,12 @@ public class RouteEditor extends PlayEditor {
 			return found("keyword", 0);
 		}
 		if ((state == "keyword" || state == "url") && nextIsSpace()) {
-			oldState = state;
 			return found("default", 0);
 		}
 		if (state == "default" && isNext("/")) {
 			return found("url", 0);
 		}
-		if (state == "default" && oldState == "url" && !nextIsSpace()) {
+		if (state == "default" && lastState == "url" && !nextIsSpace()) {
 			return found("action", 0);
 		}
 		return null;

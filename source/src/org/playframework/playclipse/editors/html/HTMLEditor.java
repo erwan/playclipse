@@ -166,8 +166,8 @@ public class HTMLEditor extends PlayEditor {
 	String oldStringState = "default";
 	
 	@Override
-	protected void reset(int offset, int length, String initstate) throws BadLocationException {
-		super.reset(offset, length, initstate);
+	protected void reset(int offset, int length, String initstate, String lastState) throws BadLocationException {
+		super.reset(offset, length, initstate, lastState);
 		consumeString = false;
 		oldState = initstate;
 	}
