@@ -10,8 +10,7 @@ public class RouteEditor2 extends TextEditor {
 
 	public RouteEditor2() {
 		super();
-		colorManager = new ColorManager();
-		setSourceViewerConfiguration(new XMLConfiguration(colorManager));
+		setSourceViewerConfiguration(new XMLConfiguration(this));
 		setDocumentProvider(new XMLDocumentProvider());
 	}
 	public void dispose() {

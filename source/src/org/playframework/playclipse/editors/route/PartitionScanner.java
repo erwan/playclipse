@@ -8,11 +8,11 @@ public class PartitionScanner extends RuleBasedPartitionScanner {
 
 	public PartitionScanner() {
 
-		IToken routeComment = new Token(ROUTE_COMMENT);
+		IToken comment = new Token(ROUTE_COMMENT);
 
-		IPredicateRule[] rules = new IPredicateRule[1];
+		IPredicateRule[] rules = new IPredicateRule[3];
 
-		rules[0] = new SingleLineRule("#", "\n", routeComment);
+		rules[0] = new SingleLineRule("#", "\n", comment);
 
 		setPredicateRules(rules);
 	}
