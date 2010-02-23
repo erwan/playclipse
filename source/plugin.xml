@@ -242,6 +242,14 @@
             id="ConfEditor"
             name="Play Configuration File">
       </editor>
+      <editor
+            class="org.playframework.playclipse.editors.route.RouteEditor2"
+            contributorClass="org.eclipse.ui.texteditor.BasicTextEditorActionContributor"
+            extensions="xml"
+            icon="icons/sample.gif"
+            id="org.playframework.playclipse.editors.route.RouteEditor2"
+            name="Play Route Editor">
+      </editor>
    </extension>
 
 	<extension point="org.eclipse.ui.editors.templates">

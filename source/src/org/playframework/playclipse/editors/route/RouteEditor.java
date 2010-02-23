@@ -15,7 +15,7 @@ public class RouteEditor extends PlayEditor {
 
 	public RouteEditor() {
 		super();
-		setSourceViewerConfiguration(new RouteConfiguration(this));
+		setSourceViewerConfiguration(new Configuration(this));
 	}
 
 	@Override
