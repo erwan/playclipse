@@ -7,7 +7,6 @@ import java.util.List;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.part.*;
 import org.eclipse.jface.viewers.*;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.jface.action.*;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.ui.*;
@@ -27,36 +26,12 @@ public class TestsView extends ViewPart {
 	// TODO: Use the real port rather than assume it's 9000
 	private String LISTURL = "http://localhost:9000/@tests?format=json";
 
-	private TableViewer viewer;
+	private TreeViewer viewer;
+	private TestsTreeContentProvider testsTree;
 	private Action refreshAction;
 	private Action runAction;
 	private Action doubleClickAction;
 
-	class ViewContentProvider implements IStructuredContentProvider {
-		private String[] elements = new String[0];
-		public void inputChanged(Viewer v, Object oldInput, Object newInput) {
-		}
-		public void dispose() {
-		}
-		public Object[] getElements(Object parent) {
-			return elements;
-		}
-		public void setElements(String[] elements) {
-			this.elements = elements;
-		}
-	}
-	class ViewLabelProvider extends LabelProvider implements ITableLabelProvider {
-		public String getColumnText(Object obj, int index) {
-			return getText(obj);
-		}
-		public Image getColumnImage(Object obj, int index) {
-			return getImage(obj);
-		}
-		public Image getImage(Object obj) {
-			return PlatformUI.getWorkbench().
-					getSharedImages().getImage(ISharedImages.IMG_OBJ_ELEMENT);
-		}
-	}
 	class NameSorter extends ViewerSorter {
 	}
 
@@ -71,9 +46,10 @@ public class TestsView extends ViewPart {
 	 * to create the viewer and initialize it.
 	 */
 	public void createPartControl(Composite parent) {
-		viewer = new TableViewer(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
-		viewer.setContentProvider(new ViewContentProvider());
-		viewer.setLabelProvider(new ViewLabelProvider());
+		testsTree = new TestsTreeContentProvider();
+		viewer = new TreeViewer(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
+		viewer.setContentProvider(testsTree);
+		viewer.setLabelProvider(new TestLabelProvider());
 		viewer.setSorter(new NameSorter());
 		viewer.setInput(getViewSite());
 
@@ -194,13 +170,15 @@ public class TestsView extends ViewPart {
 		for (int i = 0; i < unitTests.size(); i++) {
 			names.add(unitTests.get(i));
 		}
+		testsTree.setUnitTests(names.toArray(new String[names.size()]));
 
 		List<String> functionalTests = tests.getFunctionalTests();
+		names = new ArrayList<String>();
 		for (int i = 0; i < functionalTests.size(); i++) {
 			names.add(functionalTests.get(i));
 		}
+		testsTree.setFunctionalTests(names.toArray(new String[names.size()]));
 
-		((ViewContentProvider) viewer.getContentProvider()).setElements(names.toArray(new String[names.size()]));
 		viewer.refresh();
 	}
 
