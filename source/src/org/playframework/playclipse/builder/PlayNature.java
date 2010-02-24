@@ -50,6 +50,11 @@ public class PlayNature implements IProjectNature {
 		return conf.getModules();
 	}
 
+	public int getPort() {
+		ConfigurationFile conf = new ConfigurationFile(project);
+		return conf.getPort();
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 

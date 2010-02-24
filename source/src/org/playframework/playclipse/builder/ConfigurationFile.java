@@ -41,6 +41,20 @@ public class ConfigurationFile {
 		return null;
 	}
 
+	public int getPort() {
+		List<String> lines = getLines();
+		Pattern p = Pattern.compile("^http\\.port=(\\d+)");
+		Matcher m;
+		for (int i = 0; i < lines.size(); i++) {
+			String line = lines.get(i);
+			m = p.matcher(line);
+			if (m.matches()) {
+				return Integer.parseInt(m.group(1));
+			}
+		}	
+		return 9000;
+	}
+
 	private List<String> getLines() {
 		List<String> result = new ArrayList<String>();
 		String line;

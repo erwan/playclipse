@@ -318,5 +318,37 @@
           value="true">
     </persistent>
  </extension>
+ <extension
+       point="org.eclipse.ui.views">
+    <category
+          id="org.playframework.playclipse"
+          name="Play">
+    </category>
+    <view
+          category="org.playframework.playclipse"
+          class="org.playframework.playclipse.tests.TestsView"
+          icon="icons/sample.gif"
+          id="org.playframework.playclipse.views.TestsView"
+          name="Play Tests">
+    </view>
+ </extension>
+ <extension
+       point="org.eclipse.ui.perspectiveExtensions">
+    <perspectiveExtension
+          targetID="org.eclipse.jdt.ui.JavaPerspective">
+       <view
+             id="org.playframework.playclipse.views.TestsView"
+             ratio="0.5"
+             relationship="right"
+             relative="org.eclipse.ui.views.TaskList">
+       </view>
+    </perspectiveExtension>
+ </extension>
+ <extension
+       point="org.eclipse.help.contexts">
+    <contexts
+          file="contexts.xml">
+    </contexts>
+ </extension>
 
 </plugin>
