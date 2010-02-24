@@ -2,24 +2,25 @@ package org.playframework.playclipse.tests;
 
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
+import org.playframework.playclipse.tests.Test.TestType;
 
 class TestsTreeContentProvider implements ITreeContentProvider {
 
-	private String[] elements = new String[0];
-	private String[] unitTests = new String[0];
-	private String[] functionalTests = new String[0];
+	private Test[] elements = new Test[0];
+	private Test[] unitTests = new Test[0];
+	private Test[] functionalTests = new Test[0];
 
 	public TestsTreeContentProvider() {
-		elements = new String[2];
-		elements[0] = "Unit Tests";
-		elements[1] = "Functional Tests";
+		elements = new Test[2];
+		elements[0] = new Test("Unit Tests", TestType.FOLDER);
+		elements[1] = new Test("Functional Tests", TestType.FOLDER);
 	}
 
-	public void setUnitTests(String[] names) {
+	public void setUnitTests(Test[] names) {
 		unitTests = names;
 	}
 
-	public void setFunctionalTests(String[] names) {
+	public void setFunctionalTests(Test[] names) {
 		functionalTests = names;
 	}
 
@@ -38,20 +39,20 @@ class TestsTreeContentProvider implements ITreeContentProvider {
 		return elements;
 	}
 
-	public void setElements(String[] elements) {
+	public void setElements(Test[] elements) {
 		this.elements = elements;
 	}
 
 	@Override
 	public Object[] getChildren(Object parentElement) {
-		if (!(parentElement instanceof String)) {
+		if (!(parentElement instanceof Test)) {
 			return null;
 		}
-		String p = (String)parentElement;
-		if (p.equals("Unit Tests")) {
+		Test t = (Test)parentElement;
+		if (t.name.equals("Unit Tests")) {
 			return unitTests;
 		}
-		if (p.equals("Functional Tests")) {
+		if (t.name.equals("Functional Tests")) {
 			return functionalTests;
 		}
 		return null;
@@ -65,8 +66,14 @@ class TestsTreeContentProvider implements ITreeContentProvider {
 
 	@Override
 	public boolean hasChildren(Object element) {
-		String p = (String)element;
-		return (p.equals("Unit Tests") || p.equals("Functional Tests"));
+		Test t = (Test)element;
+		if (t.type != TestType.FOLDER)
+			return false;
+		if (t.name.equals("Unit Tests"))
+			return unitTests.length > 0;
+		if (t.name.equals("Functional Tests"))
+			return functionalTests.length > 0;
+		return false;
 	}
 
 }

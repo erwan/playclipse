@@ -12,6 +12,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.ui.*;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.SWT;
+import org.playframework.playclipse.tests.Test.TestType;
 
 import com.google.gson.Gson;
 
@@ -165,19 +166,19 @@ public class TestsView extends ViewPart {
 		Gson gson = new Gson();
 		AllTests tests = gson.fromJson(inputJson, AllTests.class);
 
-		List<String> unitTests = tests.getUnitTests();
-		List<String> names = new ArrayList<String>();
-		for (int i = 0; i < unitTests.size(); i++) {
-			names.add(unitTests.get(i));
+		List<String> uTestsNames = tests.getUnitTests();
+		List<Test> uTests = new ArrayList<Test>();
+		for (int i = 0; i < uTestsNames.size(); i++) {
+			uTests.add(new Test(uTestsNames.get(i), TestType.UNIT));
 		}
-		testsTree.setUnitTests(names.toArray(new String[names.size()]));
+		testsTree.setUnitTests(uTests.toArray(new Test[uTests.size()]));
 
 		List<String> functionalTests = tests.getFunctionalTests();
-		names = new ArrayList<String>();
+		List<Test> fTests = new ArrayList<Test>();
 		for (int i = 0; i < functionalTests.size(); i++) {
-			names.add(functionalTests.get(i));
+			fTests.add(new Test(functionalTests.get(i), TestType.FUNCTIONAL));
 		}
-		testsTree.setFunctionalTests(names.toArray(new String[names.size()]));
+		testsTree.setFunctionalTests(fTests.toArray(new Test[fTests.size()]));
 
 		viewer.refresh();
 	}
