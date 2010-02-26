@@ -18,10 +18,19 @@ import org.eclipse.jface.text.source.projection.ProjectionSupport;
 import org.eclipse.jface.text.source.projection.ProjectionViewer;
 import org.eclipse.swt.widgets.Composite;
 import org.playframework.playclipse.editors.PlayEditor;
-import org.playframework.playclipse.preferences.PreferenceConstants;
 
 public class HTMLEditor extends PlayEditor {
 	
+	public static final String DEFAULT_COLOR = "html_default_color";
+	public static final String DOCTYPE_COLOR = "html_doctype_color";
+	public static final String HTML_COLOR = "html_html_color";
+	public static final String TAG_COLOR = "html_tag_color";
+	public static final String EXPR_COLOR = "html_expr_color";
+	public static final String ACTION_COLOR = "html_action_color";
+	public static final String SKIPPED_COLOR = "html_skipped_color";
+	public static final String KEYWORD_COLOR = "html_keyword_color";
+	public static final String STRING_COLOR = "html_string_color";
+
 	private ProjectionSupport projectionSupport;
 
 	public HTMLEditor() {
@@ -36,30 +45,30 @@ public class HTMLEditor extends PlayEditor {
 	@Override
 	public String getStylePref(String type) {
 		if(type.equals("doctype")) {
-			return PreferenceConstants.HTML_DOCTYPE_COLOR;
+			return DOCTYPE_COLOR;
 		}
 		if(type.equals("html")) {
-			return PreferenceConstants.HTML_HTML_COLOR;
+			return HTML_COLOR;
 		}
 		if(type.equals("string")) {
-			return PreferenceConstants.HTML_STRING_COLOR;
+			return STRING_COLOR;
 		}
 		if(type.equals("tag")) {
-			return PreferenceConstants.HTML_TAG_COLOR;
+			return TAG_COLOR;
 		}
 		if(type.equals("expression")) {
-			return PreferenceConstants.HTML_EXPR_COLOR;
+			return EXPR_COLOR;
 		}
 		if(type.equals("action")) {
-			return PreferenceConstants.HTML_ACTION_COLOR;
+			return ACTION_COLOR;
 		}
 		if(type.equals("skipped")) {
-			return PreferenceConstants.HTML_SKIPPED_COLOR;
+			return SKIPPED_COLOR;
 		}
 		if(type.equals("keyword")) {
-			return PreferenceConstants.HTML_KEYWORD_COLOR;
+			return KEYWORD_COLOR;
 		}
-		return PreferenceConstants.HTML_DEFAULT_COLOR;
+		return DEFAULT_COLOR;
 	}
 
 	// Auto-close

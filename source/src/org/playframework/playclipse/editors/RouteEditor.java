@@ -5,9 +5,14 @@ import java.util.regex.Pattern;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.hyperlink.IHyperlink;
-import org.playframework.playclipse.preferences.PreferenceConstants;
 
 public class RouteEditor extends PlayEditor {
+
+	public static final String KEYWORD_COLOR = "route_keyword_color";
+	public static final String URL_COLOR = "route_url_color";
+	public static final String COMMENT_COLOR = "route_comment_color";
+	public static final String ACTION_COLOR = "route_action_color";
+	public static final String DEFAULT_COLOR = "route_default_color";
 
 	String oldState = "default";
 
@@ -48,18 +53,18 @@ public class RouteEditor extends PlayEditor {
 	@Override
 	public String getStylePref(String type) {
 		if(type.equals("keyword")) {
-			return PreferenceConstants.ROUTE_KEYWORD_COLOR;
+			return KEYWORD_COLOR;
 		}
 		if(type.equals("url")) {
-			return PreferenceConstants.ROUTE_URL_COLOR;
+			return URL_COLOR;
 		}
 		if(type.equals("comment")) {
-			return PreferenceConstants.ROUTE_COMMENT_COLOR;
+			return COMMENT_COLOR;
 		}
 		if(type.equals("action")) {
-			return PreferenceConstants.ROUTE_ACTION_COLOR;
+			return ACTION_COLOR;
 		}
-		return PreferenceConstants.ROUTE_DEFAULT_COLOR;
+		return DEFAULT_COLOR;
 	}
 
 	@Override

@@ -3,10 +3,13 @@ package org.playframework.playclipse.editors;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.hyperlink.IHyperlink;
-import org.playframework.playclipse.preferences.PreferenceConstants;
 
 public class ConfEditor extends PlayEditor {
 
+	public static final String COMMENT_COLOR = "conf_comment_color";
+	public static final String KEY_COLOR = "conf_key_color";
+	public static final String DEFAULT_COLOR = "conf_default_color";
+	
 	@Override
 	public String autoClose(char pc, char c, char nc) {
 		if(c == '{') {
@@ -50,12 +53,12 @@ public class ConfEditor extends PlayEditor {
 	@Override
 	public String getStylePref(String type) {
 		if(type.equals("comment")) {
-			return PreferenceConstants.CONF_COMMENT_COLOR;
+			return COMMENT_COLOR;
 		}
 		if(type.equals("key")) {
-			return PreferenceConstants.CONF_KEY_COLOR;
+			return KEY_COLOR;
 		}
-		return PreferenceConstants.CONF_DEFAULT_COLOR;
+		return DEFAULT_COLOR;
 	}
 
 	@Override
