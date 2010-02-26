@@ -27,7 +27,7 @@ public class Configuration extends SourceViewerConfiguration {
 	public IPresentationReconciler getPresentationReconciler(ISourceViewer sourceViewer) {
 		PresentationReconciler presentationReconciler = new PresentationReconciler();		
 		for(String type: editor.getTypes()) {
-			NonRuleBasedDamagerRepairer ndr = new NonRuleBasedDamagerRepairer(editor.getStyle(type));
+			NonRuleBasedDamagerRepairer ndr = new NonRuleBasedDamagerRepairer(editor.getStylePref(type));
 			presentationReconciler.setDamager(ndr, type);
 			presentationReconciler.setRepairer(ndr, type);
 		}

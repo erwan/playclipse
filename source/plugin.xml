@@ -311,9 +311,27 @@
           id="org.playframework.playclipse.preferences.EditorsPreferencePage"
           name="Route Editor">
     </page>
+    <page
+          category="org.playframework.playclipse.preferences.PlayPreferencePage"
+          class="org.playframework.playclipse.preferences.ConfEditorPreferencePage"
+          id="org.playframework.playclipse.preferences.ConfPreferencePage"
+          name="Configuration Editor">
+    </page>
+    <page
+          category="org.playframework.playclipse.preferences.PlayPreferencePage"
+          class="org.playframework.playclipse.preferences.HTMLEditorPreferencePage"
+          id="org.playframework.playclipse.preferences.HTMLEditorPreferencePage"
+          name="HTML Editor">
+    </page>
  </extension>
  <extension
        point="org.eclipse.core.runtime.preferences">
+    <initializer
+          class="org.playframework.playclipse.preferences.PreferenceInitializer">
+    </initializer>
+    <initializer
+          class="org.playframework.playclipse.preferences.PreferenceInitializer">
+    </initializer>
     <initializer
           class="org.playframework.playclipse.preferences.PreferenceInitializer">
     </initializer>

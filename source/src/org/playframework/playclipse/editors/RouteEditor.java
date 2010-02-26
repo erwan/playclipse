@@ -2,13 +2,9 @@ package org.playframework.playclipse.editors;
 
 import java.util.regex.Pattern;
 
-import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.preference.PreferenceConverter;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITextViewer;
-import org.eclipse.jface.text.TextAttribute;
 import org.eclipse.jface.text.hyperlink.IHyperlink;
-import org.playframework.playclipse.PlayPlugin;
 import org.playframework.playclipse.preferences.PreferenceConstants;
 
 public class RouteEditor extends PlayEditor {
@@ -50,21 +46,20 @@ public class RouteEditor extends PlayEditor {
 	}
 
 	@Override
-	public TextAttribute getStyle(String type) {
-		IPreferenceStore store = PlayPlugin.getDefault().getPreferenceStore();
+	public String getStylePref(String type) {
 		if(type.equals("keyword")) {
-			return style(PreferenceConverter.getColor(store, PreferenceConstants.ROUTE_KEYWORD_COLOR));
+			return PreferenceConstants.ROUTE_KEYWORD_COLOR;
 		}
 		if(type.equals("url")) {
-			return style(PreferenceConverter.getColor(store, PreferenceConstants.ROUTE_URL_COLOR));
+			return PreferenceConstants.ROUTE_URL_COLOR;
 		}
 		if(type.equals("comment")) {
-			return style(PreferenceConverter.getColor(store, PreferenceConstants.ROUTE_COMMENT_COLOR));
+			return PreferenceConstants.ROUTE_COMMENT_COLOR;
 		}
 		if(type.equals("action")) {
-			return style(PreferenceConverter.getColor(store, PreferenceConstants.ROUTE_ACTION_COLOR));
+			return PreferenceConstants.ROUTE_ACTION_COLOR;
 		}
-		return style(PreferenceConverter.getColor(store, PreferenceConstants.ROUTE_DEFAULT_COLOR));
+		return PreferenceConstants.ROUTE_DEFAULT_COLOR;
 	}
 
 	@Override

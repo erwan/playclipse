@@ -11,6 +11,7 @@ import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.jface.preference.PreferenceConverter;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.ITextViewerExtension;
@@ -26,6 +27,8 @@ import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.editors.text.TextEditor;
 import org.playframework.playclipse.EditorHelper;
 import org.playframework.playclipse.Navigation;
+import org.playframework.playclipse.PlayPlugin;
+import org.playframework.playclipse.preferences.PreferenceConstants;
 
 
 public abstract class Editor extends TextEditor {
@@ -215,9 +218,13 @@ public abstract class Editor extends TextEditor {
 	}
 	
 	// Styles & types
-	
+
 	public TextAttribute style(RGB color) {
 		return new TextAttribute(colorManager.getColor(color));
+	}
+
+	public TextAttribute style(String preference) {
+		return style(PreferenceConverter.getColor(PlayPlugin.getDefault().getPreferenceStore(), PreferenceConstants.ROUTE_KEYWORD_COLOR));
 	}
 
 	public TextAttribute style(RGB color, RGB back) {
@@ -225,7 +232,7 @@ public abstract class Editor extends TextEditor {
 	}
 	
 	public abstract String[] getTypes();
-	public abstract TextAttribute getStyle(String type);
+	public abstract String getStylePref(String type);
 	
 	// Scanner
 	

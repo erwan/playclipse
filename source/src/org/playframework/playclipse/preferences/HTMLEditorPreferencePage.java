@@ -1,9 +1,8 @@
 package org.playframework.playclipse.preferences;
 
-import org.eclipse.jface.preference.ColorFieldEditor;
-import org.eclipse.jface.preference.FieldEditorPreferencePage;
-import org.eclipse.ui.IWorkbench;
+import org.eclipse.jface.preference.*;
 import org.eclipse.ui.IWorkbenchPreferencePage;
+import org.eclipse.ui.IWorkbench;
 import org.playframework.playclipse.PlayPlugin;
 
 /**
@@ -20,14 +19,14 @@ import org.playframework.playclipse.PlayPlugin;
  * be accessed directly via the preference store.
  */
 
-public class RoutesEditorPreferencePage
+public class HTMLEditorPreferencePage
 	extends FieldEditorPreferencePage
 	implements IWorkbenchPreferencePage {
 
-	public RoutesEditorPreferencePage() {
+	public HTMLEditorPreferencePage() {
 		super(GRID);
 		setPreferenceStore(PlayPlugin.getDefault().getPreferenceStore());
-		setDescription("Play Route Editor");
+		setDescription("Play HTML Template Editor");
 	}
 	
 	/**
@@ -37,12 +36,15 @@ public class RoutesEditorPreferencePage
 	 * restore itself.
 	 */
 	public void createFieldEditors() {
-		addField(new ColorFieldEditor(PreferenceConstants.ROUTE_KEYWORD_COLOR, "Keyword Color", getFieldEditorParent()));
-		addField(new ColorFieldEditor(PreferenceConstants.ROUTE_URL_COLOR, "URL Color", getFieldEditorParent()));
-		addField(new ColorFieldEditor(PreferenceConstants.ROUTE_ACTION_COLOR, "Action Color", getFieldEditorParent()));
-		addField(new ColorFieldEditor(PreferenceConstants.ROUTE_COMMENT_COLOR, "Comment Color", getFieldEditorParent()));
-		addField(new ColorFieldEditor(PreferenceConstants.ROUTE_DEFAULT_COLOR, "Default Color", getFieldEditorParent()));
-
+		addField(new ColorFieldEditor(PreferenceConstants.HTML_DEFAULT_COLOR, "Default Color", getFieldEditorParent()));
+		addField(new ColorFieldEditor(PreferenceConstants.HTML_STRING_COLOR, "String Color", getFieldEditorParent()));
+		addField(new ColorFieldEditor(PreferenceConstants.HTML_ACTION_COLOR, "Action Color", getFieldEditorParent()));
+		addField(new ColorFieldEditor(PreferenceConstants.HTML_DOCTYPE_COLOR, "Doctype Color", getFieldEditorParent()));
+		addField(new ColorFieldEditor(PreferenceConstants.HTML_EXPR_COLOR, "Expr Color", getFieldEditorParent()));
+		addField(new ColorFieldEditor(PreferenceConstants.HTML_HTML_COLOR, "HTML Color", getFieldEditorParent()));
+		addField(new ColorFieldEditor(PreferenceConstants.HTML_KEYWORD_COLOR, "Keyword Color", getFieldEditorParent()));
+		addField(new ColorFieldEditor(PreferenceConstants.HTML_SKIPPED_COLOR, "Skipped Color", getFieldEditorParent()));
+		addField(new ColorFieldEditor(PreferenceConstants.HTML_TAG_COLOR, "Tag Color", getFieldEditorParent()));
 	}
 
 	/* (non-Javadoc)
