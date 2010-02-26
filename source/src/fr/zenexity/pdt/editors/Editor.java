@@ -219,7 +219,7 @@ public abstract class Editor extends TextEditor {
 	public TextAttribute style(RGB color) {
 		return new TextAttribute(colorManager.getColor(color));
 	}
-	
+
 	public TextAttribute style(RGB color, RGB back) {
 		return new TextAttribute(colorManager.getColor(color), colorManager.getColor(back), 0);
 	}

@@ -298,5 +298,28 @@
           value="true">
     </persistent>
  </extension>
+ <extension
+       point="org.eclipse.ui.preferencePages">
+    <page
+          class="org.playframework.playclipse.preferences.PlayPreferencePage"
+          id="org.playframework.playclipse.preferences.PlayPreferencePage"
+          name="Play">
+    </page>
+    <page
+          category="org.playframework.playclipse.preferences.PlayPreferencePage"
+          class="org.playframework.playclipse.preferences.RoutesEditorPreferencePage"
+          id="org.playframework.playclipse.preferences.EditorsPreferencePage"
+          name="Route Editor">
+    </page>
+ </extension>
+ <extension
+       point="org.eclipse.core.runtime.preferences">
+    <initializer
+          class="org.playframework.playclipse.preferences.PreferenceInitializer">
+    </initializer>
+    <initializer
+          class="org.playframework.playclipse.preferences.PreferenceInitializer">
+    </initializer>
+ </extension>
 
 </plugin>
