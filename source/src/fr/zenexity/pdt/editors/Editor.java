@@ -11,24 +11,19 @@ import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.jface.preference.PreferenceConverter;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.ITextViewerExtension;
 import org.eclipse.jface.text.Region;
-import org.eclipse.jface.text.TextAttribute;
 import org.eclipse.jface.text.TypedRegion;
 import org.eclipse.jface.text.hyperlink.IHyperlink;
 import org.eclipse.jface.text.source.SourceViewer;
 import org.eclipse.jface.text.templates.Template;
-import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.editors.text.TextEditor;
 import org.playframework.playclipse.EditorHelper;
 import org.playframework.playclipse.Navigation;
-import org.playframework.playclipse.PlayPlugin;
-import org.playframework.playclipse.preferences.PreferenceConstants;
 
 
 public abstract class Editor extends TextEditor {
@@ -46,7 +41,7 @@ public abstract class Editor extends TextEditor {
 			type.intern();
 		}
 	}
-	
+
 	@Override
 	public void dispose() {
 		colorManager.dispose();
@@ -219,18 +214,6 @@ public abstract class Editor extends TextEditor {
 	
 	// Styles & types
 
-	public TextAttribute style(RGB color) {
-		return new TextAttribute(colorManager.getColor(color));
-	}
-
-	public TextAttribute style(String preference) {
-		return style(PreferenceConverter.getColor(PlayPlugin.getDefault().getPreferenceStore(), PreferenceConstants.ROUTE_KEYWORD_COLOR));
-	}
-
-	public TextAttribute style(RGB color, RGB back) {
-		return new TextAttribute(colorManager.getColor(color), colorManager.getColor(back), 0);
-	}
-	
 	public abstract String[] getTypes();
 	public abstract String getStylePref(String type);
 	

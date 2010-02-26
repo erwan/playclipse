@@ -26,8 +26,8 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 		PreferenceConverter.setDefault(store, PreferenceConstants.ROUTE_DEFAULT_COLOR, new RGB(0, 0, 0));
 
 		PreferenceConverter.setDefault(store, PreferenceConstants.CONF_COMMENT_COLOR, new RGB(90, 90, 90));
-		PreferenceConverter.setDefault(store, PreferenceConstants.CONF_DEFAULT_COLOR, new RGB(0, 0, 0));
 		PreferenceConverter.setDefault(store, PreferenceConstants.CONF_KEY_COLOR, new RGB(150, 0, 0));
+		PreferenceConverter.setDefault(store, PreferenceConstants.CONF_DEFAULT_COLOR, new RGB(0, 0, 0));
 
 		PreferenceConverter.setDefault(store, PreferenceConstants.HTML_ACTION_COLOR, new RGB(255, 0, 192));
 		PreferenceConverter.setDefault(store, PreferenceConstants.HTML_DEFAULT_COLOR, new RGB(0, 0, 0));

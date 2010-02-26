@@ -28,7 +28,7 @@ public class ConfEditorPreferencePage
 		setPreferenceStore(PlayPlugin.getDefault().getPreferenceStore());
 		setDescription("Play Configuration Editor");
 	}
-	
+
 	public void createFieldEditors() {
 		addField(new ColorFieldEditor(PreferenceConstants.CONF_DEFAULT_COLOR, "Default Color", getFieldEditorParent()));
 		addField(new ColorFieldEditor(PreferenceConstants.CONF_KEY_COLOR, "Key Color", getFieldEditorParent()));

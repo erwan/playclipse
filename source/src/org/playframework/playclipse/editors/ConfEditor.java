@@ -55,7 +55,7 @@ public class ConfEditor extends PlayEditor {
 		if(type.equals("key")) {
 			return PreferenceConstants.CONF_KEY_COLOR;
 		}
-		return PreferenceConstants.HTML_DEFAULT_COLOR;
+		return PreferenceConstants.CONF_DEFAULT_COLOR;
 	}
 
 	@Override
@@ -67,24 +67,23 @@ public class ConfEditor extends PlayEditor {
 		};
 	}
 
-    @Override
-    public String scan() {
-        if (isNext("\n")) {
-            return found("key", 1);
-        }
-        if (state != "comment" && isNext("#")) {
-            return found("comment", 0);
-        }
-        if (state == "key" && isNext("=")) {
-            return found("default", 0);
-        }
-        return null;
-    }
+	@Override
+	public String scan() {
+		if (isNext("\n")) {
+			return found("key", 1);
+		}
+		if (state != "comment" && isNext("#")) {
+			return found("comment", 0);
+		}
+		if (state == "key" && isNext("=")) {
+			return found("default", 0);
+		}
+		return null;
+	}
 
-    @Override
-    public void templates(String contentType, String ctx) {
-        // TODO Auto-generated method stub
-
-    }
+	@Override
+	public void templates(String contentType, String ctx) {
+		// TODO Auto-generated method stub
+	}
 
 }
