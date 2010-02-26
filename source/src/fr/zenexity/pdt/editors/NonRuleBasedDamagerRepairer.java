@@ -1,5 +1,7 @@
 package fr.zenexity.pdt.editors;
 
+import org.eclipse.core.runtime.Assert;
+import org.eclipse.jface.preference.PreferenceConverter;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.DocumentEvent;
 import org.eclipse.jface.text.IDocument;
@@ -10,24 +12,25 @@ import org.eclipse.jface.text.TextAttribute;
 import org.eclipse.jface.text.TextPresentation;
 import org.eclipse.jface.text.presentation.IPresentationDamager;
 import org.eclipse.jface.text.presentation.IPresentationRepairer;
-import org.eclipse.core.runtime.Assert;
 import org.eclipse.swt.custom.StyleRange;
+import org.playframework.playclipse.PlayPlugin;
 
 public class NonRuleBasedDamagerRepairer
 	implements IPresentationDamager, IPresentationRepairer {
 
+	ColorManager colorManager = new ColorManager();
 	/** The document this object works on */
 	protected IDocument fDocument;
-	/** The default text attribute if non is returned as data by the current token */
-	protected TextAttribute fDefaultTextAttribute;
-	
+	/** The preference for the default text attribute if non is returned as data by the current token */
+	protected String fDefaultTextAttribute;
+
 	/**
 	 * Constructor for NonRuleBasedDamagerRepairer.
 	 */
-	public NonRuleBasedDamagerRepairer(TextAttribute defaultTextAttribute) {
-		Assert.isNotNull(defaultTextAttribute);
+	public NonRuleBasedDamagerRepairer(String defaultTextAttributePreference) {
+		Assert.isNotNull(defaultTextAttributePreference);
 
-		fDefaultTextAttribute = defaultTextAttribute;
+		fDefaultTextAttribute = defaultTextAttributePreference;
 	}
 
 	/**
@@ -110,7 +113,11 @@ public class NonRuleBasedDamagerRepairer
 			presentation,
 			region.getOffset(),
 			region.getLength(),
-			fDefaultTextAttribute);
+			getDefaultTextAttribute());
+	}
+
+	private TextAttribute getDefaultTextAttribute() {
+		return new TextAttribute(colorManager.getColor((PreferenceConverter.getColor(PlayPlugin.getDefault().getPreferenceStore(), fDefaultTextAttribute))));
 	}
 
 	/**
@@ -121,11 +128,7 @@ public class NonRuleBasedDamagerRepairer
 	 * @param length the length of the range to be styled
 	 * @param attr the attribute describing the style of the range to be styled
 	 */
-	protected void addRange(
-		TextPresentation presentation,
-		int offset,
-		int length,
-		TextAttribute attr) {
+	protected void addRange(TextPresentation presentation, int offset, int length, TextAttribute attr) {
 		if (attr != null)
 			presentation.addStyleRange(
 				new StyleRange(

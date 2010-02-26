@@ -8,7 +8,6 @@ import java.util.regex.Pattern;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.Position;
-import org.eclipse.jface.text.TextAttribute;
 import org.eclipse.jface.text.hyperlink.IHyperlink;
 import org.eclipse.jface.text.source.Annotation;
 import org.eclipse.jface.text.source.ISourceViewer;
@@ -17,9 +16,9 @@ import org.eclipse.jface.text.source.projection.ProjectionAnnotation;
 import org.eclipse.jface.text.source.projection.ProjectionAnnotationModel;
 import org.eclipse.jface.text.source.projection.ProjectionSupport;
 import org.eclipse.jface.text.source.projection.ProjectionViewer;
-import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Composite;
 import org.playframework.playclipse.editors.PlayEditor;
+import org.playframework.playclipse.preferences.PreferenceConstants;
 
 public class HTMLEditor extends PlayEditor {
 	
@@ -33,37 +32,38 @@ public class HTMLEditor extends PlayEditor {
 	public String[] getTypes() {
 		return new String[] {"default", "doctype", "html", "string", "tag", "expression", "action", "skipped", "keyword"};
 	}
-	
-	public TextAttribute getStyle(String type) {
+
+	@Override
+	public String getStylePref(String type) {
 		if(type.equals("doctype")) {
-			return style(new RGB(127, 127, 127));
+			return PreferenceConstants.HTML_DOCTYPE_COLOR;
 		}
 		if(type.equals("html")) {
-			return style(new RGB(58, 147, 18));
+			return PreferenceConstants.HTML_HTML_COLOR;
 		}
 		if(type.equals("string")) {
-			return style(new RGB(5, 152, 220));
+			return PreferenceConstants.HTML_STRING_COLOR;
 		}
 		if(type.equals("tag")) {
-			return style(new RGB(129, 0, 153));
+			return PreferenceConstants.HTML_TAG_COLOR;
 		}
 		if(type.equals("expression")) {
-			return style(new RGB(255, 144, 0));
+			return PreferenceConstants.HTML_EXPR_COLOR;
 		}
 		if(type.equals("action")) {
-			return style(new RGB(255, 0, 192));
+			return PreferenceConstants.HTML_ACTION_COLOR;
 		}
 		if(type.equals("skipped")) {
-			return style(new RGB(90, 90, 90));
+			return PreferenceConstants.HTML_SKIPPED_COLOR;
 		}
 		if(type.equals("keyword")) {
-			return style(new RGB(255, 0, 0));
+			return PreferenceConstants.HTML_KEYWORD_COLOR;
 		}
-		return style(new RGB(0, 0, 0));
+		return PreferenceConstants.HTML_DEFAULT_COLOR;
 	}
-	
+
 	// Auto-close
-	
+
 	public String autoClose(char pc, char c, char nc) {
 		if(c == '<') {
 			return ">";

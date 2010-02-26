@@ -15,12 +15,10 @@ import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.ITextViewerExtension;
 import org.eclipse.jface.text.Region;
-import org.eclipse.jface.text.TextAttribute;
 import org.eclipse.jface.text.TypedRegion;
 import org.eclipse.jface.text.hyperlink.IHyperlink;
 import org.eclipse.jface.text.source.SourceViewer;
 import org.eclipse.jface.text.templates.Template;
-import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.editors.text.TextEditor;
@@ -43,7 +41,7 @@ public abstract class Editor extends TextEditor {
 			type.intern();
 		}
 	}
-	
+
 	@Override
 	public void dispose() {
 		colorManager.dispose();
@@ -215,17 +213,9 @@ public abstract class Editor extends TextEditor {
 	}
 	
 	// Styles & types
-	
-	public TextAttribute style(RGB color) {
-		return new TextAttribute(colorManager.getColor(color));
-	}
-	
-	public TextAttribute style(RGB color, RGB back) {
-		return new TextAttribute(colorManager.getColor(color), colorManager.getColor(back), 0);
-	}
-	
+
 	public abstract String[] getTypes();
-	public abstract TextAttribute getStyle(String type);
+	public abstract String getStylePref(String type);
 	
 	// Scanner
 	
