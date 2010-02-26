@@ -1,9 +1,9 @@
 package org.playframework.playclipse.preferences;
 
-import org.eclipse.jface.preference.*;
-import org.eclipse.ui.IWorkbenchPreferencePage;
-import org.eclipse.ui.IWorkbench;
-import org.playframework.playclipse.PlayPlugin;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
+import org.playframework.playclipse.editors.ConfEditor;
 
 /**
  * This class represents a preference page that
@@ -19,23 +19,20 @@ import org.playframework.playclipse.PlayPlugin;
  * be accessed directly via the preference store.
  */
 
-public class ConfEditorPreferencePage
-	extends FieldEditorPreferencePage
-	implements IWorkbenchPreferencePage {
+public class ConfEditorPreferencePage extends PlayEditorPreferencePage {
 
 	public ConfEditorPreferencePage() {
-		super(GRID);
-		setPreferenceStore(PlayPlugin.getDefault().getPreferenceStore());
+		super();
 		setDescription("Play Configuration Editor");
 	}
 
-	public void createFieldEditors() {
-		addField(new ColorFieldEditor(PreferenceConstants.CONF_DEFAULT_COLOR, "Default Color", getFieldEditorParent()));
-		addField(new ColorFieldEditor(PreferenceConstants.CONF_KEY_COLOR, "Key Color", getFieldEditorParent()));
-		addField(new ColorFieldEditor(PreferenceConstants.CONF_COMMENT_COLOR, "Comment Color", getFieldEditorParent()));
+	@Override
+	public Map<String, String> getFields() {
+		Map<String, String> fields = new LinkedHashMap<String, String>();
+		fields.put(ConfEditor.KEY_COLOR, "Key Color");
+		fields.put(ConfEditor.DEFAULT_COLOR, "Default Color");
+		fields.put(ConfEditor.COMMENT_COLOR, "Comment Color");
+		return fields;
 	}
 
-	public void init(IWorkbench workbench) {
-	}
-	
 }

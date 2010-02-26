@@ -381,15 +381,6 @@
     <initializer
           class="org.playframework.playclipse.preferences.PreferenceInitializer">
     </initializer>
-    <initializer
-          class="org.playframework.playclipse.preferences.PreferenceInitializer">
-    </initializer>
-    <initializer
-          class="org.playframework.playclipse.preferences.PreferenceInitializer">
-    </initializer>
-    <initializer
-          class="org.playframework.playclipse.preferences.PreferenceInitializer">
-    </initializer>
  </extension>
 
 </plugin>
