@@ -16,7 +16,7 @@
  * under the License.
  */
 
-package org.playframework.playclipse.handlers;
+package org.playframework.playclipse;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.PlatformUI;
