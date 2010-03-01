@@ -21,18 +21,20 @@ package org.playframework.playclipse.handlers;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
-import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
-import org.playframework.playclipse.tests.TestDialog;
 
 public class TestsHandler extends AbstractHandler {
 
+	public static final String TEST_VIEW_ID = "org.playframework.playclipse.views.TestsView";
+
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
-		System.out.println("TEST!!");
-		Shell shell = PlatformUI.getWorkbench().getDisplay().getActiveShell();
-		TestDialog dialog = new TestDialog(shell);
-		dialog.open();
+		try {
+			PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(TEST_VIEW_ID);
+		} catch (PartInitException e) {
+			throw new ExecutionException(e.toString());
+		}
 		return null;
 	}
 }
