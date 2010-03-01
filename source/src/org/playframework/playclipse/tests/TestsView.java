@@ -29,6 +29,7 @@ import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 import org.playframework.playclipse.PlayPlugin;
+import org.playframework.playclipse.tests.Test.TestResult;
 import org.playframework.playclipse.tests.Test.TestType;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
@@ -134,7 +135,8 @@ public class TestsView extends ViewPart {
 
 		runAction = new Action() {
 			public void run() {
-				showMessage("Run the tests!");
+				// showMessage("Run the tests!");
+				startTests();
 			}
 		};
 		runAction.setText("Run");
@@ -221,63 +223,30 @@ public class TestsView extends ViewPart {
 		return db.parse(inStream);
 	}
 
-	// Classes for Gson deserialization
-
-	static class AllTests {
-		public AllTests() {}
-
-		private List<String> unitTests;
-		private List<String> functionalTests;
-		private List<String> seleniumTests;
-
-		public List<String> getUnitTests() {
-			return unitTests;
-		}
-		public List<String> getFunctionalTests() {
-			return functionalTests;
-		}
-		public List<String> getSeleniumTests() {
-			return seleniumTests;
-		}
-
-		public String toString() {
-			return "unitTests: " + unitTests + "; "
-				  + "functionalTests: " + functionalTests + "; "
-				  + "seleniumTests: " + seleniumTests + "; ";
+	private void startTests() {
+		System.out.println("START TESTS!!");
+		Test[] tests = testsTree.getAllTests();
+		for (int i = 0; i < tests.length; i++) {
+			Test test = tests[i];
+			System.out.println(test.name);
+			startTest(test);
 		}
 	}
 
-	static class SingleResult {
-		public SingleResult() {}
-		private String name;
-		private boolean passed;
-		private int time;
-		private int sourceLine;
-
-		public String getName() {
-			return name;
-		}
-		public boolean isPassed() {
-			return passed;
-		}
-		public int getTime() {
-			return time;
-		}
-		public int getSourceLine() {
-			return sourceLine;
-		}
-	}
-
-	static class GlobalTestResult {
-		private List<SingleResult> results;
-		private boolean passed;
-
-		public List<SingleResult> getResults() {
-			return results;
-		}
-		public boolean isPassed() {
-			return passed;
-		}
+	private void startTest(final Test test) {
+		System.out.println("start the thingy");
+		ITestListener listener = new ITestListener() {
+			public void onSuccess(String status, String callId) {
+				System.out.println(status);
+				viewer.refresh();
+			}
+			public void onError(int status, String callId) {
+				// TODO
+				System.out.println("http Error "+status+"!");
+				test.result = TestResult.FAILURE;
+			}
+		};
+		test.start(listener);
 	}
 
 }

@@ -24,6 +24,25 @@ class TestsTreeContentProvider implements ITreeContentProvider {
 		functionalTests = names;
 	}
 
+	public Test[] getUnitTests() {
+		return unitTests;
+	}
+
+	public Test[] getFunctionalTests() {
+		return functionalTests;
+	}
+
+	public Test[] getAllTests() {
+		Test[] all = new Test[unitTests.length + functionalTests.length];
+		for (int i = 0; i < unitTests.length; i++) {
+			all[i] = unitTests[i];
+		}
+		for (int i = 0; i < functionalTests.length; i++) {
+			all[unitTests.length + i] = functionalTests[i];
+		}
+		return all;
+	}
+
 	@Override
 	public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
 		// TODO Auto-generated method stub
