@@ -1,20 +1,40 @@
 package org.playframework.playclipse.tests;
 
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.ui.part.*;
-import org.eclipse.jface.viewers.*;
-import org.eclipse.jface.action.*;
-import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.ui.*;
-import org.eclipse.swt.widgets.Menu;
-import org.eclipse.swt.SWT;
-import org.playframework.playclipse.tests.Test.TestType;
+import javax.xml.parsers.ParserConfigurationException;
 
-import com.google.gson.Gson;
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IMenuListener;
+import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.viewers.DoubleClickEvent;
+import org.eclipse.jface.viewers.IDoubleClickListener;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.jface.viewers.ViewerSorter;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.ui.IActionBars;
+import org.eclipse.ui.IWorkbenchActionConstants;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.part.ViewPart;
+import org.playframework.playclipse.PlayPlugin;
+import org.playframework.playclipse.tests.Test.TestType;
+import org.w3c.dom.Document;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 
 public class TestsView extends ViewPart {
@@ -24,8 +44,11 @@ public class TestsView extends ViewPart {
 	 */
 	public static final String ID = "org.playframework.playclipse.views.TestsView";
 
+	public static final ImageDescriptor RUN_ICON =  PlayPlugin.getImageDescriptor("icons/tests/RunIcon.png");
+	public static final ImageDescriptor REFRESH_ICON =  PlayPlugin.getImageDescriptor("icons/tests/refresh.gif");
+
 	// TODO: Use the real port rather than assume it's 9000
-	private String LISTURL = "http://localhost:9000/@tests?format=json";
+	private String LISTURL = "http://localhost:9000/@tests?format=xml";
 
 	private TreeViewer viewer;
 	private TestsTreeContentProvider testsTree;
@@ -107,9 +130,8 @@ public class TestsView extends ViewPart {
 		};
 		refreshAction.setText("Refresh");
 		refreshAction.setToolTipText("Refresh the Tests List");
-		refreshAction.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().
-			getImageDescriptor(ISharedImages.IMG_OBJS_INFO_TSK));
-		
+		refreshAction.setImageDescriptor(REFRESH_ICON);
+
 		runAction = new Action() {
 			public void run() {
 				showMessage("Run the tests!");
@@ -117,8 +139,7 @@ public class TestsView extends ViewPart {
 		};
 		runAction.setText("Run");
 		runAction.setToolTipText("Run Selected Tests");
-		runAction.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().
-				getImageDescriptor(ISharedImages.IMG_OBJS_INFO_TSK));
+		runAction.setImageDescriptor(RUN_ICON);
 		doubleClickAction = new Action() {
 			public void run() {
 				ISelection selection = viewer.getSelection();
@@ -145,7 +166,14 @@ public class TestsView extends ViewPart {
 	private void getTestList() {
 		IHttpListener listener = new IHttpListener() {
 			public void onSuccess(String result, String callId) {
-				buildTestList(result);
+				try {
+					buildTestList(result);
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 			public void onError(int status, String callId) {
 				showMessage("Error connecting to the server - make sure it's running.");
@@ -162,27 +190,36 @@ public class TestsView extends ViewPart {
 		viewer.getControl().setFocus();
 	}
 
-	private void buildTestList(String inputJson) {
-		Gson gson = new Gson();
-		AllTests tests = gson.fromJson(inputJson, AllTests.class);
+	private void buildTestList(String input) throws SAXException, IOException, ParserConfigurationException {
+		Document tests = parseXML(input);
 
-		List<String> uTestsNames = tests.getUnitTests();
 		List<Test> uTests = new ArrayList<Test>();
-		for (int i = 0; i < uTestsNames.size(); i++) {
-			uTests.add(new Test(uTestsNames.get(i), TestType.UNIT));
+		List<Test> fTests = new ArrayList<Test>();
+		NodeList testElts = tests.getElementsByTagName("test");
+		for (int i = 0; i < testElts.getLength(); i++) {
+			Node testElt = testElts.item(i);
+			NamedNodeMap attr = testElt.getAttributes();
+			String type = attr.getNamedItem("type").getTextContent();
+			if (type.equals("unit")) {
+				uTests.add(new Test(testElt.getTextContent(), TestType.UNIT));
+			} else if (type.equals("functional")) {
+				fTests.add(new Test(testElt.getTextContent(), TestType.FUNCTIONAL));
+			}
 		}
 		testsTree.setUnitTests(uTests.toArray(new Test[uTests.size()]));
-
-		List<String> functionalTests = tests.getFunctionalTests();
-		List<Test> fTests = new ArrayList<Test>();
-		for (int i = 0; i < functionalTests.size(); i++) {
-			fTests.add(new Test(functionalTests.get(i), TestType.FUNCTIONAL));
-		}
 		testsTree.setFunctionalTests(fTests.toArray(new Test[fTests.size()]));
 
 		viewer.refresh();
 	}
 
+	private static Document parseXML(String input) throws SAXException, IOException, ParserConfigurationException {
+		javax.xml.parsers.DocumentBuilderFactory factory = javax.xml.parsers.DocumentBuilderFactory.newInstance();
+		javax.xml.parsers.DocumentBuilder db = factory.newDocumentBuilder();
+		org.xml.sax.InputSource inStream = new org.xml.sax.InputSource();
+
+		inStream.setCharacterStream(new java.io.StringReader(input));
+		return db.parse(inStream);
+	}
 
 	// Classes for Gson deserialization
 
@@ -209,8 +246,6 @@ public class TestsView extends ViewPart {
 				  + "seleniumTests: " + seleniumTests + "; ";
 		}
 	}
-
-	// {"results":{"results":[{"name":"aVeryImportantThingToTest","passed":true,"time":2,"sourceLine":0}],"passed":true},"test":"BasicTest.class"}
 
 	static class SingleResult {
 		public SingleResult() {}
