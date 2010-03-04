@@ -8,16 +8,16 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Display;
 
-@SuppressWarnings("unchecked")
 public class ColorManager {
 
-	protected Map fColorTable = new HashMap(10);
+	protected Map<RGB, Color> fColorTable = new HashMap<RGB, Color>(10);
 
 	public void dispose() {
-		Iterator e = fColorTable.values().iterator();
+		Iterator<Color> e = fColorTable.values().iterator();
 		while (e.hasNext())
-			((Color) e.next()).dispose();
+			(e.next()).dispose();
 	}
+
 	public Color getColor(RGB rgb) {
 		Color color = (Color) fColorTable.get(rgb);
 		if (color == null) {
@@ -26,4 +26,5 @@ public class ColorManager {
 		}
 		return color;
 	}
+
 }
