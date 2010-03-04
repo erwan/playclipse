@@ -13,14 +13,14 @@ import org.eclipse.ui.editors.text.FileDocumentProvider;
 
 
 public class DocumentProvider extends FileDocumentProvider {
-	
+
 	Editor editor;
 	IDocument document;
-	
+
 	public DocumentProvider(Editor editor) {
 		this.editor = editor;
 	}
-	
+
 	@Override
 	public String getDefaultEncoding() {
 		return "utf-8";
@@ -31,10 +31,10 @@ public class DocumentProvider extends FileDocumentProvider {
 		document = super.createDocument(element);
 		if (document != null) {
 			IDocumentPartitioner partitioner =
-			new IDocumentPartitioner() {
-				
+				new IDocumentPartitioner() {
+
 				ITypedRegion[] regions = null;
-				
+
 				@Override
 				public ITypedRegion getPartition(int offset) {
 					computePartitioning(offset, 0);
@@ -103,7 +103,7 @@ public class DocumentProvider extends FileDocumentProvider {
 					}
 					return innerRegions.toArray(new ITypedRegion[innerRegions.size()]);
 				}
-				
+
 			};
 			partitioner.connect(document);
 		}
