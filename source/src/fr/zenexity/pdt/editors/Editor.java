@@ -27,11 +27,11 @@ import org.playframework.playclipse.Navigation;
 
 
 public abstract class Editor extends TextEditor {
-	
+
 	ColorManager colorManager = new ColorManager();
 	DocumentProvider documentProvider;
 	Navigation nav;
-	
+
 	public Editor() {
 		super();
 		setSourceViewerConfiguration(new Configuration(this));
@@ -76,9 +76,9 @@ public abstract class Editor extends TextEditor {
 	}
 
 	// Templates
-	
+
 	private List<Template> templates = new ArrayList<Template>();
-	
+
 	public Template[] getTemplates(String contentType, String ctx) {
 		templates.clear();
 		templates(contentType, ctx);
@@ -93,32 +93,32 @@ public abstract class Editor extends TextEditor {
 		}
 		return result.toArray(new Template[result.size()]);
 	}
-	
+
 	public abstract void templates(String contentType, String ctx);
-	
+
 	public void template(String name, String description, String pattern) {
 		templates.add(new Template(name, description, getClass().getName(), pattern, true));
 	}
-	
+
 	// Auto-close
-	
+
 	@Override
 	public void createPartControl(Composite parent) {
 		super.createPartControl(parent);
 		ITextViewerExtension tve = (ITextViewerExtension)getSourceViewer();
 		tve.appendVerifyKeyListener(new AutoCloser(this, (SourceViewer)getSourceViewer()));
 	}
-	
+
 	public static String SKIP = "__skip";
-	
+
 	public abstract String autoClose(char pc, char c, char nc);
-	
+
 	// Hyperlinks
-	
+
 	public abstract IHyperlink detectHyperlink(ITextViewer textViewer, IRegion region);
 
 	public abstract void openLink(IHyperlink link);
-	
+
 	protected BestMatch findBestMatch(final int position, Pattern... patterns) {
 		Object[] line = getLine(position);
 		int offset = (Integer)line[1];
@@ -147,7 +147,7 @@ public abstract class Editor extends TextEditor {
 		}
 		return bestMatches.get(0);
 	}
-	
+
 	protected Object[] getLine(int offset) {
 		String text = documentProvider.document.get();
 		int start = offset, end = offset;
@@ -159,25 +159,25 @@ public abstract class Editor extends TextEditor {
 		}
 		return new Object[] {text.substring(start > 0 ? start+1 : 0, end), start > 0 ? start+1 : 0};
 	}
-	
+
 	public class BestMatch {
-		
+
 		public Matcher matcher;
 		public int offset;
-		
+
 		public BestMatch(Matcher matcher, int offset) {
 			this.matcher = matcher;
 			this.offset = offset;
 		}
-		
+
 		public boolean is(Pattern pattern) {
 			return matcher.pattern().equals(pattern);
 		}
-		
+
 		public String text() {
 			return matcher.group(1);
 		}
-		
+
 		public IHyperlink hyperlink(final String type, int startOffset, int endOffset) {
 			final IRegion region= new Region(offset+matcher.start()+startOffset, matcher.end()-matcher.start()-startOffset+endOffset);
 			return new IHyperlink() {
@@ -201,24 +201,24 @@ public abstract class Editor extends TextEditor {
 				public void open() {
 					Editor.this.openLink(this);
 				}
-				
+
 				@Override
 				public String toString() {
 					return getTypeLabel() + " --> " +getHyperlinkText();
 				}
-				
+
 			};
 		}
-		
+
 	}
-	
+
 	// Styles & types
 
 	public abstract String[] getTypes();
 	public abstract String getStylePref(String type);
-	
+
 	// Scanner
-	
+
 	String content;
 	int end,  begin,  end2,  begin2,  len;
 	protected String state = "default";

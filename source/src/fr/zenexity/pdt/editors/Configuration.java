@@ -15,7 +15,7 @@ import org.eclipse.jface.text.source.SourceViewerConfiguration;
 public class Configuration extends SourceViewerConfiguration {
 
 	protected Editor editor;
-	
+
 	public Configuration(Editor editor) {
 		this.editor = editor;
 	}
@@ -33,18 +33,18 @@ public class Configuration extends SourceViewerConfiguration {
 		}
 		return presentationReconciler;
 	}
-	
+
 	@Override
 	public int getTabWidth(ISourceViewer sourceViewer) {
 		return 4;
 	}
-	
-	
+
+
 	@Override
 	public IHyperlinkDetector[] getHyperlinkDetectors(ISourceViewer sourceViewer) {
 		IHyperlinkDetector[] parent = super.getHyperlinkDetectors(sourceViewer);
 		IHyperlinkDetector mine = new IHyperlinkDetector() {
-			
+
 			@Override
 			public IHyperlink[] detectHyperlinks(ITextViewer textViewer, IRegion region, boolean canShowMultipleHyperlinks) {
 				IHyperlink link = editor.detectHyperlink(textViewer, region);

@@ -13,7 +13,7 @@ public class AutoCloser implements VerifyKeyListener {
 
 	Editor editor;
 	SourceViewer sourceViewer;
-	
+
 	public AutoCloser(Editor editor, SourceViewer sourceViewer) {
 		this.editor = editor;
 		this.sourceViewer = sourceViewer;
@@ -24,7 +24,7 @@ public class AutoCloser implements VerifyKeyListener {
 		int docCursorPos = sourceViewer.widgetOffset2ModelOffset(widgetCursorPos);
 		sourceViewer.setSelectedRange(docCursorPos + cursorDelta, 0);
 	}
-	
+
 	@Override
 	public void verifyKey(VerifyEvent event) {
 		try {

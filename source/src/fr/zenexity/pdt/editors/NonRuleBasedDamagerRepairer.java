@@ -15,8 +15,7 @@ import org.eclipse.jface.text.presentation.IPresentationRepairer;
 import org.eclipse.swt.custom.StyleRange;
 import org.playframework.playclipse.PlayPlugin;
 
-public class NonRuleBasedDamagerRepairer
-	implements IPresentationDamager, IPresentationRepairer {
+public class NonRuleBasedDamagerRepairer implements IPresentationDamager, IPresentationRepairer {
 
 	ColorManager colorManager = new ColorManager();
 	/** The document this object works on */
@@ -67,9 +66,9 @@ public class NonRuleBasedDamagerRepairer
 	 * @see IPresentationDamager#getDamageRegion(ITypedRegion, DocumentEvent, boolean)
 	 */
 	public IRegion getDamageRegion(
-		ITypedRegion partition,
-		DocumentEvent event,
-		boolean documentPartitioningChanged) {
+			ITypedRegion partition,
+			DocumentEvent event,
+			boolean documentPartitioningChanged) {
 		if (!documentPartitioningChanged) {
 			try {
 
@@ -79,12 +78,12 @@ public class NonRuleBasedDamagerRepairer
 
 				int end =
 					event.getOffset()
-						+ (event.getText() == null
+					+ (event.getText() == null
 							? event.getLength()
-							: event.getText().length());
+									: event.getText().length());
 
 				if (info.getOffset() <= end
-					&& end <= info.getOffset() + info.getLength()) {
+						&& end <= info.getOffset() + info.getLength()) {
 					// optimize the case of the same line
 					end = info.getOffset() + info.getLength();
 				} else
@@ -92,8 +91,8 @@ public class NonRuleBasedDamagerRepairer
 
 				end =
 					Math.min(
-						partition.getOffset() + partition.getLength(),
-						end);
+							partition.getOffset() + partition.getLength(),
+							end);
 				return new Region(start, end - start);
 
 			} catch (BadLocationException x) {
@@ -107,13 +106,13 @@ public class NonRuleBasedDamagerRepairer
 	 * @see IPresentationRepairer#createPresentation(TextPresentation, ITypedRegion)
 	 */
 	public void createPresentation(
-		TextPresentation presentation,
-		ITypedRegion region) {
+			TextPresentation presentation,
+			ITypedRegion region) {
 		addRange(
-			presentation,
-			region.getOffset(),
-			region.getLength(),
-			getDefaultTextAttribute());
+				presentation,
+				region.getOffset(),
+				region.getLength(),
+				getDefaultTextAttribute());
 	}
 
 	private TextAttribute getDefaultTextAttribute() {
@@ -131,11 +130,11 @@ public class NonRuleBasedDamagerRepairer
 	protected void addRange(TextPresentation presentation, int offset, int length, TextAttribute attr) {
 		if (attr != null)
 			presentation.addStyleRange(
-				new StyleRange(
-					offset,
-					length,
-					attr.getForeground(),
-					attr.getBackground(),
-					attr.getStyle()));
+					new StyleRange(
+							offset,
+							length,
+							attr.getForeground(),
+							attr.getBackground(),
+							attr.getStyle()));
 	}
 }
