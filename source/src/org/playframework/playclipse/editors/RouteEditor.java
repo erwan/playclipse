@@ -87,6 +87,12 @@ public class RouteEditor extends PlayEditor {
 		if (state == "default" && isNext("DELETE")) {
 			return found("keyword", 0);
 		}
+		if (state == "default" && isNext("OPTIONS")) {
+			return found("keyword", 0);
+		}
+		if (state == "default" && isNext("HEAD")) {
+			return found("keyword", 0);
+		}
 		if (state == "default" && isNext("*")) {
 			return found("keyword", 0);
 		}
