@@ -50,6 +50,13 @@
             id="org.playframework.playclipse.commands.newView"
             name="New View">
       </command>
+      <command
+            categoryId="org.playframework.playclipse.commands.main"
+            description="Tests"
+            helpContextId="Open a browser to test your application."
+            id="org.playframework.playclipse.commands.tests"
+            name="Tests">
+      </command>
    </extension>
    <extension
          point="org.eclipse.ui.handlers">
@@ -76,6 +83,10 @@
       <handler
             commandId="org.playframework.playclipse.commands.newView"
             class="org.playframework.playclipse.handlers.NewViewHandler">
+      </handler>
+      <handler
+            commandId="org.playframework.playclipse.commands.tests"
+            class="org.playframework.playclipse.handlers.TestsHandler">
       </handler>
    </extension>
    <extension
@@ -158,6 +169,15 @@
                   commandId="org.playframework.playclipse.commands.goToRouteCommand"
                   id="org.playframework.playclipse.menus.goToRouteCommand"
                   mnemonic="R">
+            </command>
+            <separator
+                  name="Playclipse.separator2"
+                  visible="true">
+            </separator>
+            <command
+                  commandId="org.playframework.playclipse.commands.tests"
+                  id="org.playframework.playclipse.menus.testCommand"
+                  mnemonic="t">
             </command>
          </menu>
       </menuContribution>
