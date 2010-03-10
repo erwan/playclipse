@@ -44,6 +44,7 @@ public abstract class PlayWizard extends Wizard implements INewWizard {
 	 * Adding the page to the wizard.
 	 */
 
+	@Override
 	public abstract void addPages();
 
 	/**
@@ -51,6 +52,7 @@ public abstract class PlayWizard extends Wizard implements INewWizard {
 	 * the wizard. We will create an operation and run it
 	 * using wizard as execution context.
 	 */
+	@Override
 	public boolean performFinish() {
 		final Map<String, String> parameters = page.getParameters();
 		IRunnableWithProgress op = new IRunnableWithProgress() {
@@ -141,6 +143,7 @@ public abstract class PlayWizard extends Wizard implements INewWizard {
 	 * we can initialize from it.
 	 * @see IWorkbenchWizard#init(IWorkbench, IStructuredSelection)
 	 */
+	@Override
 	public void init(IWorkbench workbench, IStructuredSelection selection) {
 		this.selection = selection;
 	}

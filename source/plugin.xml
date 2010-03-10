@@ -98,6 +98,12 @@
             sequence="M1+ALT+A">
       </key>
       <key
+            commandId="org.playframework.playclipse.commands.goToViewCommand"
+            contextId="org.eclipse.ui.contexts.window"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="M1+ALT+V">
+      </key>
+      <key
             commandId="org.playframework.playclipse.commands.goToRouteCommand"
             contextId="org.eclipse.ui.contexts.window"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"

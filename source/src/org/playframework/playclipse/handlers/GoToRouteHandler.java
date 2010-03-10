@@ -28,11 +28,14 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.handlers.HandlerUtil;
 import org.playframework.playclipse.EditorHelper;
 import org.playframework.playclipse.FilesAccess;
+import org.playframework.playclipse.Navigation;
 
 /**
  * 
@@ -47,12 +50,9 @@ public class GoToRouteHandler extends AbstractHandler {
 	public GoToRouteHandler() {
 	}
 
-	public Object execute(ExecutionEvent event) throws ExecutionException {
-		IWorkbenchWindow window = HandlerUtil.getActiveWorkbenchWindowChecked(event);
-
+	private void fromEditor(ExecutionEvent event, EditorHelper editor) throws ExecutionException {
 		String line;
 		String action = null;
-		EditorHelper editor = EditorHelper.getCurrent(event);
 		IProject project = editor.getProject();
 		int lineNo = editor.getCurrentLineNo();
 		line = editor.getLine(lineNo);
@@ -69,8 +69,14 @@ public class GoToRouteHandler extends AbstractHandler {
 				}
 			}
 		}
-		IEditorPart editorPart;
+		fromProject(event, project, action);
+	}
+
+	private void fromProject(ExecutionEvent event, IProject project, String action) throws ExecutionException {
+		IWorkbenchWindow window = HandlerUtil.getActiveWorkbenchWindowChecked(event);
+
 		IFile file = project.getFile("conf/routes");
+		IEditorPart editorPart;
 		if (file.exists()) {
 			try {
 				editorPart = FilesAccess.openFile(file, window);
@@ -87,6 +93,23 @@ public class GoToRouteHandler extends AbstractHandler {
 					"Playclipse",
 					"The file conf/routes can't be found, create it first");
 		}
+	}
+
+	public Object execute(ExecutionEvent event) throws ExecutionException {
+
+		EditorHelper editor = EditorHelper.getCurrent(event);
+		if (editor != null) {
+			fromEditor(event, editor);
+			return null;
+		}
+
+		ISelection selection = HandlerUtil.getCurrentSelection(event);
+		if (selection != null && !selection.isEmpty() && selection instanceof IStructuredSelection) {
+			IProject project = Navigation.getProject((IStructuredSelection)selection);
+			fromProject(event, project, null);
+			return null;
+		}
+
 		return null;
 	}
 

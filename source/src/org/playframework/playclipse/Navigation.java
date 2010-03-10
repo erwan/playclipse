@@ -3,7 +3,9 @@ package org.playframework.playclipse;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IMethod;
 import org.eclipse.jdt.core.ISourceRange;
@@ -11,6 +13,7 @@ import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchWindow;
 
@@ -132,6 +135,28 @@ public final class Navigation {
 			String content = CodeTemplates.view(title);
 			FilesAccess.createAndOpen(file, content, FilesAccess.FileType.HTML);
 		}
+	}
+
+	public static IProject getProject(IStructuredSelection selection) {
+		Object obj = selection.getFirstElement();
+		if (obj instanceof IJavaElement) {
+			obj = ((IJavaElement)obj).getResource();
+		}
+		if (obj instanceof IResource) {
+			IContainer container;
+			if (obj instanceof IContainer) {
+				container = (IContainer) obj;
+			} else {
+				container = ((IResource) obj).getParent();
+			}
+			while (container != null) {
+				if (container instanceof IProject) {
+					return (IProject)container;
+				}
+				container = container.getParent();
+			}
+		}
+		return null;
 	}
 
 }
