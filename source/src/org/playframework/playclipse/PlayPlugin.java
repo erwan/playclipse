@@ -34,7 +34,11 @@ public class PlayPlugin extends AbstractUIPlugin {
 	// The shared instance
 	private static PlayPlugin plugin;
 
+	// Preferences
 	public static final String PREF_TMPL_IDENT = "_play_tmpl_ident";
+	public static final String PREF_BROWSER = "pref_browser";
+	public static final String PREF_BROWSER_INTERNAL = "internal";
+	public static final String PREF_BROWSER_EXTERNAL = "external";
 
 	/**
 	 * The constructor

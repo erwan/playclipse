@@ -9,6 +9,7 @@ import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.browser.IWebBrowser;
+import org.playframework.playclipse.PlayPlugin;
 
 public class TestsHandler extends AbstractHandler {
 	/**
@@ -22,13 +23,26 @@ public class TestsHandler extends AbstractHandler {
 	 * from the application context.
 	 */
 	public Object execute(ExecutionEvent event) throws ExecutionException {
-		IWebBrowser browser;
 		try {
-			browser = PlatformUI.getWorkbench().getBrowserSupport().createBrowser("testbrowser");
-			browser.openURL(new URL("http://localhost:9000/@tests?select=all&auto=yes"));
+		String browserPref = PlayPlugin.getDefault().getPreferenceStore().getString(PlayPlugin.PREF_BROWSER);
+		if (browserPref.equals(PlayPlugin.PREF_BROWSER_INTERNAL)) {
+			openInInternal("http://localhost:9000/@tests?select=all&auto=yes");
+		} else {
+			openInExternal("http://localhost:9000/@tests?select=all&auto=yes");
+		}
 		} catch (PartInitException e) {
 		} catch (MalformedURLException e) {
 		}
 		return null;
 	}
+
+	private void openInExternal(String url) throws PartInitException, MalformedURLException {
+		PlatformUI.getWorkbench().getBrowserSupport().getExternalBrowser().openURL(new URL(url));
+	}
+
+	private void openInInternal(String url) throws PartInitException, MalformedURLException {
+		IWebBrowser browser = PlatformUI.getWorkbench().getBrowserSupport().createBrowser("testbrowser");
+		browser.openURL(new URL(url));
+	}
+
 }

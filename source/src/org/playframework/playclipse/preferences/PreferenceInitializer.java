@@ -22,6 +22,8 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 	public void initializeDefaultPreferences() {
 		IPreferenceStore store = PlayPlugin.getDefault().getPreferenceStore();
 
+		store.setDefault(PlayPlugin.PREF_BROWSER, PlayPlugin.PREF_BROWSER_INTERNAL);
+
 		PreferenceConverter.setDefault(store, RouteEditor.ACTION_COLOR, new RGB(200, 0, 0));
 		PreferenceConverter.setDefault(store, RouteEditor.KEYWORD_COLOR, new RGB(0, 200, 0));
 		PreferenceConverter.setDefault(store, RouteEditor.URL_COLOR, new RGB(0, 0, 200));
