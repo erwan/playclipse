@@ -55,7 +55,6 @@ public class XMLReconcilingStrategy implements IReconcilingStrategy, IReconcilin
 
 	@Override
 	public void setProgressMonitor(IProgressMonitor monitor) {
-		// TODO Auto-generated method stub
 	}
 
 	@Override

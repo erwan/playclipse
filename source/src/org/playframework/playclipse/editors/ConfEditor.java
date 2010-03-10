@@ -86,7 +86,6 @@ public class ConfEditor extends PlayEditor {
 
 	@Override
 	public void templates(String contentType, String ctx) {
-		// TODO Auto-generated method stub
 	}
 
 }

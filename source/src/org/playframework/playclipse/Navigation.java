@@ -73,36 +73,27 @@ public final class Navigation {
 	 * @param editorPart
 	 * @param type
 	 * @param methodName
+	 * @throws JavaModelException
 	 */
-	private void focusOrCreateMethod(IEditorPart editorPart, IType type, String methodName) {
+	private void focusOrCreateMethod(IEditorPart editorPart, IType type, String methodName) throws JavaModelException {
 		// We can't just use IType.getMethod because we don't know the arguments
 		ISourceRange sourceRange = null;
 		IMethod[] methods;
 		System.out.println("Looking for method: " + methodName);
-		try {
 			methods = type.getMethods();
 			for (int i = 0; i < methods.length; i++) {
 				if (methods[i].getElementName().equals(methodName)) {
 					sourceRange = methods[i].getSourceRange();
 				}
 			}
-		} catch (JavaModelException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
 		if (sourceRange != null) {
 			FilesAccess.goToCharacter(editorPart, sourceRange.getOffset());
 		} else if (MessageDialog.openConfirm(
 				window.getShell(),
 				"Playclipse",
 				"The method " + methodName + " doesn't exist, do you want to create it?")) {
-			try {
 				IMethod newMethod = type.createMethod("public static void "+methodName+"() {\n\n}\n", null, false, null);
 				FilesAccess.goToCharacter(editorPart, newMethod.getSourceRange().getOffset());
-			} catch (JavaModelException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
 		}
 	}
 

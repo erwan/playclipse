@@ -65,7 +65,6 @@ public final class EditorHelper {
 		if (editor instanceof ITextEditor) {
 			return new EditorHelper((ITextEditor) editor);
 		} else {
-			// Unknown editor... TODO: handle error
 			return null;
 		}
 	}
