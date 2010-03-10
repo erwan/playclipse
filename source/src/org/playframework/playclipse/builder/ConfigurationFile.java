@@ -41,6 +41,28 @@ public class ConfigurationFile {
 		return null;
 	}
 
+	public int getPort() {
+		List<String> lines = getLines();
+		Pattern p = Pattern.compile("^\\s*port\\s*=([0-9]+)");
+		Matcher m;
+		for (int i = 0; i < lines.size(); i++) {
+			String line = lines.get(i);
+			int port = 0;
+			String sport;
+			m = p.matcher(line);
+			if (m.matches()) {
+				sport = m.group(1);
+				try {
+					port = Integer.parseInt(sport);
+				} catch (NumberFormatException ex) {
+					// Bad line, just continue
+				}
+				if (port != 0) return port;
+			}
+		}
+		return 9000;
+	}
+
 	private List<String> getLines() {
 		List<String> result = new ArrayList<String>();
 		String line;
