@@ -243,12 +243,12 @@ public abstract class Editor extends TextEditor {
 		map.put(IMarker.CHAR_END, end);
 		map.put(IMarker.SEVERITY, new Integer(IMarker.SEVERITY_ERROR));
 
-		//try {
-		//	IFile curfile = ((IFileEditorInput)getEditorInput()).getFile();
-			//MarkerUtilities.createMarker(curfile, map, IMarker.PROBLEM);
-		//} catch (CoreException ee) {
-		//	ee.printStackTrace();
-		//}
+		try {
+			IFile curfile = ((IFileEditorInput)getEditorInput()).getFile();
+			MarkerUtilities.createMarker(curfile, map, IMarker.PROBLEM);
+		} catch (CoreException ee) {
+			ee.printStackTrace();
+		}
 	}
 
 	private void clearMarkers() {

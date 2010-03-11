@@ -28,18 +28,15 @@ public class ModelInspector {
 	}
 
 	private IMethod getAction(String fullClassName, String query) {
-		System.out.println("getMatchingMethods {" + fullClassName + "}.{" + query + "}");
 		try {
 			IType parent = javaProject.findType(fullClassName);
 			// Look for package fragments
 			if (parent == null) {
-				System.out.println("Can't find anything!");
 				return null;
 			}
 			IJavaElement[] children = parent.getChildren();
 			for (int i = 0; i < children.length; i++) {
 				IJavaElement child = children[i];
-				System.out.println(child.getElementName() + "?");
 				if (child instanceof IMethod) {
 					IMethod method = (IMethod)child;
 					int flags = method.getFlags();

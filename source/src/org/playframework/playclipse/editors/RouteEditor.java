@@ -120,16 +120,16 @@ public class RouteEditor extends PlayEditor {
 			return found("url", 0);
 		}
 		if (state == "default" && oldState == "url" && !nextIsSpace()) {
-			System.out.println(begin + " " + begin2 + " " + end + " " + end2 + " " + len);
+			// System.out.println(begin + " " + begin2 + " " + end + " " + end2 + " " + len);
 			BestMatch match = findBestMatch(end, action);
 			if (match != null)
-				System.out.println("Let's see " + match.text());
+				// System.out.println("Let's see " + match.text());
 			if (match != null && getInspector().resolveAction(match.text()) == null) {
-//				try {
-					// addError(match.offset, match.text().length(), "I don't know this route!");
-//				} catch (BadLocationException e) {
+				try {
+					addError(match.offset, match.text().length(), "I don't know this route!");
+				} catch (BadLocationException e) {
 					// Should never happen
-//				}
+				}
 			}
 			return found("action", 0);
 		}

@@ -32,9 +32,16 @@ public class DocumentProvider extends FileDocumentProvider {
 		if (document != null) {
 			IDocumentPartitioner partitioner = new IDocumentPartitioner() {
 
+				List<ITypedRegion> regions;
+
 				@Override
 				public ITypedRegion getPartition(int offset) {
-					for(ITypedRegion region : computePartitioning(offset, 0)) {
+					System.out.println("getPartition " + offset);
+					if (regions == null) {
+						System.out.println("...regions is null");
+						computePartitioning(0, 0);
+					}
+					for (ITypedRegion region: regions) {
 						if(region.getOffset() + region.getLength() >= offset) {
 							return region;
 						}
@@ -54,6 +61,8 @@ public class DocumentProvider extends FileDocumentProvider {
 
 				@Override
 				public boolean documentChanged(DocumentEvent event) {
+					System.out.println("DOCUMENT CHANGED");
+					computePartitioning(0, 0);
 					return true;
 				}
 
@@ -73,24 +82,27 @@ public class DocumentProvider extends FileDocumentProvider {
 
 				@Override
 				public ITypedRegion[] computePartitioning(int offset, int length) {
-					List<ITypedRegion> regions = new ArrayList<ITypedRegion>();
+					System.out.println("computePartitioning " + offset + " - " + length);
+					List<ITypedRegion> inner = new ArrayList<ITypedRegion>();
+					regions = new ArrayList<ITypedRegion>();
 					editor.reset();
 					while (!editor.eof) {
 						ITypedRegion current = editor.nextToken();
+						regions.add(current);
 						int start = current.getOffset();
 						int stop = current.getOffset() + current.getLength();
 						if (start >= offset && stop <= offset + length) {
 							// Region included in the zone
-							regions.add(current);
+							inner.add(current);
 						} else if (start < offset && stop >= offset) {
 							// Overlap on the beginning of the zone
-							regions.add(new TypedRegion(offset, (stop - offset), current.getType()));
+							inner.add(new TypedRegion(offset, (stop - offset), current.getType()));
 						} else if (start <= offset && stop > offset + length) {
 							// Overlap on the end of the zone
-							regions.add(new TypedRegion(start, (offset + length - start), current.getType()));
+							inner.add(new TypedRegion(start, (offset + length - start), current.getType()));
 						}
 					}
-					return regions.toArray(new ITypedRegion[regions.size()]);
+					return inner.toArray(new ITypedRegion[inner.size()]);
 				}
 
 			};
