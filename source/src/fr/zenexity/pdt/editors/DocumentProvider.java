@@ -8,6 +8,7 @@ import org.eclipse.jface.text.DocumentEvent;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IDocumentPartitioner;
 import org.eclipse.jface.text.ITypedRegion;
+import org.eclipse.jface.text.TypedRegion;
 import org.eclipse.ui.editors.text.FileDocumentProvider;
 
 
@@ -76,7 +77,18 @@ public class DocumentProvider extends FileDocumentProvider {
 					editor.reset();
 					while (!editor.eof) {
 						ITypedRegion current = editor.nextToken();
-						regions.add(current);
+						int start = current.getOffset();
+						int stop = current.getOffset() + current.getLength();
+						if (start >= offset && stop <= offset + length) {
+							// Region included in the zone
+							regions.add(current);
+						} else if (start < offset && stop >= offset) {
+							// Overlap on the beginning of the zone
+							regions.add(new TypedRegion(offset, (stop - offset), current.getType()));
+						} else if (start <= offset && stop > offset + length) {
+							// Overlap on the end of the zone
+							regions.add(new TypedRegion(start, (offset + length - start), current.getType()));
+						}
 					}
 					return regions.toArray(new ITypedRegion[regions.size()]);
 				}
