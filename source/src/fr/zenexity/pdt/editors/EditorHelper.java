@@ -16,7 +16,7 @@
  * under the License.
  */
 
-package org.playframework.playclipse;
+package fr.zenexity.pdt.editors;
 
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
@@ -171,6 +171,11 @@ public final class EditorHelper {
 	public IDocument getDocument() {
 		return textEditor.getDocumentProvider().getDocument(
 				textEditor.getEditorInput());
+	}
+
+	public int getLineNumber(int offset) throws BadLocationException {
+		IDocument doc = this.getDocument();
+		return doc.getLineOfOffset(offset);
 	}
 
 }

@@ -3,14 +3,20 @@ package fr.zenexity.pdt.editors;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.ITextViewerExtension;
@@ -22,8 +28,7 @@ import org.eclipse.jface.text.templates.Template;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.editors.text.TextEditor;
-import org.playframework.playclipse.EditorHelper;
-import org.playframework.playclipse.Navigation;
+import org.eclipse.ui.texteditor.MarkerUtilities;
 
 
 public abstract class Editor extends TextEditor {
@@ -31,6 +36,7 @@ public abstract class Editor extends TextEditor {
 	ColorManager colorManager = new ColorManager();
 	DocumentProvider documentProvider;
 	Navigation nav;
+	EditorHelper helper;
 
 	public Editor() {
 		super();
@@ -52,9 +58,16 @@ public abstract class Editor extends TextEditor {
 
 	protected Navigation getNav() {
 		if (nav == null) {
-			nav = new Navigation(new EditorHelper(this));
+			nav = new Navigation(getHelper());
 		}
 		return nav;
+	}
+
+	protected EditorHelper getHelper() {
+		if (helper == null) {
+			helper = new EditorHelper(this);
+		}
+		return helper;
 	}
 
 	protected IPath getPath() {
@@ -217,10 +230,41 @@ public abstract class Editor extends TextEditor {
 	public abstract String[] getTypes();
 	public abstract String getStylePref(String type);
 
+	// Errors & Warnings
+
+	protected void addError(int begin, int end, String message) throws BadLocationException {
+		System.out.println("Add error " + begin + " - " + end);
+		Map<String, Object> map = new HashMap<String, Object>();
+		MarkerUtilities.setLineNumber(map, getHelper().getLineNumber(begin));
+		MarkerUtilities.setMessage(map, message);
+		map.put(IMarker.MESSAGE, message);
+		map.put(IMarker.LOCATION, getPath().toString());
+		map.put(IMarker.CHAR_START, begin);
+		map.put(IMarker.CHAR_END, end);
+		map.put(IMarker.SEVERITY, new Integer(IMarker.SEVERITY_ERROR));
+
+		//try {
+		//	IFile curfile = ((IFileEditorInput)getEditorInput()).getFile();
+			//MarkerUtilities.createMarker(curfile, map, IMarker.PROBLEM);
+		//} catch (CoreException ee) {
+		//	ee.printStackTrace();
+		//}
+	}
+
+	private void clearMarkers() {
+		IFileEditorInput input = (IFileEditorInput)getEditorInput();
+		IFile file = input.getFile();
+		try {
+			file.deleteMarkers(IMarker.PROBLEM, true, IResource.DEPTH_INFINITE);
+		} catch (CoreException e) {
+			// something went wrong
+		}
+	}
+
 	// Scanner
 
 	String content;
-	int end,  begin,  end2,  begin2,  len;
+	protected int begin, end, end2, begin2, len;
 	protected String state = "default";
 	boolean eof = false;
 
@@ -234,6 +278,7 @@ public abstract class Editor extends TextEditor {
 	}
 
 	protected void reset() {
+		clearMarkers();
 		eof = false;
 		end = begin = end2 = begin2 = 0;
 		state = "default";

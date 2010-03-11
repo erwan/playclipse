@@ -1,4 +1,4 @@
-package org.playframework.playclipse;
+package fr.zenexity.pdt.editors;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
@@ -16,6 +16,9 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchWindow;
+import org.playframework.playclipse.CodeTemplates;
+import org.playframework.playclipse.FilesAccess;
+
 
 public final class Navigation {
 	private EditorHelper editorHelper;

@@ -2,9 +2,13 @@ package org.playframework.playclipse.editors;
 
 import java.util.regex.Pattern;
 
+import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.core.JavaCore;
+import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.hyperlink.IHyperlink;
+import org.playframework.playclipse.ModelInspector;
 
 public class RouteEditor extends PlayEditor {
 
@@ -15,10 +19,22 @@ public class RouteEditor extends PlayEditor {
 	public static final String DEFAULT_COLOR = "route_default_color";
 
 	String oldState = "default";
+	IJavaProject javaProject;
+	ModelInspector inspector;
 
 	public RouteEditor() {
 		super();
 		setSourceViewerConfiguration(new RouteConfiguration(this));
+	}
+
+	private IJavaProject getJavaProject() {
+		if (javaProject == null) javaProject = JavaCore.create(getProject());
+		return javaProject;
+	}
+
+	private ModelInspector getInspector() {
+		if (inspector == null) inspector = new ModelInspector(getJavaProject());
+		return inspector;
 	}
 
 	@Override
@@ -104,6 +120,17 @@ public class RouteEditor extends PlayEditor {
 			return found("url", 0);
 		}
 		if (state == "default" && oldState == "url" && !nextIsSpace()) {
+			System.out.println(begin + " " + begin2 + " " + end + " " + end2 + " " + len);
+			BestMatch match = findBestMatch(end, action);
+			if (match != null)
+				System.out.println("Let's see " + match.text());
+			if (match != null && getInspector().resolveAction(match.text()) == null) {
+//				try {
+					// addError(match.offset, match.text().length(), "I don't know this route!");
+//				} catch (BadLocationException e) {
+					// Should never happen
+//				}
+			}
 			return found("action", 0);
 		}
 		return null;
