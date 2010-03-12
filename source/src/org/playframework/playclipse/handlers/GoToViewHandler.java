@@ -18,8 +18,6 @@
 
 package org.playframework.playclipse.handlers;
 
-import org.playframework.playclipse.EditorHelper;
-import org.playframework.playclipse.Navigation;
 
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
@@ -27,6 +25,9 @@ import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.handlers.HandlerUtil;
+import org.playframework.playclipse.Navigation;
+
+import fr.zenexity.pdt.editors.EditorHelper;
 
 import java.util.regex.*;
 

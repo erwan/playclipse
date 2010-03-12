@@ -22,7 +22,6 @@ import org.eclipse.jface.text.templates.Template;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.editors.text.TextEditor;
-import org.playframework.playclipse.EditorHelper;
 import org.playframework.playclipse.Navigation;
 
 

@@ -36,6 +36,8 @@ import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.texteditor.ITextEditor;
 
+import fr.zenexity.pdt.editors.EditorHelper;
+
 public class FilesAccess {
 	public enum FileType {
 		JAVA("org.eclipse.jdt.ui.CompilationUnitEditor"),

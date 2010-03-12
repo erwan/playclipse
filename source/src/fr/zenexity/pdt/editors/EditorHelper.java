@@ -16,7 +16,7 @@
  * under the License.
  */
 
-package org.playframework.playclipse;
+package fr.zenexity.pdt.editors;
 
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
@@ -32,8 +32,6 @@ import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.handlers.HandlerUtil;
 import org.eclipse.ui.texteditor.ITextEditor;
-import org.playframework.playclipse.editors.RouteEditor;
-import org.playframework.playclipse.editors.html.HTMLEditor;
 
 /**
  * A helper class to handle the Eclipse-specific heavy lifting to access and
@@ -46,7 +44,7 @@ import org.playframework.playclipse.editors.html.HTMLEditor;
  */
 public final class EditorHelper {
 
-	private ITextEditor textEditor;
+	public ITextEditor textEditor;
 
 	public EditorHelper(ITextEditor textEditor) {
 		this.textEditor = textEditor;
@@ -121,28 +119,11 @@ public final class EditorHelper {
 	}
 
 	/**
-	 *
-	 * @return true if the file owned by the editor corresponds to a view
-	 */
-	public boolean isView() {
-		return (textEditor instanceof HTMLEditor);
-	}
-
-	/**
-	 *
-	 * @return true if the file owned by the editor is the conf/routes files
-	 */
-	public boolean isRoutes() {
-		return (textEditor instanceof RouteEditor);
-	}
-
-	/**
 	 * 
 	 * @return the path of the file currently edited in the editor
 	 */
 	protected IPath getFilePath() {
-		IFileEditorInput input = (IFileEditorInput) textEditor.getEditorInput();
-		return input.getFile().getFullPath();
+		return ((IFileEditorInput) textEditor.getEditorInput()).getFile().getFullPath();
 	}
 
 	/**
@@ -164,13 +145,11 @@ public final class EditorHelper {
 	}
 
 	private ITextSelection getTextSelection() {
-		return ((ITextSelection) textEditor.getSelectionProvider()
-				.getSelection());
+		return ((ITextSelection) textEditor.getSelectionProvider().getSelection());
 	}
 
 	public IDocument getDocument() {
-		return textEditor.getDocumentProvider().getDocument(
-				textEditor.getEditorInput());
+		return textEditor.getDocumentProvider().getDocument(textEditor.getEditorInput());
 	}
 
 }

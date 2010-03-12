@@ -17,6 +17,8 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchWindow;
 
+import fr.zenexity.pdt.editors.EditorHelper;
+
 public final class Navigation {
 	private EditorHelper editorHelper;
 	private IWorkbenchWindow window;

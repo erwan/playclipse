@@ -33,9 +33,10 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.handlers.HandlerUtil;
-import org.playframework.playclipse.EditorHelper;
 import org.playframework.playclipse.FilesAccess;
 import org.playframework.playclipse.Navigation;
+
+import fr.zenexity.pdt.editors.EditorHelper;
 
 /**
  * 
