@@ -38,6 +38,8 @@ import org.playframework.playclipse.FilesAccess;
 import fr.zenexity.pdt.editors.EditorHelper;
 import fr.zenexity.pdt.editors.Navigation;
 
+import fr.zenexity.pdt.editors.EditorHelper;
+
 /**
  * 
  * Open the routes files from the controller, and show the line corresponding to the current action

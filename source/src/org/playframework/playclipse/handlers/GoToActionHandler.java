@@ -24,6 +24,8 @@ import java.util.regex.Pattern;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
+import org.playframework.playclipse.editors.RouteEditor;
+import org.playframework.playclipse.editors.html.HTMLEditor;
 
 import fr.zenexity.pdt.editors.EditorHelper;
 import fr.zenexity.pdt.editors.Navigation;
@@ -69,10 +71,10 @@ public class GoToActionHandler extends AbstractHandler {
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		String action = null;
 		EditorHelper editor = EditorHelper.getCurrent(event);
-		if (editor.isView()) {
+		if (editor.textEditor instanceof HTMLEditor) {
 			action = fromView(editor);
 			System.out.println("View!!");
-		} else if (editor.isRoutes()) {
+		} else if (editor.textEditor instanceof RouteEditor) {
 			action = fromRoutes(editor);
 			System.out.println("Routes!!");
 		}

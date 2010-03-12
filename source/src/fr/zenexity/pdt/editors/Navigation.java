@@ -20,6 +20,8 @@ import org.playframework.playclipse.CodeTemplates;
 import org.playframework.playclipse.FilesAccess;
 
 
+import fr.zenexity.pdt.editors.EditorHelper;
+
 public final class Navigation {
 	private EditorHelper editorHelper;
 	private IWorkbenchWindow window;

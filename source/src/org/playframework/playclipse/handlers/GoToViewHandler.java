@@ -19,6 +19,9 @@
 package org.playframework.playclipse.handlers;
 
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
@@ -28,8 +31,6 @@ import org.eclipse.ui.handlers.HandlerUtil;
 
 import fr.zenexity.pdt.editors.EditorHelper;
 import fr.zenexity.pdt.editors.Navigation;
-
-import java.util.regex.*;
 
 /**
  * Go to the view (template) corresponding to the current action
