@@ -29,14 +29,12 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.editors.text.TextEditor;
 import org.eclipse.ui.texteditor.MarkerUtilities;
-import org.playframework.playclipse.Navigation;
 
 
 public abstract class Editor extends TextEditor {
 
 	ColorManager colorManager = new ColorManager();
 	DocumentProvider documentProvider;
-	Navigation nav;
 	EditorHelper helper;
 
 	public Editor() {
@@ -56,13 +54,6 @@ public abstract class Editor extends TextEditor {
 	}
 
 	// Helpers
-
-	protected Navigation getNav() {
-		if (nav == null) {
-			nav = new Navigation(getHelper());
-		}
-		return nav;
-	}
 
 	protected EditorHelper getHelper() {
 		if (helper == null) {

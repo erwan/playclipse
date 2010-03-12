@@ -3,10 +3,20 @@ package org.playframework.playclipse.editors;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.jface.text.hyperlink.IHyperlink;
 import org.eclipse.ui.IFileEditorInput;
+import org.playframework.playclipse.Navigation;
 
 import fr.zenexity.pdt.editors.Editor;
 
 public abstract class PlayEditor extends Editor {
+
+	private Navigation navigation;
+
+	protected Navigation getNav() {
+		if (navigation == null) {
+			navigation = new Navigation(getHelper());
+		}
+		return navigation;
+	}
 
 	@Override
 	public void openLink(IHyperlink link) {
