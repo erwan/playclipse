@@ -34,9 +34,7 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.handlers.HandlerUtil;
 import org.playframework.playclipse.FilesAccess;
-
-import fr.zenexity.pdt.editors.EditorHelper;
-import fr.zenexity.pdt.editors.Navigation;
+import org.playframework.playclipse.Navigation;
 
 import fr.zenexity.pdt.editors.EditorHelper;
 

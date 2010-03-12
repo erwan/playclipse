@@ -29,6 +29,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.editors.text.TextEditor;
 import org.eclipse.ui.texteditor.MarkerUtilities;
+import org.playframework.playclipse.Navigation;
 
 
 public abstract class Editor extends TextEditor {
