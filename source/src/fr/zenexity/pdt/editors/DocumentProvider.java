@@ -32,14 +32,9 @@ public class DocumentProvider extends FileDocumentProvider {
 		if (document != null) {
 			IDocumentPartitioner partitioner = new IDocumentPartitioner() {
 
-				List<ITypedRegion> regions;
-
 				@Override
 				public ITypedRegion getPartition(int offset) {
-					if (regions == null) {
-						computePartitioning(0, 0);
-					}
-					for (ITypedRegion region: regions) {
+					for(ITypedRegion region : computePartitioning(offset, 0)) {
 						if(region.getOffset() + region.getLength() >= offset) {
 							return region;
 						}
@@ -59,7 +54,6 @@ public class DocumentProvider extends FileDocumentProvider {
 
 				@Override
 				public boolean documentChanged(DocumentEvent event) {
-					computePartitioning(0, 0);
 					return true;
 				}
 
@@ -79,27 +73,24 @@ public class DocumentProvider extends FileDocumentProvider {
 
 				@Override
 				public ITypedRegion[] computePartitioning(int offset, int length) {
-					System.out.println("computePartitioning " + offset + " - " + length);
-					List<ITypedRegion> inner = new ArrayList<ITypedRegion>();
-					regions = new ArrayList<ITypedRegion>();
+					List<ITypedRegion> regions = new ArrayList<ITypedRegion>();
 					editor.reset();
 					while (!editor.eof) {
 						ITypedRegion current = editor.nextToken();
-						regions.add(current);
 						int start = current.getOffset();
 						int stop = current.getOffset() + current.getLength();
 						if (start >= offset && stop <= offset + length) {
 							// Region included in the zone
-							inner.add(current);
+							regions.add(current);
 						} else if (start < offset && stop >= offset) {
 							// Overlap on the beginning of the zone
-							inner.add(new TypedRegion(offset, (stop - offset), current.getType()));
+							regions.add(new TypedRegion(offset, (stop - offset), current.getType()));
 						} else if (start <= offset && stop > offset + length) {
 							// Overlap on the end of the zone
-							inner.add(new TypedRegion(start, (offset + length - start), current.getType()));
+							regions.add(new TypedRegion(start, (offset + length - start), current.getType()));
 						}
 					}
-					return inner.toArray(new ITypedRegion[inner.size()]);
+					return regions.toArray(new ITypedRegion[regions.size()]);
 				}
 
 			};
