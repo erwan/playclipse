@@ -1,10 +1,13 @@
 package org.playframework.playclipse.editors;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
-import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.hyperlink.IHyperlink;
@@ -84,6 +87,29 @@ public class RouteEditor extends PlayEditor {
 	}
 
 	@Override
+	public void updateMarkers() {
+		clearMarkers();
+		System.out.println("updateMarkers count=" + pendingMarkers.size());
+		for (int i = 0; i < pendingMarkers.size(); i++) {
+			try {
+				addError(pendingMarkers.get(i));
+			} catch (CoreException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		pendingMarkers = new ArrayList<Map<String, Object>>();
+	}
+
+	private List<Map<String, Object>> pendingMarkers = new ArrayList<Map<String, Object>>();
+
+	@Override
+	public void reset() {
+		super.reset();
+		pendingMarkers = new ArrayList<Map<String, Object>>();
+	}
+
+	@Override
 	public String scan() {
 		if (isNext("\n")) {
 			return found("default", 1);
@@ -120,15 +146,18 @@ public class RouteEditor extends PlayEditor {
 			return found("url", 0);
 		}
 		if (state == "default" && oldState == "url" && !nextIsSpace()) {
-			// System.out.println(begin + " " + begin2 + " " + end + " " + end2 + " " + len);
 			BestMatch match = findBestMatch(end, action);
-			if (match != null)
-				// System.out.println("Let's see " + match.text());
-			if (match != null && getInspector().resolveAction(match.text()) == null) {
+			if (match != null &&
+				content.charAt(match.offset + match.matcher.end()) != ':' &&
+				getInspector().resolveAction(match.text()) == null) {
 				try {
-					addError(match.offset, match.text().length(), "I don't know this route!");
-				} catch (BadLocationException e) {
+					pendingMarkers.add(getMarkerParameters(
+							match.offset + match.matcher.start() + 1,
+							match.offset + match.matcher.end(),
+							"I don't know this route!"));
+				} catch (Exception e) {
 					// Should never happen
+					e.printStackTrace();
 				}
 			}
 			return found("action", 0);

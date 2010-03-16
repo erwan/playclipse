@@ -222,10 +222,17 @@ public abstract class Editor extends TextEditor {
 	public abstract String[] getTypes();
 	public abstract String getStylePref(String type);
 
-	// Errors & Warnings
+	// Markers
 
-	protected void addError(int begin, int end, String message) throws BadLocationException {
-		System.out.println("Add error " + begin + " - " + end);
+	/**
+	 * To override
+	 */
+	public void updateMarkers() {
+		clearMarkers();
+		
+	}
+
+	protected Map<String, Object> getMarkerParameters(int begin, int end, String message) throws BadLocationException {
 		Map<String, Object> map = new HashMap<String, Object>();
 		MarkerUtilities.setLineNumber(map, getHelper().getLineNumber(begin));
 		MarkerUtilities.setMessage(map, message);
@@ -234,18 +241,19 @@ public abstract class Editor extends TextEditor {
 		map.put(IMarker.CHAR_START, begin);
 		map.put(IMarker.CHAR_END, end);
 		map.put(IMarker.SEVERITY, new Integer(IMarker.SEVERITY_ERROR));
-
-		try {
-			IFile curfile = ((IFileEditorInput)getEditorInput()).getFile();
-			MarkerUtilities.createMarker(curfile, map, IMarker.PROBLEM);
-		} catch (CoreException ee) {
-			ee.printStackTrace();
-		}
+		return map;
 	}
 
-	private void clearMarkers() {
-		IFileEditorInput input = (IFileEditorInput)getEditorInput();
-		IFile file = input.getFile();
+	protected void addError(Map<String, Object> parameters) throws CoreException {
+		IFile curfile = ((IFileEditorInput)getEditorInput()).getFile();
+		// MarkerUtilities.createMarker(curfile, parameters, IMarker.PROBLEM);
+		IMarker marker= curfile.createMarker(IMarker.PROBLEM);
+		marker.setAttributes(parameters);
+	}
+
+	protected void clearMarkers() {
+		System.out.println("clearMarkers");
+		IFile file = ((IFileEditorInput)getEditorInput()).getFile();
 		try {
 			file.deleteMarkers(IMarker.PROBLEM, true, IResource.DEPTH_INFINITE);
 		} catch (CoreException e) {
@@ -255,7 +263,7 @@ public abstract class Editor extends TextEditor {
 
 	// Scanner
 
-	String content;
+	protected String content;
 	protected int begin, end, end2, begin2, len;
 	protected String state = "default";
 	boolean eof = false;
@@ -270,7 +278,6 @@ public abstract class Editor extends TextEditor {
 	}
 
 	protected void reset() {
-		clearMarkers();
 		eof = false;
 		end = begin = end2 = begin2 = 0;
 		state = "default";

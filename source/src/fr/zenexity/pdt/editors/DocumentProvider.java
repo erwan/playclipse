@@ -36,9 +36,7 @@ public class DocumentProvider extends FileDocumentProvider {
 
 				@Override
 				public ITypedRegion getPartition(int offset) {
-					System.out.println("getPartition " + offset);
 					if (regions == null) {
-						System.out.println("...regions is null");
 						computePartitioning(0, 0);
 					}
 					for (ITypedRegion region: regions) {
@@ -61,7 +59,6 @@ public class DocumentProvider extends FileDocumentProvider {
 
 				@Override
 				public boolean documentChanged(DocumentEvent event) {
-					System.out.println("DOCUMENT CHANGED");
 					computePartitioning(0, 0);
 					return true;
 				}

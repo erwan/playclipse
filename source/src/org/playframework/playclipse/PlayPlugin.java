@@ -18,10 +18,18 @@
 
 package org.playframework.playclipse;
 
+import org.eclipse.core.commands.ExecutionEvent;
+import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.core.commands.IExecutionListener;
+import org.eclipse.core.commands.NotHandledException;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.commands.ICommandService;
+import org.eclipse.ui.handlers.HandlerUtil;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
+
+import fr.zenexity.pdt.editors.Editor;
 
 /**
  * The activator class controls the plug-in life cycle
@@ -53,7 +61,21 @@ public class PlayPlugin extends AbstractUIPlugin {
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 		plugin = this;
-		PlatformUI.getWorkbench().getEditorRegistry().setDefaultEditor("*.html", "HTMLEditor");
+
+		ICommandService commandService = (ICommandService)plugin.getWorkbench().getService(ICommandService.class);
+		commandService.addExecutionListener(new IExecutionListener() {
+			public void notHandled(final String commandId, final NotHandledException exception) {}
+			public void postExecuteFailure(final String commandId, final ExecutionException exception) {}
+			public void postExecuteSuccess(final String commandId, final Object returnValue) {}
+			public void preExecute( final String commandId, final ExecutionEvent event ) {
+				if (commandId.equals("org.eclipse.ui.file.save")) {
+					IEditorPart editor = HandlerUtil.getActiveEditor(event);
+					if (editor instanceof Editor) {
+						((Editor)editor).updateMarkers();
+					}
+				}
+			}
+		});
 	}
 
 	/*
