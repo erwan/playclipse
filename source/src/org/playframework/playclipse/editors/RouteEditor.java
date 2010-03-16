@@ -154,7 +154,7 @@ public class RouteEditor extends PlayEditor {
 					pendingMarkers.add(getMarkerParameters(
 							match.offset + match.matcher.start() + 1,
 							match.offset + match.matcher.end(),
-							"I don't know this route!"));
+							"Missing route: " + match.text()));
 				} catch (Exception e) {
 					// Should never happen
 					e.printStackTrace();
