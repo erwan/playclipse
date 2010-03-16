@@ -146,7 +146,12 @@ public class RouteEditor extends PlayEditor {
 			return found("url", 0);
 		}
 		if (state == "default" && oldState == "url" && !nextIsSpace()) {
-			BestMatch match = findBestMatch(end, action);
+			BestMatch match = null;
+			try {
+				match = findBestMatch(end, action);
+			} catch(StringIndexOutOfBoundsException ex) {
+				// Happen when the user is typing, e.g. the action is just one character
+			}
 			if (match != null &&
 				content.charAt(match.offset + match.matcher.end()) != ':' &&
 				getInspector().resolveAction(match.text()) == null) {

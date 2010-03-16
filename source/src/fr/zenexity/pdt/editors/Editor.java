@@ -155,11 +155,14 @@ public abstract class Editor extends TextEditor {
 
 	protected Object[] getLine(int offset) {
 		String text = documentProvider.document.get();
+		if (offset > text.length()) {
+			throw new IndexOutOfBoundsException();
+		}
 		int start = offset, end = offset;
 		while(start > 0 && text.charAt(start) != '\n') {
 			start--;
 		}
-		while(end < text.length() && text.charAt(end) != '\n') {
+		while (end < text.length() && text.charAt(end) != '\n') {
 			end++;
 		}
 		return new Object[] {text.substring(start > 0 ? start+1 : 0, end), start > 0 ? start+1 : 0};
@@ -252,7 +255,6 @@ public abstract class Editor extends TextEditor {
 	}
 
 	protected void clearMarkers() {
-		System.out.println("clearMarkers");
 		IFile file = ((IFileEditorInput)getEditorInput()).getFile();
 		try {
 			file.deleteMarkers(IMarker.PROBLEM, true, IResource.DEPTH_INFINITE);
