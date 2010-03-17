@@ -227,12 +227,19 @@ public abstract class Editor extends TextEditor {
 
 	// Markers
 
-	/**
-	 * To override
-	 */
+	protected List<Map<String, Object>> pendingMarkers = new ArrayList<Map<String, Object>>();
+
+	// FIXME Avoid multiple markers
 	public void updateMarkers() {
 		clearMarkers();
-		
+		for (int i = 0; i < pendingMarkers.size(); i++) {
+			try {
+				addError(pendingMarkers.get(i));
+			} catch (CoreException e) {
+				// shouldn't happen
+			}
+		}
+		pendingMarkers = new ArrayList<Map<String, Object>>();
 	}
 
 	protected Map<String, Object> getMarkerParameters(int begin, int end, String message) throws BadLocationException {
@@ -247,14 +254,14 @@ public abstract class Editor extends TextEditor {
 		return map;
 	}
 
-	protected void addError(Map<String, Object> parameters) throws CoreException {
+	private void addError(Map<String, Object> parameters) throws CoreException {
 		IFile curfile = ((IFileEditorInput)getEditorInput()).getFile();
 		// MarkerUtilities.createMarker(curfile, parameters, IMarker.PROBLEM);
 		IMarker marker= curfile.createMarker(IMarker.PROBLEM);
 		marker.setAttributes(parameters);
 	}
 
-	protected void clearMarkers() {
+	private void clearMarkers() {
 		IFile file = ((IFileEditorInput)getEditorInput()).getFile();
 		try {
 			file.deleteMarkers(IMarker.PROBLEM, true, IResource.DEPTH_INFINITE);

@@ -1,13 +1,11 @@
 package org.playframework.playclipse.editors;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 import java.util.regex.Pattern;
 
-import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.resources.IMarker;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
+import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.hyperlink.IHyperlink;
@@ -86,27 +84,14 @@ public class RouteEditor extends PlayEditor {
 		return DEFAULT_COLOR;
 	}
 
-	@Override
-	public void updateMarkers() {
-		clearMarkers();
-		System.out.println("updateMarkers count=" + pendingMarkers.size());
+	private void addError(int start, int end, String text) throws BadLocationException {
 		for (int i = 0; i < pendingMarkers.size(); i++) {
-			try {
-				addError(pendingMarkers.get(i));
-			} catch (CoreException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			if (((Integer)pendingMarkers.get(i).get(IMarker.CHAR_START)) == start) {
+				pendingMarkers.set(i, getMarkerParameters(start, end, text));
+				return;
 			}
 		}
-		pendingMarkers = new ArrayList<Map<String, Object>>();
-	}
-
-	private List<Map<String, Object>> pendingMarkers = new ArrayList<Map<String, Object>>();
-
-	@Override
-	public void reset() {
-		super.reset();
-		pendingMarkers = new ArrayList<Map<String, Object>>();
+		pendingMarkers.add(getMarkerParameters(start, end, text));
 	}
 
 	@Override
@@ -156,10 +141,9 @@ public class RouteEditor extends PlayEditor {
 				content.charAt(match.offset + match.matcher.end()) != ':' &&
 				getInspector().resolveAction(match.text()) == null) {
 				try {
-					pendingMarkers.add(getMarkerParameters(
-							match.offset + match.matcher.start() + 1,
+					addError(match.offset + match.matcher.start() + 1,
 							match.offset + match.matcher.end(),
-							"Missing route: " + match.text()));
+							"Missing route: " + match.text());
 				} catch (Exception e) {
 					// Should never happen
 					e.printStackTrace();
