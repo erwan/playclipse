@@ -229,7 +229,6 @@ public abstract class Editor extends TextEditor {
 
 	protected List<Map<String, Object>> pendingMarkers = new ArrayList<Map<String, Object>>();
 
-	// FIXME Avoid multiple markers
 	public void updateMarkers() {
 		clearMarkers();
 		for (int i = 0; i < pendingMarkers.size(); i++) {
@@ -242,7 +241,8 @@ public abstract class Editor extends TextEditor {
 		pendingMarkers = new ArrayList<Map<String, Object>>();
 	}
 
-	protected Map<String, Object> getMarkerParameters(int begin, int end, String message) throws BadLocationException {
+	protected Map<String, Object> getMarkerParameters(int begin, int end, String message, int severity)
+	throws BadLocationException {
 		Map<String, Object> map = new HashMap<String, Object>();
 		MarkerUtilities.setLineNumber(map, getHelper().getLineNumber(begin));
 		MarkerUtilities.setMessage(map, message);
@@ -250,7 +250,7 @@ public abstract class Editor extends TextEditor {
 		map.put(IMarker.LOCATION, getPath().toString());
 		map.put(IMarker.CHAR_START, begin);
 		map.put(IMarker.CHAR_END, end);
-		map.put(IMarker.SEVERITY, new Integer(IMarker.SEVERITY_ERROR));
+		map.put(IMarker.SEVERITY, new Integer(severity));
 		return map;
 	}
 

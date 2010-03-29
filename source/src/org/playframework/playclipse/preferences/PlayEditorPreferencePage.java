@@ -19,7 +19,7 @@ public abstract class PlayEditorPreferencePage
 	}
 
 	public void createFieldEditors() {
-		Iterator<Map.Entry<String, String>> it = getFields().entrySet().iterator();
+		Iterator<Map.Entry<String, String>> it = getColorFields().entrySet().iterator();
 		while (it.hasNext()) {
 			Map.Entry<String, String> pairs = it.next();
 			addField(new ColorFieldEditor(pairs.getKey(), pairs.getValue(), getFieldEditorParent()));
@@ -29,5 +29,6 @@ public abstract class PlayEditorPreferencePage
 	public void init(IWorkbench workbench) {
 	}
 
-	public abstract Map<String, String> getFields();
+	public abstract Map<String, String> getColorFields();
+
 }

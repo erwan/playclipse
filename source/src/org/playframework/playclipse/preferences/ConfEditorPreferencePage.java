@@ -27,7 +27,7 @@ public class ConfEditorPreferencePage extends PlayEditorPreferencePage {
 	}
 
 	@Override
-	public Map<String, String> getFields() {
+	public Map<String, String> getColorFields() {
 		Map<String, String> fields = new LinkedHashMap<String, String>();
 		fields.put(ConfEditor.KEY_COLOR, "Key Color");
 		fields.put(ConfEditor.DEFAULT_COLOR, "Default Color");

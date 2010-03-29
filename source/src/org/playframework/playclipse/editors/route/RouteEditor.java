@@ -10,6 +10,7 @@ import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.hyperlink.IHyperlink;
 import org.playframework.playclipse.ModelInspector;
+import org.playframework.playclipse.PlayPlugin;
 import org.playframework.playclipse.editors.PlayEditor;
 
 public class RouteEditor extends PlayEditor {
@@ -19,6 +20,11 @@ public class RouteEditor extends PlayEditor {
 	public static final String COMMENT_COLOR = "route_comment_color";
 	public static final String ACTION_COLOR = "route_action_color";
 	public static final String DEFAULT_COLOR = "route_default_color";
+
+	/**
+	 * Can be: "error", "warning" or "ignore"
+	 */
+	public static final String MISSING_ROUTE = "route_missing_route";
 
 	String oldState = "default";
 	IJavaProject javaProject;
@@ -85,14 +91,19 @@ public class RouteEditor extends PlayEditor {
 		return DEFAULT_COLOR;
 	}
 
-	private void addError(int start, int end, String text) throws BadLocationException {
+	private void addMarker(int start, int end, String text) throws BadLocationException {
+		String severityStr = PlayPlugin.getDefault().getPreferenceStore().getString(MISSING_ROUTE);
+		int severity = 0;
+		if (severityStr.equals("warning")) severity = IMarker.SEVERITY_WARNING;
+		else if (severityStr.equals("error")) severity = IMarker.SEVERITY_ERROR;
+		else return; // Ignore
 		for (int i = 0; i < pendingMarkers.size(); i++) {
 			if (((Integer)pendingMarkers.get(i).get(IMarker.CHAR_START)) == start) {
-				pendingMarkers.set(i, getMarkerParameters(start, end, text));
+				pendingMarkers.set(i, getMarkerParameters(start, end, text, severity));
 				return;
 			}
 		}
-		pendingMarkers.add(getMarkerParameters(start, end, text));
+		pendingMarkers.add(getMarkerParameters(start, end, text, severity));
 	}
 
 	@Override
@@ -142,7 +153,7 @@ public class RouteEditor extends PlayEditor {
 				content.charAt(match.offset + match.matcher.end()) != ':' &&
 				getInspector().resolveAction(match.text()) == null) {
 				try {
-					addError(match.offset + match.matcher.start() + 1,
+					addMarker(match.offset + match.matcher.start() + 1,
 							match.offset + match.matcher.end(),
 							"Missing route: " + match.text());
 				} catch (Exception e) {

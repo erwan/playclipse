@@ -29,6 +29,7 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 		PreferenceConverter.setDefault(store, RouteEditor.URL_COLOR, new RGB(0, 0, 200));
 		PreferenceConverter.setDefault(store, RouteEditor.COMMENT_COLOR, new RGB(90, 90, 90));
 		PreferenceConverter.setDefault(store, RouteEditor.DEFAULT_COLOR, new RGB(0, 0, 0));
+		store.setDefault(RouteEditor.MISSING_ROUTE, "warning");
 
 		PreferenceConverter.setDefault(store, ConfEditor.COMMENT_COLOR, new RGB(90, 90, 90));
 		PreferenceConverter.setDefault(store, ConfEditor.KEY_COLOR, new RGB(150, 0, 0));

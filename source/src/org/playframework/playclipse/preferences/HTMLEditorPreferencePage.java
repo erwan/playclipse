@@ -13,7 +13,7 @@ public class HTMLEditorPreferencePage extends PlayEditorPreferencePage {
 	}
 
 	@Override
-	public Map<String, String> getFields() {
+	public Map<String, String> getColorFields() {
 		Map<String, String> fields = new LinkedHashMap<String, String>();
 		fields.put(HTMLEditor.DEFAULT_COLOR, "Default Color");
 		fields.put(HTMLEditor.STRING_COLOR, "String Color");
