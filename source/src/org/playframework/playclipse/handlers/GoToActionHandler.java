@@ -25,8 +25,8 @@ import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.playframework.playclipse.Navigation;
-import org.playframework.playclipse.editors.RouteEditor;
 import org.playframework.playclipse.editors.html.HTMLEditor;
+import org.playframework.playclipse.editors.route.RouteEditor;
 
 import fr.zenexity.pdt.editors.EditorHelper;
 

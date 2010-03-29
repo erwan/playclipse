@@ -3,7 +3,7 @@ package org.playframework.playclipse.preferences;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import org.playframework.playclipse.editors.RouteEditor;
+import org.playframework.playclipse.editors.route.RouteEditor;
 
 public class RoutesEditorPreferencePage extends PlayEditorPreferencePage {
 

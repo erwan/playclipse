@@ -6,8 +6,8 @@ import org.eclipse.jface.preference.PreferenceConverter;
 import org.eclipse.swt.graphics.RGB;
 import org.playframework.playclipse.PlayPlugin;
 import org.playframework.playclipse.editors.ConfEditor;
-import org.playframework.playclipse.editors.RouteEditor;
 import org.playframework.playclipse.editors.html.HTMLEditor;
+import org.playframework.playclipse.editors.route.RouteEditor;
 
 /**
  * Class used to initialize default preference values.

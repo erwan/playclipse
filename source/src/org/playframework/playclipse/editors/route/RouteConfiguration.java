@@ -1,8 +1,9 @@
-package org.playframework.playclipse.editors;
+package org.playframework.playclipse.editors.route;
 
 import org.eclipse.jface.text.contentassist.ContentAssistant;
 import org.eclipse.jface.text.contentassist.IContentAssistant;
 import org.eclipse.jface.text.source.ISourceViewer;
+import org.playframework.playclipse.editors.ActionCompletionProcessor;
 
 import fr.zenexity.pdt.editors.CompletionProcessor;
 import fr.zenexity.pdt.editors.Configuration;
