@@ -1,0 +1,8 @@
+Eclipse Plugin for Play
+-----------------------
+
+Bug tracker: http://playclipse.lighthouseapp.com/projects/50610-playclipse/
+
+To install, put the jar file in ECLIPSE_HOME/dropins.
+
+
