@@ -23,15 +23,19 @@ import org.eclipse.jface.text.ITextViewerExtension;
 import org.eclipse.jface.text.Region;
 import org.eclipse.jface.text.TypedRegion;
 import org.eclipse.jface.text.hyperlink.IHyperlink;
+import org.eclipse.jface.text.source.ISourceViewer;
+import org.eclipse.jface.text.source.IVerticalRuler;
 import org.eclipse.jface.text.source.SourceViewer;
 import org.eclipse.jface.text.templates.Template;
+import org.eclipse.swt.events.VerifyEvent;
+import org.eclipse.swt.events.VerifyListener;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.editors.text.TextEditor;
 import org.eclipse.ui.texteditor.MarkerUtilities;
 
 
-public abstract class Editor extends TextEditor {
+public abstract class Editor extends TextEditor implements VerifyListener {
 
 	ColorManager colorManager = new ColorManager();
 	DocumentProvider documentProvider;
@@ -267,6 +271,29 @@ public abstract class Editor extends TextEditor {
 			file.deleteMarkers(IMarker.PROBLEM, true, IResource.DEPTH_INFINITE);
 		} catch (CoreException e) {
 			// something went wrong
+		}
+	}
+
+	// Soft tabs
+
+	protected boolean useSoftTabs = false;
+	protected int softTabsWidth = 4;
+
+	@Override
+	protected ISourceViewer createSourceViewer(Composite parent,IVerticalRuler ruler, int styles) {
+		ISourceViewer viewer = super.createSourceViewer(parent, ruler, styles);
+		viewer.getTextWidget().addVerifyListener(this);
+		return viewer;
+	}
+
+	@Override
+	public void verifyText(VerifyEvent evt) {
+		String softTab = "";
+		if (useSoftTabs) {
+			for (int i = 0; i < softTabsWidth; i++) softTab = softTab + " ";
+			if (evt.text.equals("\t")) {
+				evt.text = softTab;
+			}
 		}
 	}
 

@@ -3,7 +3,9 @@ package org.playframework.playclipse.preferences;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.ComboFieldEditor;
+import org.eclipse.jface.preference.IntegerFieldEditor;
 import org.playframework.playclipse.editors.route.RouteEditor;
 
 public class RoutesEditorPreferencePage extends PlayEditorPreferencePage {
@@ -33,6 +35,8 @@ public class RoutesEditorPreferencePage extends PlayEditorPreferencePage {
 				{"Error", "error"}
 		};
 		addField(new ComboFieldEditor(RouteEditor.MISSING_ROUTE, "When a route is missing", missingRouteKeyValues, getFieldEditorParent()));
+		addField(new BooleanFieldEditor(RouteEditor.SOFT_TABS, "Use soft tabs", getFieldEditorParent()));
+		addField(new IntegerFieldEditor(RouteEditor.SOFT_TABS_WIDTH, "Soft tabs length", getFieldEditorParent()));
 	}
 
 }

@@ -20,7 +20,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.playframework.playclipse.editors.PlayEditor;
 
 public class HTMLEditor extends PlayEditor {
-	
+
 	public static final String DEFAULT_COLOR = "html_default_color";
 	public static final String DOCTYPE_COLOR = "html_doctype_color";
 	public static final String HTML_COLOR = "html_html_color";
@@ -112,9 +112,9 @@ public class HTMLEditor extends PlayEditor {
 		}
 		return null;
 	};
-	
+
 	// Template
-	
+
 	public void templates(String contentType, String ctx) {
 		if(contentType == "default" || contentType == "html" || contentType == "string") {
 			template("$", "Insert dynamic expression", "$${${}}${cursor}");
@@ -135,15 +135,15 @@ public class HTMLEditor extends PlayEditor {
 			template(ctx, "Close the " + ctx + " HTML tag", "${cursor}"+closeTag);
 		}
 	}
-	
+
 	// Hyperlink
-	
+
 	Pattern extend_s = Pattern.compile("#\\{extends\\s+'([^']+)'");
 	Pattern include = Pattern.compile("#\\{include\\s+'([^']+)'");
 	Pattern action = Pattern.compile("@\\{([^}]+)\\}");
 	Pattern action_in_tag = Pattern.compile("#\\{.+(@.+[)])");
 	Pattern tag = Pattern.compile("#\\{([-a-zA-Z0-9.]+) ");
-	
+
 	public IHyperlink detectHyperlink(ITextViewer textViewer, IRegion region) {
 		BestMatch match = findBestMatch(region.getOffset(), include, extend_s, action, action_in_tag, tag);
 		if(match != null) {
@@ -165,21 +165,21 @@ public class HTMLEditor extends PlayEditor {
 		}
 		return null;
 	}
-	
+
 	// Scanner
-	
+
 	boolean consumeString = false;
 	char openedString = ' ';
 	String oldState = "default";
 	String oldStringState = "default";
-	
+
 	@Override
 	protected void reset() {
 		super.reset();
 		consumeString = false;
 		oldState = "default";
 	}
-	
+
 	@Override
 	public String scan() {
 		if(isNext("*{") && state != "skipped") {
@@ -286,8 +286,7 @@ public class HTMLEditor extends PlayEditor {
 	private Annotation[] oldAnnotations;
 	private ProjectionAnnotationModel annotationModel;
 
-	public void updateFoldingStructure(ArrayList<Position> positions)
-	{
+	public void updateFoldingStructure(ArrayList<Position> positions) {
 		Annotation[] annotations = new Annotation[positions.size()];
 
 		//this will hold the new annotations along
@@ -299,9 +298,9 @@ public class HTMLEditor extends PlayEditor {
 			newAnnotations.put(annotation, positions.get(i));
 			annotations[i] = annotation;
 		}
-		
+
 		annotationModel.modifyAnnotations(oldAnnotations, newAnnotations, null);
-		
+
 		oldAnnotations = annotations;
 	}
 
@@ -313,12 +312,12 @@ public class HTMLEditor extends PlayEditor {
 
 		projectionSupport = new ProjectionSupport(viewer, getAnnotationAccess(), getSharedColors());
 		projectionSupport.install();
-		
+
 		//turn projection mode on
 		viewer.doOperation(ProjectionViewer.TOGGLE);
-		
+
 		annotationModel = viewer.getProjectionAnnotationModel();
-		
+
 	}
 
 	@Override
@@ -328,7 +327,7 @@ public class HTMLEditor extends PlayEditor {
 
 		// ensure decoration support has been created and configured.
 		getSourceViewerDecorationSupport(viewer);
-		
+
 		return viewer;
 	}
 

@@ -5,10 +5,12 @@ import java.util.regex.Pattern;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.hyperlink.IHyperlink;
+import org.eclipse.jface.util.PropertyChangeEvent;
 import org.playframework.playclipse.ModelInspector;
 import org.playframework.playclipse.PlayPlugin;
 import org.playframework.playclipse.editors.PlayEditor;
@@ -25,6 +27,8 @@ public class RouteEditor extends PlayEditor {
 	 * Can be: "error", "warning" or "ignore"
 	 */
 	public static final String MISSING_ROUTE = "route_missing_route";
+	public static final String SOFT_TABS = "route_soft_tabs";
+	public static final String SOFT_TABS_WIDTH = "route_soft_tabs_width";
 
 	String oldState = "default";
 	IJavaProject javaProject;
@@ -33,6 +37,9 @@ public class RouteEditor extends PlayEditor {
 	public RouteEditor() {
 		super();
 		setSourceViewerConfiguration(new RouteConfiguration(this));
+		IPreferenceStore store = PlayPlugin.getDefault().getPreferenceStore();
+		useSoftTabs = store.getBoolean(SOFT_TABS);
+		softTabsWidth = store.getInt(SOFT_TABS_WIDTH);
 	}
 
 	private IJavaProject getJavaProject() {
@@ -89,6 +96,18 @@ public class RouteEditor extends PlayEditor {
 			return ACTION_COLOR;
 		}
 		return DEFAULT_COLOR;
+	}
+
+	@Override
+	protected void handlePreferenceStoreChanged(PropertyChangeEvent event) {
+		String key = event.getProperty();
+		System.out.println("handlePrefChanged: " + key);
+		if (key.equals(SOFT_TABS)) {
+			System.out.println("soft tabs!!");
+			useSoftTabs = ((Boolean)event.getNewValue()).booleanValue();
+		}
+
+		super.handlePreferenceStoreChanged(event);
 	}
 
 	private void addMarker(int start, int end, String text) throws BadLocationException {
