@@ -36,6 +36,8 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 		PreferenceConverter.setDefault(store, ConfEditor.COMMENT_COLOR, new RGB(90, 90, 90));
 		PreferenceConverter.setDefault(store, ConfEditor.KEY_COLOR, new RGB(150, 0, 0));
 		PreferenceConverter.setDefault(store, ConfEditor.DEFAULT_COLOR, new RGB(0, 0, 0));
+		store.setDefault(ConfEditor.SOFT_TABS, false);
+		store.setDefault(ConfEditor.SOFT_TABS_WIDTH, 4);
 
 		PreferenceConverter.setDefault(store, HTMLEditor.ACTION_COLOR, new RGB(255, 0, 192));
 		PreferenceConverter.setDefault(store, HTMLEditor.DEFAULT_COLOR, new RGB(0, 0, 0));

@@ -3,6 +3,8 @@ package org.playframework.playclipse.preferences;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import org.eclipse.jface.preference.BooleanFieldEditor;
+import org.eclipse.jface.preference.IntegerFieldEditor;
 import org.playframework.playclipse.editors.ConfEditor;
 
 /**
@@ -33,6 +35,13 @@ public class ConfEditorPreferencePage extends PlayEditorPreferencePage {
 		fields.put(ConfEditor.DEFAULT_COLOR, "Default Color");
 		fields.put(ConfEditor.COMMENT_COLOR, "Comment Color");
 		return fields;
+	}
+
+	@Override
+	public void createFieldEditors() {
+		super.createFieldEditors();
+		addField(new BooleanFieldEditor(ConfEditor.SOFT_TABS, "Indent with spaces (soft tabs)", getFieldEditorParent()));
+		addField(new IntegerFieldEditor(ConfEditor.SOFT_TABS_WIDTH, "Soft tabs length", getFieldEditorParent()));
 	}
 
 }

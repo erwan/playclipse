@@ -1,15 +1,28 @@
 package org.playframework.playclipse.editors;
 
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.hyperlink.IHyperlink;
+import org.eclipse.jface.util.PropertyChangeEvent;
+import org.playframework.playclipse.PlayPlugin;
 
 public class ConfEditor extends PlayEditor {
 
 	public static final String COMMENT_COLOR = "conf_comment_color";
 	public static final String KEY_COLOR = "conf_key_color";
 	public static final String DEFAULT_COLOR = "conf_default_color";
-	
+
+	public static final String SOFT_TABS = "conf_soft_tabs";
+	public static final String SOFT_TABS_WIDTH = "conf_soft_tabs_width";
+
+	public ConfEditor() {
+		super();
+		IPreferenceStore store = PlayPlugin.getDefault().getPreferenceStore();
+		useSoftTabs = store.getBoolean(SOFT_TABS);
+		softTabsWidth = store.getInt(SOFT_TABS_WIDTH);
+	}
+
 	@Override
 	public String autoClose(char pc, char c, char nc) {
 		if(c == '{') {
@@ -82,6 +95,15 @@ public class ConfEditor extends PlayEditor {
 			return found("default", 0);
 		}
 		return null;
+	}
+
+	@Override
+	public void propertyChange(PropertyChangeEvent event) {
+		String key = event.getProperty();
+		if (key.equals(SOFT_TABS)) {
+			useSoftTabs = ((Boolean)event.getNewValue()).booleanValue();
+		}
+		super.propertyChange(event);
 	}
 
 	@Override
