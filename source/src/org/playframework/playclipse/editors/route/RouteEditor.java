@@ -99,15 +99,14 @@ public class RouteEditor extends PlayEditor {
 	}
 
 	@Override
-	protected void handlePreferenceStoreChanged(PropertyChangeEvent event) {
+	public void propertyChange(PropertyChangeEvent event) {
 		String key = event.getProperty();
 		System.out.println("handlePrefChanged: " + key);
 		if (key.equals(SOFT_TABS)) {
 			System.out.println("soft tabs!!");
 			useSoftTabs = ((Boolean)event.getNewValue()).booleanValue();
 		}
-
-		super.handlePreferenceStoreChanged(event);
+		super.propertyChange(event);
 	}
 
 	private void addMarker(int start, int end, String text) throws BadLocationException {

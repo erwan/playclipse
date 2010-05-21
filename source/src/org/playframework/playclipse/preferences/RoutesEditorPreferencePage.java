@@ -35,7 +35,7 @@ public class RoutesEditorPreferencePage extends PlayEditorPreferencePage {
 				{"Error", "error"}
 		};
 		addField(new ComboFieldEditor(RouteEditor.MISSING_ROUTE, "When a route is missing", missingRouteKeyValues, getFieldEditorParent()));
-		addField(new BooleanFieldEditor(RouteEditor.SOFT_TABS, "Use soft tabs", getFieldEditorParent()));
+		addField(new BooleanFieldEditor(RouteEditor.SOFT_TABS, "Indent with spaces (soft tabs)", getFieldEditorParent()));
 		addField(new IntegerFieldEditor(RouteEditor.SOFT_TABS_WIDTH, "Soft tabs length", getFieldEditorParent()));
 	}
 
