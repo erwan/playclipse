@@ -310,12 +310,10 @@ public abstract class Editor extends TextEditor implements VerifyListener, IProp
 
 	@Override
 	public void verifyText(VerifyEvent evt) {
-		String softTab = "";
-		if (useSoftTabs) {
+		if (useSoftTabs && evt.text.equals("\t")) {
+			String softTab = "";
 			for (int i = 0; i < softTabsWidth; i++) softTab = softTab + " ";
-			if (evt.text.equals("\t")) {
-				evt.text = softTab;
-			}
+			evt.text = softTab;
 		}
 	}
 

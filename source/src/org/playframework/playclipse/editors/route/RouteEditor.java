@@ -101,9 +101,7 @@ public class RouteEditor extends PlayEditor {
 	@Override
 	public void propertyChange(PropertyChangeEvent event) {
 		String key = event.getProperty();
-		System.out.println("handlePrefChanged: " + key);
 		if (key.equals(SOFT_TABS)) {
-			System.out.println("soft tabs!!");
 			useSoftTabs = ((Boolean)event.getNewValue()).booleanValue();
 		}
 		super.propertyChange(event);

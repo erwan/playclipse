@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.Position;
@@ -16,7 +17,9 @@ import org.eclipse.jface.text.source.projection.ProjectionAnnotation;
 import org.eclipse.jface.text.source.projection.ProjectionAnnotationModel;
 import org.eclipse.jface.text.source.projection.ProjectionSupport;
 import org.eclipse.jface.text.source.projection.ProjectionViewer;
+import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.widgets.Composite;
+import org.playframework.playclipse.PlayPlugin;
 import org.playframework.playclipse.editors.PlayEditor;
 
 public class HTMLEditor extends PlayEditor {
@@ -31,11 +34,17 @@ public class HTMLEditor extends PlayEditor {
 	public static final String KEYWORD_COLOR = "html_keyword_color";
 	public static final String STRING_COLOR = "html_string_color";
 
+	public static final String SOFT_TABS = "html_soft_tabs";
+	public static final String SOFT_TABS_WIDTH = "html_soft_tabs_width";
+
 	private ProjectionSupport projectionSupport;
 
 	public HTMLEditor() {
 		super();
 		setSourceViewerConfiguration(new HTMLConfiguration(this));
+		IPreferenceStore store = PlayPlugin.getDefault().getPreferenceStore();
+		useSoftTabs = store.getBoolean(SOFT_TABS);
+		softTabsWidth = store.getInt(SOFT_TABS_WIDTH);
 	}
 
 	public String[] getTypes() {
@@ -305,30 +314,30 @@ public class HTMLEditor extends PlayEditor {
 	}
 
 	@Override
-	public void createPartControl(Composite parent)
-	{
+	public void createPartControl(Composite parent) {
 		super.createPartControl(parent);
-		ProjectionViewer viewer =(ProjectionViewer)getSourceViewer();
-
+		ProjectionViewer viewer = (ProjectionViewer)getSourceViewer();
 		projectionSupport = new ProjectionSupport(viewer, getAnnotationAccess(), getSharedColors());
 		projectionSupport.install();
-
-		//turn projection mode on
 		viewer.doOperation(ProjectionViewer.TOGGLE);
-
 		annotationModel = viewer.getProjectionAnnotationModel();
-
 	}
 
 	@Override
-	protected ISourceViewer createSourceViewer(Composite parent, IVerticalRuler ruler, int styles)
-	{
+	protected ISourceViewer createSourceViewer(Composite parent, IVerticalRuler ruler, int styles) {
 		ISourceViewer viewer = new ProjectionViewer(parent, ruler, getOverviewRuler(), isOverviewRulerVisible(), styles);
-
-		// ensure decoration support has been created and configured.
 		getSourceViewerDecorationSupport(viewer);
-
+		viewer.getTextWidget().addVerifyListener(this);
 		return viewer;
+	}
+
+	@Override
+	public void propertyChange(PropertyChangeEvent event) {
+		String key = event.getProperty();
+		if (key.equals(SOFT_TABS)) {
+			useSoftTabs = ((Boolean)event.getNewValue()).booleanValue();
+		}
+		super.propertyChange(event);
 	}
 
 }

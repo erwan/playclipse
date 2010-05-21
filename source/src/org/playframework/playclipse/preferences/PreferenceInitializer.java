@@ -46,6 +46,8 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 		PreferenceConverter.setDefault(store, HTMLEditor.SKIPPED_COLOR, new RGB(90, 90, 90));
 		PreferenceConverter.setDefault(store, HTMLEditor.TAG_COLOR, new RGB(129, 0, 153));
 		PreferenceConverter.setDefault(store, HTMLEditor.STRING_COLOR, new RGB(5, 152, 220));
+		store.setDefault(HTMLEditor.SOFT_TABS, false);
+		store.setDefault(HTMLEditor.SOFT_TABS_WIDTH, 4);
 	}
 
 }
