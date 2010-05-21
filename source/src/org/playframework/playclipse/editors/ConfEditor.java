@@ -52,10 +52,10 @@ public class ConfEditor extends PlayEditor {
 
 	@Override
 	public String getStylePref(String type) {
-		if(type.equals("comment")) {
+		if (type.equals("comment")) {
 			return COMMENT_COLOR;
 		}
-		if(type.equals("key")) {
+		if (type.equals("key")) {
 			return KEY_COLOR;
 		}
 		return DEFAULT_COLOR;

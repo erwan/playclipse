@@ -24,18 +24,22 @@ import org.eclipse.jface.text.Region;
 import org.eclipse.jface.text.TypedRegion;
 import org.eclipse.jface.text.hyperlink.IHyperlink;
 import org.eclipse.jface.text.source.ISourceViewer;
+import org.eclipse.jface.text.source.ISourceViewerExtension2;
 import org.eclipse.jface.text.source.IVerticalRuler;
 import org.eclipse.jface.text.source.SourceViewer;
 import org.eclipse.jface.text.templates.Template;
+import org.eclipse.jface.util.IPropertyChangeListener;
+import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.events.VerifyEvent;
 import org.eclipse.swt.events.VerifyListener;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.editors.text.TextEditor;
 import org.eclipse.ui.texteditor.MarkerUtilities;
+import org.playframework.playclipse.PlayPlugin;
 
 
-public abstract class Editor extends TextEditor implements VerifyListener {
+public abstract class Editor extends TextEditor implements VerifyListener, IPropertyChangeListener {
 
 	ColorManager colorManager = new ColorManager();
 	DocumentProvider documentProvider;
@@ -46,14 +50,16 @@ public abstract class Editor extends TextEditor implements VerifyListener {
 		setSourceViewerConfiguration(new Configuration(this));
 		documentProvider = new DocumentProvider(this);
 		setDocumentProvider(documentProvider);
-		for (String type : getTypes()) {
+		for (String type: getTypes()) {
 			type.intern();
 		}
+		PlayPlugin.getDefault().getPreferenceStore().addPropertyChangeListener(this);
 	}
 
 	@Override
 	public void dispose() {
 		colorManager.dispose();
+		PlayPlugin.getDefault().getPreferenceStore().removePropertyChangeListener(this);
 		super.dispose();
 	}
 
@@ -227,7 +233,23 @@ public abstract class Editor extends TextEditor implements VerifyListener {
 	// Styles & types
 
 	public abstract String[] getTypes();
+
 	public abstract String getStylePref(String type);
+
+	@Override
+	public void propertyChange(PropertyChangeEvent event) {
+		// TODO Auto-generated method stub
+		for (String type: getTypes()) {
+			if (event.getProperty().equals(getStylePref(type))) {
+				ISourceViewer viewer= getSourceViewer();
+				if (viewer instanceof ISourceViewerExtension2) {
+					((ISourceViewerExtension2)viewer).unconfigure();
+					viewer.configure(getSourceViewerConfiguration());
+				}
+				return;
+			}
+		}
+	}
 
 	// Markers
 
