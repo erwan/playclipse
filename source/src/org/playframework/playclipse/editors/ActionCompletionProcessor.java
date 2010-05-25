@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
 import org.eclipse.jdt.core.Flags;
 import org.eclipse.jdt.core.ICompilationUnit;
@@ -13,6 +15,8 @@ import org.eclipse.jdt.core.IMethod;
 import org.eclipse.jdt.core.IPackageFragment;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.IParent;
+import org.eclipse.jdt.core.IType;
+import org.eclipse.jdt.core.ITypeHierarchy;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.text.source.ISourceViewer;
@@ -54,10 +58,10 @@ public class ActionCompletionProcessor extends CompletionProcessor {
 			// Packages (that may include controllers)
 			try {
 				IPackageFragmentRoot[] roots = javaProject.getPackageFragmentRoots();
-				for (int i = 0; i < roots.length; i++) {
-					if (!roots[i].isArchive() &&
-							(ctx.isEmpty() || roots[i].getElementName().startsWith(ctx)))
-						result.add(getTemplate(contextTypeId, roots[i]));
+				for (IPackageFragmentRoot root: roots) {
+					if (!root.isArchive() &&
+							(ctx.isEmpty() || root.getElementName().startsWith(ctx)))
+						result.add(getTemplate(contextTypeId, root));
 				}
 			} catch (JavaModelException e) {
 				e.printStackTrace();
@@ -103,31 +107,18 @@ public class ActionCompletionProcessor extends CompletionProcessor {
 			IParent parent;
 			// Look for classes
 			parent = javaProject.findType(fullClassName);
-			// Look for package fragments
-			if (parent == null) {
-				parent = getPackageFragment(javaProject, fullClassName);
+			if (parent != null) {
+				return getAllMethodsTemplates((IType)parent, query, contextTypeId);
 			}
+			// Look for package fragments
+			parent = getPackageFragment(javaProject, fullClassName);
 			if (parent == null) {
-				System.out.println("Can't find anything!");
 				return result;
 			}
-			IJavaElement[] children = parent.getChildren();
-			for (int i = 0; i < children.length; i++) {
-				IJavaElement child = children[i];
-				System.out.println(child.getElementName() + "?");
-				if (child instanceof IMethod) {
-					IMethod method = (IMethod)child;
-					int flags = method.getFlags();
-					if ((query.isEmpty() || method.getElementName().startsWith(query))
-							&& Flags.isPublic(flags)
-							&& Flags.isStatic(flags)
-							&& method.getReturnType().equals("V")) {
-						result.add(getTemplate(contextTypeId, method));
-					}
-				} else if (child instanceof IPackageFragment) {
+			for (IJavaElement child: parent.getChildren()) {
+				if (child instanceof IPackageFragment) {
 					result.add(getTemplate(contextTypeId, (IPackageFragment)child));
 				} else if (child instanceof ICompilationUnit) { // Java class
-					System.out.println(child.getElementName() + " is a ICompilationUnit");
 					result.add(getTemplate(contextTypeId, (ICompilationUnit)child));
 				}
 			}
@@ -135,6 +126,40 @@ public class ActionCompletionProcessor extends CompletionProcessor {
 			e.printStackTrace();
 		}
 
+		return result;
+	}
+
+	private List<Template> getAllMethodsTemplates(IType type, String query, String contextTypeId) throws JavaModelException {
+		List<Template> result = new ArrayList<Template>();
+		Set<String> seen = new TreeSet<String>(); // Used to dedup overridden methods
+		for (Template template: getMethodsTemplates(type, query, contextTypeId)) {
+			result.add(template);
+			seen.add(template.getName());
+		}
+		ITypeHierarchy hierarchy = type.newTypeHierarchy(null);
+		for (IType superclass: hierarchy.getAllSuperclasses(type)) {
+			for (Template template: getMethodsTemplates(superclass, query, contextTypeId)) {
+				if (!seen.contains(template.getName())) {
+					result.add(template);
+					seen.add(template.getName());
+				}
+			}
+		}
+		return result;
+	}
+
+	private List<Template> getMethodsTemplates(IType type, String query, String contextTypeId) throws JavaModelException {
+		List<Template> result = new ArrayList<Template>();
+
+		for (IMethod method: type.getMethods()) {
+			int flags = method.getFlags();
+			if (Flags.isPublic(flags)
+					&& Flags.isStatic(flags)
+					&& method.getReturnType().equals("V")) {
+				if (query.equals("") || method.getElementName().startsWith(query))
+					result.add(getTemplate(contextTypeId, method));
+			}
+		}
 		return result;
 	}
 

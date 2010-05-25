@@ -4,6 +4,7 @@ import org.eclipse.jdt.core.Flags;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IMethod;
 import org.eclipse.jdt.core.IType;
+import org.eclipse.jdt.core.ITypeHierarchy;
 import org.eclipse.jdt.core.JavaModelException;
 
 public class ModelInspector {
@@ -15,9 +16,6 @@ public class ModelInspector {
 	}
 
 	public IMethod resolveAction(String input) {
-		if (input.contains("@@{")) input = input.substring(input.indexOf("@@{") + 3);
-		if (input.contains("@{")) input = input.substring(input.indexOf("@{") + 2);
-
 		if (input.indexOf('.') == -1)
 			return null;
 
@@ -34,24 +32,33 @@ public class ModelInspector {
 		if (parent == null) {
 			return null;
 		}
-		return findMethod(parent, query);
-	}
-
-	private IMethod findMethod(IType type, String query) {
-		// We can't use IType.getMethod(name, parameterTypeSignature) because we usually don't know the parameters,
-		// we only have the name.
 		try {
-			for (IMethod method: type.getMethods()) {
-				int flags = method.getFlags();
-				if (Flags.isPublic(flags)
-						&& Flags.isStatic(flags)
-						&& method.getReturnType().equals("V")) {
-					if (method.getElementName().equals(query))
-						return method;
-				}
+			IMethod method = findMethod(parent, query);
+			if (method != null) return method;
+			ITypeHierarchy hierarchy = parent.newTypeHierarchy(null);
+			for (IType superclass: hierarchy.getAllSuperclasses(parent)) {
+				method = findMethod(superclass, query);
+				if (method != null) return method;
 			}
 		} catch (JavaModelException e) {
+			e.printStackTrace();
 			return null;
+		}
+		return null;
+	}
+
+	private IMethod findMethod(IType type, String query) throws JavaModelException {
+		// We can't use IType.getMethod(name, parameterTypeSignature) because we usually don't know the parameters,
+		// we only have the name.
+
+		for (IMethod method: type.getMethods()) {
+			int flags = method.getFlags();
+			if (Flags.isPublic(flags)
+					&& Flags.isStatic(flags)
+					&& method.getReturnType().equals("V")) {
+				if (method.getElementName().equals(query))
+					return method;
+			}
 		}
 		return null;
 	}
