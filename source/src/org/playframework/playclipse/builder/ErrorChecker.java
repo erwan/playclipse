@@ -8,15 +8,23 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.playframework.playclipse.ModelInspector;
+import org.playframework.playclipse.PlayPlugin;
 
 public abstract class ErrorChecker {
 
 	protected IFile file;
+	private String preference;
 
 	public ErrorChecker() {}
 
 	public ErrorChecker(IFile file) {
 		this.file = file;
+		this.preference = null;
+	}
+
+	public ErrorChecker(IFile file, String preference) {
+		this.file = file;
+		this.preference = preference;
 	}
 
 	protected IMarker addMarker(String message, int lineNumber, int severity) throws CoreException {
@@ -35,6 +43,13 @@ public abstract class ErrorChecker {
 		marker.setAttribute(IMarker.CHAR_START, begin);
 		marker.setAttribute(IMarker.CHAR_END, end);
 		return marker;
+	}
+
+	protected int getSeverity() {
+		String severityStr = PlayPlugin.getDefault().getPreferenceStore().getString(preference);
+		if (severityStr.equals("warning")) return IMarker.SEVERITY_WARNING;
+		if (severityStr.equals("error")) return IMarker.SEVERITY_ERROR;
+		return -1;
 	}
 
 	public abstract void check();

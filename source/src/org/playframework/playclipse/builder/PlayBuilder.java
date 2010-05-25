@@ -1,6 +1,8 @@
 package org.playframework.playclipse.builder;
 
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
@@ -13,6 +15,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.playframework.playclipse.PlayPlugin;
+import org.playframework.playclipse.editors.html.HTMLEditor;
 import org.playframework.playclipse.editors.route.RouteEditor;
 
 public class PlayBuilder extends IncrementalProjectBuilder implements IPropertyChangeListener {
@@ -28,12 +31,12 @@ public class PlayBuilder extends IncrementalProjectBuilder implements IPropertyC
 			IFile file = (IFile)resource;
 			if (resource.getName().equals("routes")) {
 				deleteMarkers(file);
-				(new RouteChecker(file)).check();
+				(new RouteChecker(file, RouteEditor.MISSING_ROUTE)).check();
 				return false;
 			}
 			if (TemplateChecker.isTemplate(resource.getFullPath())) {
 				deleteMarkers(file);
-				(new TemplateChecker(file)).check();
+				(new TemplateChecker(file, HTMLEditor.MISSING_ACTION)).check();
 				return false;
 			}
 			return true;
@@ -75,12 +78,20 @@ public class PlayBuilder extends IncrementalProjectBuilder implements IPropertyC
 		}
 	}
 
+	private static Set<String> observedProperties = new HashSet<String>();
+	static {
+		observedProperties.add(RouteEditor.MISSING_ROUTE);
+		observedProperties.add(HTMLEditor.MISSING_ACTION);
+	}
+
 	@Override
 	public void propertyChange(PropertyChangeEvent event) {
-		if (event.getProperty().equals(RouteEditor.MISSING_ROUTE)) {
-			try {
-				fullBuild(null);
-			} catch (CoreException e) {
+		for (String property: observedProperties) {
+			if (event.getProperty().equals(property)) {
+				try {
+					fullBuild(null);
+				} catch (CoreException e) {}
+				return;
 			}
 		}
 	}

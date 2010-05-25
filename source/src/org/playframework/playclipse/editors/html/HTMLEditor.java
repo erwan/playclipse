@@ -37,6 +37,8 @@ public class HTMLEditor extends PlayEditor {
 	public static final String SOFT_TABS = "html_soft_tabs";
 	public static final String SOFT_TABS_WIDTH = "html_soft_tabs_width";
 
+	public static final String MISSING_ACTION = "html_missing_action";
+
 	private ProjectionSupport projectionSupport;
 
 	public HTMLEditor() {

@@ -4,7 +4,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 
@@ -12,11 +11,10 @@ import fr.zenexity.pdt.editors.IO;
 
 public class TemplateChecker extends ErrorChecker {
 
-	public TemplateChecker(IFile file) {
-		super(file);
+	public TemplateChecker(IFile file, String preference) {
+		super(file, preference);
 	}
 
-	
 	private static Pattern action = Pattern.compile("@\\{([^}]+)\\}");
 	private static Pattern action_in_tag = Pattern.compile("#\\{.+(@.+[)])");
 
@@ -29,7 +27,7 @@ public class TemplateChecker extends ErrorChecker {
 
 	@Override
 	public void check() {
-		System.out.println("CHECK: " + file.getName());
+		if (getSeverity() < 0) return; // Preference says to ignore missing actions
 		String content = "";
 		try {
 			content = IO.readContentAsString(file);
@@ -64,7 +62,7 @@ public class TemplateChecker extends ErrorChecker {
 		}
 		if (getInspector().resolveAction(action) == null) {
 			try {
-				addMarker("Missing route: " + action, lineNo, IMarker.SEVERITY_ERROR, offset, offset + action.length());
+				addMarker("Missing action: " + action, lineNo, getSeverity(), offset, offset + action.length());
 			} catch (CoreException e) {
 				// Never happens
 			}
