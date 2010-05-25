@@ -3,20 +3,14 @@ package fr.zenexity.pdt.editors;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.ITextViewerExtension;
@@ -35,7 +29,6 @@ import org.eclipse.swt.events.VerifyListener;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.editors.text.TextEditor;
-import org.eclipse.ui.texteditor.MarkerUtilities;
 import org.playframework.playclipse.PlayPlugin;
 
 
@@ -248,51 +241,6 @@ public abstract class Editor extends TextEditor implements VerifyListener, IProp
 				}
 				return;
 			}
-		}
-	}
-
-	// Markers
-
-	protected List<Map<String, Object>> pendingMarkers = new ArrayList<Map<String, Object>>();
-
-	public void updateMarkers() {
-		clearMarkers();
-		for (int i = 0; i < pendingMarkers.size(); i++) {
-			try {
-				addError(pendingMarkers.get(i));
-			} catch (CoreException e) {
-				// shouldn't happen
-			}
-		}
-		pendingMarkers = new ArrayList<Map<String, Object>>();
-	}
-
-	protected Map<String, Object> getMarkerParameters(int begin, int end, String message, int severity)
-	throws BadLocationException {
-		Map<String, Object> map = new HashMap<String, Object>();
-		MarkerUtilities.setLineNumber(map, getHelper().getLineNumber(begin));
-		MarkerUtilities.setMessage(map, message);
-		map.put(IMarker.MESSAGE, message);
-		map.put(IMarker.LOCATION, getPath().toString());
-		map.put(IMarker.CHAR_START, begin);
-		map.put(IMarker.CHAR_END, end);
-		map.put(IMarker.SEVERITY, new Integer(severity));
-		return map;
-	}
-
-	private void addError(Map<String, Object> parameters) throws CoreException {
-		IFile curfile = ((IFileEditorInput)getEditorInput()).getFile();
-		// MarkerUtilities.createMarker(curfile, parameters, IMarker.PROBLEM);
-		IMarker marker= curfile.createMarker(IMarker.PROBLEM);
-		marker.setAttributes(parameters);
-	}
-
-	private void clearMarkers() {
-		IFile file = ((IFileEditorInput)getEditorInput()).getFile();
-		try {
-			file.deleteMarkers(IMarker.PROBLEM, true, IResource.DEPTH_INFINITE);
-		} catch (CoreException e) {
-			// something went wrong
 		}
 	}
 

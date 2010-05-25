@@ -27,8 +27,7 @@ public class ConfigurationFile {
 		List<String> lines = getLines();
 		Pattern p = Pattern.compile("module\\.(\\w+)=(.+)");
 		Matcher m;
-		for (int i = 0; i < lines.size(); i++) {
-			String line = lines.get(i);
+		for (String line: lines) {
 			String moduleName;
 			String modulePath;
 			m = p.matcher(line);
@@ -45,8 +44,7 @@ public class ConfigurationFile {
 		List<String> lines = getLines();
 		Pattern p = Pattern.compile("^\\s*port\\s*=([0-9]+)");
 		Matcher m;
-		for (int i = 0; i < lines.size(); i++) {
-			String line = lines.get(i);
+		for (String line: lines) {
 			int port = 0;
 			String sport;
 			m = p.matcher(line);

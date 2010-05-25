@@ -2,11 +2,8 @@ package org.playframework.playclipse.editors.route;
 
 import java.util.regex.Pattern;
 
-import org.eclipse.core.resources.IMarker;
 import org.eclipse.jdt.core.IJavaProject;
-import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.hyperlink.IHyperlink;
@@ -40,16 +37,6 @@ public class RouteEditor extends PlayEditor {
 		IPreferenceStore store = PlayPlugin.getDefault().getPreferenceStore();
 		useSoftTabs = store.getBoolean(SOFT_TABS);
 		softTabsWidth = store.getInt(SOFT_TABS_WIDTH);
-	}
-
-	private IJavaProject getJavaProject() {
-		if (javaProject == null) javaProject = JavaCore.create(getProject());
-		return javaProject;
-	}
-
-	private ModelInspector getInspector() {
-		if (inspector == null) inspector = new ModelInspector(getJavaProject());
-		return inspector;
 	}
 
 	@Override
@@ -107,21 +94,6 @@ public class RouteEditor extends PlayEditor {
 		super.propertyChange(event);
 	}
 
-	private void addMarker(int start, int end, String text) throws BadLocationException {
-		String severityStr = PlayPlugin.getDefault().getPreferenceStore().getString(MISSING_ROUTE);
-		int severity = 0;
-		if (severityStr.equals("warning")) severity = IMarker.SEVERITY_WARNING;
-		else if (severityStr.equals("error")) severity = IMarker.SEVERITY_ERROR;
-		else return; // Ignore
-		for (int i = 0; i < pendingMarkers.size(); i++) {
-			if (((Integer)pendingMarkers.get(i).get(IMarker.CHAR_START)) == start) {
-				pendingMarkers.set(i, getMarkerParameters(start, end, text, severity));
-				return;
-			}
-		}
-		pendingMarkers.add(getMarkerParameters(start, end, text, severity));
-	}
-
 	@Override
 	public String scan() {
 		if (isNext("\n")) {
@@ -159,24 +131,6 @@ public class RouteEditor extends PlayEditor {
 			return found("url", 0);
 		}
 		if (state == "default" && oldState == "url" && !nextIsSpace()) {
-			BestMatch match = null;
-			try {
-				match = findBestMatch(end, action);
-			} catch(StringIndexOutOfBoundsException ex) {
-				// Happen when the user is typing, e.g. the action is just one character
-			}
-			if (match != null &&
-				content.charAt(match.offset + match.matcher.end()) != ':' &&
-				getInspector().resolveAction(match.text()) == null) {
-				try {
-					addMarker(match.offset + match.matcher.start() + 1,
-							match.offset + match.matcher.end(),
-							"Missing route: " + match.text());
-				} catch (Exception e) {
-					// Should never happen
-					e.printStackTrace();
-				}
-			}
 			return found("action", 0);
 		}
 		return null;
