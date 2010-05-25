@@ -1,7 +1,6 @@
 package org.playframework.playclipse;
 
 import org.eclipse.jdt.core.Flags;
-import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IMethod;
 import org.eclipse.jdt.core.IType;
@@ -28,30 +27,32 @@ public class ModelInspector {
 	}
 
 	private IMethod getAction(String fullClassName, String query) {
+		IType parent = null;
 		try {
-			IType parent = javaProject.findType(fullClassName);
-			// Look for package fragments
-			if (parent == null) {
-				return null;
-			}
-			IJavaElement[] children = parent.getChildren();
-			for (int i = 0; i < children.length; i++) {
-				IJavaElement child = children[i];
-				if (child instanceof IMethod) {
-					IMethod method = (IMethod)child;
-					int flags = method.getFlags();
-					if ((query.isEmpty() || method.getElementName().startsWith(query))
-							&& Flags.isPublic(flags)
-							&& Flags.isStatic(flags)
-							&& method.getReturnType().equals("V")) {
+			parent = javaProject.findType(fullClassName);
+		} catch (JavaModelException e) {}
+		if (parent == null) {
+			return null;
+		}
+		return findMethod(parent, query);
+	}
+
+	private IMethod findMethod(IType type, String query) {
+		// We can't use IType.getMethod(name, parameterTypeSignature) because we usually don't know the parameters,
+		// we only have the name.
+		try {
+			for (IMethod method: type.getMethods()) {
+				int flags = method.getFlags();
+				if (Flags.isPublic(flags)
+						&& Flags.isStatic(flags)
+						&& method.getReturnType().equals("V")) {
+					if (method.getElementName().equals(query))
 						return method;
-					}
 				}
 			}
 		} catch (JavaModelException e) {
-			e.printStackTrace();
+			return null;
 		}
-
 		return null;
 	}
 

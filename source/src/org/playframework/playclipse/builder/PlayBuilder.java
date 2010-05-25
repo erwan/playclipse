@@ -15,12 +15,19 @@ public class PlayBuilder extends IncrementalProjectBuilder {
 
 	class ResourceVisitor implements IResourceVisitor {
 		public boolean visit(IResource resource) {
-			System.out.println("Visit: " + resource.getName());
-			if (resource instanceof IFile && resource.getName().equals("routes")) {
-				checkRoute((IFile)resource);
-				System.out.println("end reading routes");
+			if (!(resource instanceof IFile)) return true;
+			IFile file = (IFile)resource;
+			if (resource.getName().equals("routes")) {
+				deleteMarkers(file);
+				(new RouteChecker(file)).check();
 				return false;
-			} else  return true;
+			}
+			if (TemplateChecker.isTemplate(resource.getFullPath())) {
+				deleteMarkers(file);
+				(new TemplateChecker(file)).check();
+				return false;
+			}
+			return true;
 		}
 	}
 
@@ -41,8 +48,6 @@ public class PlayBuilder extends IncrementalProjectBuilder {
 	}
 
 	void checkRoute(IFile file) {
-		deleteMarkers(file);
-		(new RouteChecker(file)).check();
 	}
 
 	private void deleteMarkers(IFile file) {
