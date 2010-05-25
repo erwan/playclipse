@@ -10,8 +10,17 @@ import org.eclipse.core.resources.IResourceVisitor;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jface.util.IPropertyChangeListener;
+import org.eclipse.jface.util.PropertyChangeEvent;
+import org.playframework.playclipse.PlayPlugin;
+import org.playframework.playclipse.editors.route.RouteEditor;
 
-public class PlayBuilder extends IncrementalProjectBuilder {
+public class PlayBuilder extends IncrementalProjectBuilder implements IPropertyChangeListener {
+
+	public PlayBuilder() {
+		super();
+		PlayPlugin.getDefault().getPreferenceStore().addPropertyChangeListener(this);
+	}
 
 	class ResourceVisitor implements IResourceVisitor {
 		public boolean visit(IResource resource) {
@@ -63,6 +72,16 @@ public class PlayBuilder extends IncrementalProjectBuilder {
 			getProject().accept(new ResourceVisitor());
 		} catch (CoreException e) {
 			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public void propertyChange(PropertyChangeEvent event) {
+		if (event.getProperty().equals(RouteEditor.MISSING_ROUTE)) {
+			try {
+				fullBuild(null);
+			} catch (CoreException e) {
+			}
 		}
 	}
 

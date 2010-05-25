@@ -231,7 +231,6 @@ public abstract class Editor extends TextEditor implements VerifyListener, IProp
 
 	@Override
 	public void propertyChange(PropertyChangeEvent event) {
-		// TODO Auto-generated method stub
 		for (String type: getTypes()) {
 			if (event.getProperty().equals(getStylePref(type))) {
 				ISourceViewer viewer= getSourceViewer();
