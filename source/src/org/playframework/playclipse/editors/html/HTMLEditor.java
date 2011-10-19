@@ -136,7 +136,7 @@ public class HTMLEditor extends PlayEditor {
 		if(contentType == "default") {
 			template("if", "Insert a #if tag", "#{if ${}}\n    ${cursor}\n#{/if}");
 			template("extends", "Insert a #extends tag", "#{extends '${}' /}${cursor}");
-			template("list", "Insert a #list tag", "#{list ${}, as:'${i}'}\n    ${cursor}\n#{/list>");
+			template("list", "Insert a #list tag", "#{list ${}, as:'${i}'}\n    ${cursor}\n#{/list}");
 			template("doctype", "Insert an HTML5 doctype element", "<!DOCTYPE html>");
 		}
 		// Magic
