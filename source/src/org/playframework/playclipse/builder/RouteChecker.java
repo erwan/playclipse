@@ -42,7 +42,7 @@ public class RouteChecker extends ErrorChecker {
 		}
 	}
 
-	private static Pattern METHOD = Pattern.compile("(\\*|GET|POST|PUT|DELETE|UPDATE|HEAD)");
+	private static Pattern METHOD = Pattern.compile("(\\*|GET|POST|PUT|DELETE|UPDATE|HEAD|WS)");
 
 	private void checkLine(String line, int lineNumber, int offset) throws CoreException {
 		String[] rule = line.split("\\s+");
