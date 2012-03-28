@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="org.playframework.playclipse.feature"
+      label="Playclipse"
+      version="0.7.0"
+      provider-name="Zenexity">
+
+   <description url="http://github.com/erwan/playclipse">
+   
+      This feature provides editors and wizards to work with the play framework.
+
+   </description>
+
+   <copyright url="http://www.zenexity.fr">
+   Copyright (c) 2010, 2012 Zenexity
+
+   Contributors:
+
+      Erwan Loisant
+      Mariot Chauvin 
+   </copyright>
+
+   <license url="http://www.apache.org/licenses/LICENSE-2.0">
+      Licensed under the Apache License, Version 2.0 (the "License"); you may not use this work except in compliance with the License. You may obtain a copy of the License in the LICENSE file, or at:
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+      Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+   </license>
+
+   <plugin
+         id="org.playframework.playclipse"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+</feature>

@@ -21,3 +21,4 @@ Import-Package: org.eclipse.core.filebuffers,
  org.eclipse.ui.ide,
  org.eclipse.ui.texteditor
 Bundle-ActivationPolicy: lazy
+Bundle-Vendor: Zenexity
