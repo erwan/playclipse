@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+   <feature url="features/org.playframework.playclipse.feature_0.7.0.jar" id="org.playframework.playclipse.feature" version="0.7.0">
+      <category name="playframework"/>
+   </feature>
+   <category-def name="playframework" label="Play framework Eclipse Tools"/>
+</site>
